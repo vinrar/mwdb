@@ -60,7 +60,7 @@ def calulate_DTW_similarity():
             df[f1][f2] = average
             df[f2][f1] = average
 
-    df.to_csv('task3a_DTW_sim_matrix.csv')
+    df.to_csv('DTW_sim_matrix.csv')
 
 
 calulate_DTW_similarity()

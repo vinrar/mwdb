@@ -1,6 +1,9 @@
 import time
 
 
+# Add @timeit on top of your function for printing time taken in sec by your function
+# @timeit
+# def your_function()
 def timeit(method):
     def timed(*args, **kw):
         ts = time.time()
