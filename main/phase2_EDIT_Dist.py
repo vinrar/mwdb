@@ -47,21 +47,12 @@ def editdist(s, t): # for wrd files
                                  dist[row-1][col-1] + cost) # substitution   
     return dist[row][col]
 
-# s = list(np.array(w1['X']['0']['words'])[:,0])[10:13]
-# t = list(np.array(w2['X']['0']['words'])[:,0])[10:15]
-# print(editdist(s,t))
-
-# w1 = json.load(open('./data/1.wrd'))
-# # list(np.array(w1['X']['0']['words'])[:,0])
-# w2 = json.load(open('./data/2.wrd'))
-# # list(np.array(w2['X']['0']['words'])[:,0])
-
+#Compare Gestures using Edit distance for Task 2 User Option 6
 dir = 'data'
 fnames = glob.glob("./"+dir+"/*.wrd")
 fnames.sort()
 
-# comp = ['X','Y','Z','W']
-qfile = '1' #query file name
+qfile = '1'
 
 qword = json.load(open('./'+dir+'/'+qfile+'.wrd')) #.wrd
 comp = list(qword.keys())
@@ -74,16 +65,11 @@ for gfile in fnames:
     temp = []
     for c in comp:
         for senid in fword[c]: # for wrd files
-            #wrd files
             wf = list(np.array(fword[c][str(senid)]['words'])[:,0])
             wq = list(np.array(qword[c][str(senid)]['words'])[:,0])
             temp.append(editdist(wf,wq))
 
-    # print(1/np.average(temp))
-    if np.average(temp) == 0:
-        sim.append((f, float('inf')))
-    else:
-        sim.append((f, 1/np.average(temp)))
+    sim.append((f, 1/(1+np.average(temp))))
   
 sim.sort(key = lambda x: x[1], reverse=True) 
 print(np.array(sim)[:10])
