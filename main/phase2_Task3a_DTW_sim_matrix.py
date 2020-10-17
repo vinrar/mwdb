@@ -3,11 +3,17 @@ import os
 import json
 import glob
 
+import pandas as pd
+from utils import timeit
+
 dir = 'data'
-comp = ['X', 'Y', 'Z', 'W']
+
 fnames = glob.glob("./" + dir + "/*.wrd")
 fnames.sort()
-sim_mat = np.zeros((len(fnames), len(fnames)))  # sim matrix
+for i in range(len(fnames)):
+    fnames[i] = os.path.splitext(os.path.basename(fnames[i]))[0]
+
+df = pd.DataFrame(0.0, index=fnames, columns=fnames)
 
 
 def dtw(vector1, vector2, cost1, cost2):
@@ -28,28 +34,33 @@ def dtw(vector1, vector2, cost1, cost2):
     return dp[0][-1]
 
 
-for i in range(len(fnames)):
-    for j in range(i, len(fnames)):
-        f1 = json.load(open(fnames[i]))
-        f2 = json.load(open(fnames[j]))
+@timeit
+def calulate_DTW_similarity():
+    for i in range(len(fnames)):
+        for j in range(i, len(fnames)):
+            f1 = json.load(open('./' + dir + '/' + fnames[i] + '.wrd'))
+            f2 = json.load(open('./' + dir + '/' + fnames[j] + '.wrd'))
+            comp = list(f1.keys())
 
-        temp = []
-        for c in comp:
-            for senid in f1[c]:
-                w1 = list(np.array(f1[c][str(senid)]['words'])[:, 0])
-                w1_c = list(np.array(f1[c][str(senid)]['words'])[:, 1])
-                w2 = list(np.array(f2[c][str(senid)]['words'])[:, 0])
-                w2_c = list(np.array(f2[c][str(senid)]['words'])[:, 1])
-                temp.append(dtw(w1, w2, w1_c, w2_c))
+            temp = []
+            for c in comp:
+                for senid in f1[c]:
+                    w1 = list(np.array(f1[c][str(senid)]['words'])[:, 0])
+                    w1_c = list(np.array(f1[c][str(senid)]['words'])[:, 1])
+                    w2 = list(np.array(f2[c][str(senid)]['words'])[:, 0])
+                    w2_c = list(np.array(f2[c][str(senid)]['words'])[:, 1])
+                    dtw_val = dtw(w1, w2, w1_c, w2_c)
+                    temp.append(1 / (1 + dtw_val))
 
-        f1 = os.path.splitext(os.path.basename(fnames[i]))[0]
-        f2 = os.path.splitext(os.path.basename(fnames[j]))[0]
+            f1 = fnames[i]
+            f2 = fnames[j]
 
-        if np.average(temp) == 0:
-            sim_mat[int(f1) - 1, int(f2) - 1] = float('inf')
-        else:
-            avg = 1 / np.average(temp)
-            sim_mat[int(f1) - 1, int(f2) - 1] = avg
-            sim_mat[int(f2) - 1, int(f1) - 1] = avg
+            average = np.average(temp)
 
-np.savetxt('task3a_DTW_sim_matrix.txt', sim_mat)
+            df[f1][f2] = average
+            df[f2][f1] = average
+
+    df.to_csv('task3a_DTW_sim_matrix.csv')
+
+
+calulate_DTW_similarity()
