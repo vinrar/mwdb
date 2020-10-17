@@ -45,16 +45,20 @@ def editdist(s, t): # for wrd files
                                  dist[row-1][col-1] + cost) # substitution   
     return dist[row][col]
 
+# Task 3a Part 1 user option 6:
 dir = 'data'
-comp = ['X','Y','Z','W']
 fnames = glob.glob("./"+dir+"/*.wrd")
 fnames.sort()
-sim_mat = np.zeros((len(fnames),len(fnames))) # sim matrix
+for i in range(len(fnames)):
+    fnames[i] = os.path.splitext(os.path.basename(fnames[i]))[0]
+
+df = pd.DataFrame(0.0,index=fnames,columns=fnames)
 
 for i in range(len(fnames)):
     for j in range(i,len(fnames)):
-        f1 = json.load(open(fnames[i]))
-        f2 = json.load(open(fnames[j]))
+        f1 = json.load(open('./'+dir+'/'+fnames[i]+'.wrd'))
+        f2 = json.load(open('./'+dir+'/'+fnames[j]+'.wrd'))
+        comp = list(f1.keys())
 
         temp = []
         for c in comp:
@@ -63,14 +67,16 @@ for i in range(len(fnames)):
                 w2 = list(np.array(f2[c][str(senid)]['words'])[:,0])
                 temp.append(editdist(w1,w2))   
 
-        f1 = os.path.splitext(os.path.basename(fnames[i]))[0]
-        f2 = os.path.splitext(os.path.basename(fnames[j]))[0]
+        f1 = fnames[i]
+        f2 = fnames[j]
 
-        if np.average(temp) == 0:
-            sim_mat[int(f1)-1,int(f2)-1] = float('inf')
-        else:
-            sim_mat[int(f1)-1,int(f2)-1] = 1/np.average(temp)
-            sim_mat[int(f2)-1,int(f1)-1] = 1/np.average(temp)
+        for k in range(len(temp)):
+            temp[k] = 1/(1+temp[k])
 
-np.savetxt('task3a_UsrOpt6_sim_matrix.txt', sim_mat) # saves the matrix
-# sim_mat = np.loadtxt('task3a_UsrOpt6_sim_matrix.txt') # use this to read the file
+        df[f1][f2] = np.average(temp)
+        df[f2][f1] = np.average(temp)
+
+df.to_csv('task3a_Edit_Dist_sim_matrix.csv') 
+# np.savetxt('task3a_UsrOpt6_sim_matrix.txt', sim_mat)
+# sim_mat = np.loadtxt('task3a_UsrOpt6_sim_matrix.txt')
+# sim_mat
