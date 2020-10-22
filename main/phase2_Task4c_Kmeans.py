@@ -1,18 +1,14 @@
 import random
 
 import numpy as np
+import pandas as pd
 from numpy.linalg import norm
 from scipy.spatial import distance
 from collections import defaultdict
 
 
-def pretty(d, indent=0):
-    for key, value in d.items():
-        print('\t' * indent + str(key))
-        if isinstance(value, dict):
-            pretty(value, indent + 1)
-        else:
-            print('\t' * (indent + 1) + str(value))
+centroid_assignments = set()
+count = 0
 
 
 def normalize_between_0_and_1(x):
@@ -47,6 +43,11 @@ def randomly_initialize_cluster_centroids(k, matrix):
 # assign random points in the sim_matrix as centroids
 def initialize_cluster_centroids(k, matrix):
     k_list = random.sample(range(len(matrix)), k)
+    global count
+    while set(k_list) in centroid_assignments:
+        count = count + 1
+        k_list = random.sample(range(len(matrix)), k)
+    centroid_assignments.add(frozenset(k_list))
     centroids = {}
     for k_idx, k_value in enumerate(k_list):
         centroids[k_idx] = matrix[k_value]
@@ -106,6 +107,7 @@ def multiple_random_starts_k_means(matrix, k: int, max_iters: int, random_starts
 
         random_starts -= 1
 
+    print("Initial Centroid Assignments: ", len(centroid_assignments), ", Same Assignment Skipped Count: ", count)
     print("min_avg_dist: ", min_avg_dist, ", random_starts:", random_starts)
     return min_clusters
 
@@ -152,24 +154,37 @@ def k_means(matrix, k: int, max_iters: int):
     return clusters
 
 
+def print_clusters(clusters, columns):
+    for k, v in sorted(clusters.items(), key=lambda kv: kv[0]):
+        print("\nCluster " + str(k+1))
+        li = [columns[index] for index in v]
+        print("Number of gestures: ", len(li), "\nGestures: ", li)
+
+
 def main():
     # Uncomment this for default filename of normalized edit distance sim matrix
-    file_name = 'task3a_UsrOpt6_sim_matrix_normalized.txt'
+    # file_name = 'task3a_UsrOpt6_sim_matrix_normalized.txt'
+    # file_name = 'edit_dist_sim_matrix.csv'
 
     # initialize variables
-    # file_name = input("Enter gesture-gesture similarity matrix filename: ")
+    file_name = input("Enter gesture-gesture similarity matrix filename: ")
     p = int(input("Enter p: "))
-    max_iterations, random_starts = 100, 50
-    sim_mat = np.loadtxt(file_name)
+
+    # change number of random starts to get better results
+    max_iterations, random_starts = 100, 500
+    sim_mat_df = pd.read_csv(file_name, index_col=0)
+    sim_mat = sim_mat_df.to_numpy()
+
+    print("Shape of similarity matrix: ", sim_mat.shape)
 
     # normalize the similarity matrix between 0 and 1
-    sim_mat = normalize_between_0_and_1(sim_mat)
+    # sim_mat = normalize_between_0_and_1(sim_mat)
 
     clusters = multiple_random_starts_k_means(sim_mat, p, max_iterations, random_starts)
     # clusters = k_means(sim_mat, p, max_iterations)
-
+    # print(cluster_assignments)
     print("Final clusters: ")
-    pretty(clusters, 2)
+    print_clusters(clusters, sim_mat_df.columns)
 
 
 # works only for similarity matrices which do not contain NAN or inf
