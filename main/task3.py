@@ -197,32 +197,32 @@ def get_NMF_components(no_of_components, similarity_matrix):
 
 
 def get_DTW_similarity_matrix():
-    dir = 'data'
+    data_dir = 'data'
 
-    fnames = glob.glob("./" + dir + "/*.wrd")
-    fnames.sort()
-    for i in range(len(fnames)):
-        fnames[i] = os.path.splitext(os.path.basename(fnames[i]))[0]
+    file_names = glob.glob("./" + data_dir + "/*.wrd")
+    file_names.sort()
+    for i in range(len(file_names)):
+        file_names[i] = os.path.splitext(os.path.basename(file_names[i]))[0]
 
-    df = pd.DataFrame(0.0, index=fnames, columns=fnames)
-    for i in range(len(fnames)):
-        for j in range(i, len(fnames)):
-            f1 = json.load(open('./' + dir + '/' + fnames[i] + '.wrd'))
-            f2 = json.load(open('./' + dir + '/' + fnames[j] + '.wrd'))
+    df = pd.DataFrame(0.0, index=file_names, columns=file_names)
+    for i in range(len(file_names)):
+        for j in range(i, len(file_names)):
+            f1 = json.load(open('./' + data_dir + '/' + file_names[i] + '.wrd'))
+            f2 = json.load(open('./' + data_dir + '/' + file_names[j] + '.wrd'))
             comp = list(f1.keys())
 
             temp = []
             for c in comp:
-                for senid in f1[c]:
-                    w1 = list(np.array(f1[c][str(senid)]['words'])[:, 0])
-                    w1_c = list(np.array(f1[c][str(senid)]['words'])[:, 1])
-                    w2 = list(np.array(f2[c][str(senid)]['words'])[:, 0])
-                    w2_c = list(np.array(f2[c][str(senid)]['words'])[:, 1])
+                for sensor_id in f1[c]:
+                    w1 = list(np.array(f1[c][str(sensor_id)]['words'])[:, 0])
+                    w1_c = list(np.array(f1[c][str(sensor_id)]['words'])[:, 1])
+                    w2 = list(np.array(f2[c][str(sensor_id)]['words'])[:, 0])
+                    w2_c = list(np.array(f2[c][str(sensor_id)]['words'])[:, 1])
                     dtw_val = dtw.dtw(w1, w2, w1_c, w2_c)
                     temp.append(1 / (1 + dtw_val))
 
-            f1 = fnames[i]
-            f2 = fnames[j]
+            f1 = file_names[i]
+            f2 = file_names[j]
 
             average = np.average(temp)
 
@@ -237,29 +237,29 @@ def get_DTW_similarity_matrix():
 
 def get_ED_similarity_matrix():
     # Task 3a Part 1 user option 6:
-    dir = 'data'
-    fnames = glob.glob("./" + dir + "/*.wrd")
-    fnames.sort()
-    for i in range(len(fnames)):
-        fnames[i] = os.path.splitext(os.path.basename(fnames[i]))[0]
+    data_dir = 'data'
+    file_names = glob.glob("./" + data_dir + "/*.wrd")
+    file_names.sort()
+    for i in range(len(file_names)):
+        file_names[i] = os.path.splitext(os.path.basename(file_names[i]))[0]
 
-    df = pd.DataFrame(0.0, index=fnames, columns=fnames)
+    df = pd.DataFrame(0.0, index=file_names, columns=file_names)
 
-    for i in range(len(fnames)):
-        for j in range(i, len(fnames)):
-            f1 = json.load(open('./' + dir + '/' + fnames[i] + '.wrd'))
-            f2 = json.load(open('./' + dir + '/' + fnames[j] + '.wrd'))
+    for i in range(len(file_names)):
+        for j in range(i, len(file_names)):
+            f1 = json.load(open('./' + data_dir + '/' + file_names[i] + '.wrd'))
+            f2 = json.load(open('./' + data_dir + '/' + file_names[j] + '.wrd'))
             comp = list(f1.keys())
 
             temp = []
             for c in comp:
-                for senid in f1[c]:
-                    w1 = list(np.array(f1[c][str(senid)]['words'])[:, 0])
-                    w2 = list(np.array(f2[c][str(senid)]['words'])[:, 0])
+                for sensor_id in f1[c]:
+                    w1 = list(np.array(f1[c][str(sensor_id)]['words'])[:, 0])
+                    w2 = list(np.array(f2[c][str(sensor_id)]['words'])[:, 0])
                     temp.append(edit_distance.editdist(w1, w2))
 
-            f1 = fnames[i]
-            f2 = fnames[j]
+            f1 = file_names[i]
+            f2 = file_names[j]
 
             for k in range(len(temp)):
                 temp[k] = 1 / (1 + temp[k])
@@ -278,6 +278,9 @@ if __name__ == '__main__':
     vector_model = "tf"
     k = 50
     p = 3
+    # TODO Should p and k be constants or inputs from the user?
+    # k = int(input('Enter k: \t'))
+    # p = int(input('Enter p: \t'))
 
     list_of_files = get_list_of_files(data_dir, vector_model)
     read_file_data(list_of_files, data_dir)
@@ -307,11 +310,17 @@ if __name__ == '__main__':
             sim_matrix = get_DTW_similarity_matrix()
 
     get_SVD_components(p, sim_matrix)
+    # currently, NMF is giving out error only with PCA results. So for PCA results we are adding the minimum most
+    # element(and only if it is negative) to all the elements in the array
+
+    # compute user option here
+    # If the negative error occurs with any other algorithm, add the corresponding user option here
     if user_option in set('2'):
         min = math.fabs(np.amin(sim_matrix))
         nrows = sim_matrix.shape[0]
         ncols = sim_matrix.shape[1]
-        for i in range(nrows):
-            for j in range(ncols):
-                sim_matrix[i][j] += min
+        if min < 0:
+            for i in range(nrows):
+                for j in range(ncols):
+                    sim_matrix[i][j] += min
     get_NMF_components(p, sim_matrix)
