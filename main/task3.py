@@ -1,15 +1,18 @@
+import math
 import os
 import pickle
 from collections import Counter
 
+import glob
+import json
 import numpy as np
+import pandas as pd
+from sklearn.decomposition import LatentDirichletAllocation
+from sklearn.decomposition import NMF
 from sklearn.decomposition import PCA
 from sklearn.decomposition import TruncatedSVD
-from sklearn.decomposition import NMF
-from sklearn.decomposition import LatentDirichletAllocation
-from sklearn import preprocessing
-import pandas as pd
-import math
+from main import phase2_EDIT_Dist as edit_distance
+from main import phase2_DTW as dtw
 
 vector_model_data = {}
 the_matrix = {}
@@ -194,13 +197,78 @@ def get_NMF_components(no_of_components, similarity_matrix):
 
 
 def get_DTW_similarity_matrix():
-    sim_matrix = pd.read_csv('DTW_sim_matrixrix.csv', index_col=0).to_numpy()
+    dir = 'data'
+
+    fnames = glob.glob("./" + dir + "/*.wrd")
+    fnames.sort()
+    for i in range(len(fnames)):
+        fnames[i] = os.path.splitext(os.path.basename(fnames[i]))[0]
+
+    df = pd.DataFrame(0.0, index=fnames, columns=fnames)
+    for i in range(len(fnames)):
+        for j in range(i, len(fnames)):
+            f1 = json.load(open('./' + dir + '/' + fnames[i] + '.wrd'))
+            f2 = json.load(open('./' + dir + '/' + fnames[j] + '.wrd'))
+            comp = list(f1.keys())
+
+            temp = []
+            for c in comp:
+                for senid in f1[c]:
+                    w1 = list(np.array(f1[c][str(senid)]['words'])[:, 0])
+                    w1_c = list(np.array(f1[c][str(senid)]['words'])[:, 1])
+                    w2 = list(np.array(f2[c][str(senid)]['words'])[:, 0])
+                    w2_c = list(np.array(f2[c][str(senid)]['words'])[:, 1])
+                    dtw_val = dtw.dtw(w1, w2, w1_c, w2_c)
+                    temp.append(1 / (1 + dtw_val))
+
+            f1 = fnames[i]
+            f2 = fnames[j]
+
+            average = np.average(temp)
+
+            df[f1][f2] = average
+            df[f2][f1] = average
+
+    df.to_csv('DTW_sim_matrix.csv')
+    sim_matrix = df
     print("dtw similarity matrix", sim_matrix)
     return sim_matrix
 
 
 def get_ED_similarity_matrix():
-    sim_matrix = pd.read_csv('edit_dist_sim_matrixrix.csv', index_col=0).to_numpy()
+    # Task 3a Part 1 user option 6:
+    dir = 'data'
+    fnames = glob.glob("./" + dir + "/*.wrd")
+    fnames.sort()
+    for i in range(len(fnames)):
+        fnames[i] = os.path.splitext(os.path.basename(fnames[i]))[0]
+
+    df = pd.DataFrame(0.0, index=fnames, columns=fnames)
+
+    for i in range(len(fnames)):
+        for j in range(i, len(fnames)):
+            f1 = json.load(open('./' + dir + '/' + fnames[i] + '.wrd'))
+            f2 = json.load(open('./' + dir + '/' + fnames[j] + '.wrd'))
+            comp = list(f1.keys())
+
+            temp = []
+            for c in comp:
+                for senid in f1[c]:
+                    w1 = list(np.array(f1[c][str(senid)]['words'])[:, 0])
+                    w2 = list(np.array(f2[c][str(senid)]['words'])[:, 0])
+                    temp.append(edit_distance.editdist(w1, w2))
+
+            f1 = fnames[i]
+            f2 = fnames[j]
+
+            for k in range(len(temp)):
+                temp[k] = 1 / (1 + temp[k])
+
+            df[f1][f2] = np.average(temp)
+            df[f2][f1] = np.average(temp)
+
+    df.to_csv('task3_Edit_Dist_sim_matrix.csv')
+    sim_matrix = df
     print("edit distance similarity matrix", sim_matrix)
     return sim_matrix
 
@@ -239,7 +307,7 @@ if __name__ == '__main__':
             sim_matrix = get_DTW_similarity_matrix()
 
     get_SVD_components(p, sim_matrix)
-    if user_option in ('2'):
+    if user_option in set('2'):
         min = math.fabs(np.amin(sim_matrix))
         nrows = sim_matrix.shape[0]
         ncols = sim_matrix.shape[1]
