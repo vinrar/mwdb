@@ -1,3 +1,4 @@
+import pprint
 import time
 
 
@@ -13,3 +14,8 @@ def timeit(method):
         return result
 
     return timed
+
+
+def print_dict(dictionary):
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(dictionary)
