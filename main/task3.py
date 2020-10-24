@@ -1,11 +1,13 @@
 import os
 import pickle
 from collections import Counter
+
 import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.decomposition import TruncatedSVD
 from sklearn.decomposition import NMF
 from sklearn.decomposition import LatentDirichletAllocation
+from sklearn import preprocessing
 import pandas as pd
 import math
 
@@ -237,4 +239,11 @@ if __name__ == '__main__':
             sim_matrix = get_DTW_similarity_matrix()
 
     get_SVD_components(p, sim_matrix)
+    if user_option in ('2'):
+        min = math.fabs(np.amin(sim_matrix))
+        nrows = sim_matrix.shape[0]
+        ncols = sim_matrix.shape[1]
+        for i in range(nrows):
+            for j in range(ncols):
+                sim_matrix[i][j] += min
     get_NMF_components(p, sim_matrix)

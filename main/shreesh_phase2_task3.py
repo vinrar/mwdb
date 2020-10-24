@@ -96,7 +96,7 @@ def get_dot_product_similarity_matrix():
             list_of_similarities[each_file] = score
         similarity_matrix[gesture_file] = list_of_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('dot_sim_mat.csv')
+    s.to_csv('dot_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -112,7 +112,7 @@ def get_pca_similarity_matrix(flattened_matrix, no_of_components):
         print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('pca_sim_mat.csv')
+    s.to_csv('pca_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -128,7 +128,7 @@ def get_svd_similarity_matrix(flattened_matrix, no_of_components):
         print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('svd_sim_mat.csv')
+    s.to_csv('svd_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -144,7 +144,7 @@ def get_nmf_similarity_matrix(flattened_matrix, no_of_components):
         print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('nmf_sim_mat.csv')
+    s.to_csv('nmf_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -160,7 +160,7 @@ def get_lda_similarity_matrix(flattened_matrix, no_of_components):
         print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('lda_sim_mat.csv')
+    s.to_csv('lda_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -192,73 +192,49 @@ def get_NMF_components(no_of_components, similarity_matrix):
 
 
 def get_DTW_similarity_matrix():
-    sim_mat = pd.read_csv('DTW_sim_matrix.csv', index_col=0).to_numpy()
-    print("dtw similarity matrix", sim_mat)
-    return sim_mat
+    sim_matrix = pd.read_csv('DTW_sim_matrixrix.csv', index_col=0).to_numpy()
+    print("dtw similarity matrix", sim_matrix)
+    return sim_matrix
 
 
 def get_ED_similarity_matrix():
-    sim_mat = pd.read_csv('edit_dist_sim_matrix.csv', index_col=0).to_numpy()
-    print("edit distance similarity matrix",sim_mat)
-    return sim_mat
+    sim_matrix = pd.read_csv('edit_dist_sim_matrixrix.csv', index_col=0).to_numpy()
+    print("edit distance similarity matrix",sim_matrix)
+    return sim_matrix
 
 
 if __name__ == '__main__':
-    dir = "./data"
+    data_dir = "./data"
     vector_model = "tf"
     k = 50
     p = 3
 
-    list_of_files = get_list_of_files(dir, vector_model)
-    read_file_data(list_of_files, dir)
+    list_of_files = get_list_of_files(data_dir, vector_model)
+    read_file_data(list_of_files, data_dir)
     list_of_features = get_list_of_features()
     set_of_features = get_unique_features(list_of_features)
     form_the_matrix(set_of_features)
 
-    sim_mat = None
-    user_option = input('1. Dot product | [2,3,4,5]. [PCA,SVD,NMF,LDA] | 6. Edit dist | 7. DTW')
+    sim_matrix = None
+    user_option = input('1. Dot product | [2,3,4,5]. [PCA,SVD,NMF,LDA] | 6. Edit dist | 7. DTW :\n')
 
     if user_option == '1':
-        sim_mat = get_dot_product_similarity_matrix()
+        sim_matrix = get_dot_product_similarity_matrix()
     else:
         flattened_matrix = flatten_the_matrix()
 
         if user_option == '2':
-            sim_mat = get_pca_similarity_matrix(flattened_matrix, k)
+            sim_matrix = get_pca_similarity_matrix(flattened_matrix, k)
         elif user_option == '3':
-            sim_mat = get_svd_similarity_matrix(flattened_matrix, k)
+            sim_matrix = get_svd_similarity_matrix(flattened_matrix, k)
         elif user_option == '4':
-            sim_mat = get_nmf_similarity_matrix(flattened_matrix, k)
+            sim_matrix = get_nmf_similarity_matrix(flattened_matrix, k)
         elif user_option == '5':
-            sim_mat = get_lda_similarity_matrix(flattened_matrix, k)
+            sim_matrix = get_lda_similarity_matrix(flattened_matrix, k)
         elif user_option == '6':
-            sim_mat = get_ED_similarity_matrix()
+            sim_matrix = get_ED_similarity_matrix()
         elif user_option == '7':
-            sim_mat = get_DTW_similarity_matrix()
-
-    # dot_similarity_matrix = get_dot_product_similarity_matrix()
-    # print("printing dot product similarity matrix", dot_similarity_matrix)
-
-    if user_option == '1':
-        get_SVD_components(p, sim_mat)
-        get_NMF_components(p, sim_mat)
-    else:
-        get_NMF_components(p, sim_mat)
-    #
-    # sim_mat = get_pca_similarity_matrix(flattened_matrix, k)
-    # print("Printing the pca similarity matrix", sim_mat)
-    #
-    # sim_mat = get_svd_similarity_matrix(flattened_matrix, k)
-    # print("Printing the svd similarity matrix", sim_mat)
-    #
-    # sim_mat = get_nmf_similarity_matrix(flattened_matrix, k)
-    # print("Printing the nmf similarity matrix", sim_mat)
-    #
-    # sim_mat = get_lda_similarity_matrix(flattened_matrix, k)
-    # print("Printing the lda similarity matrix", sim_mat)
-
-    # sim_mat = get_ED_similarity_matrix()
-    # sim_mat = get_DTW_similarity_matrix()
-
-    get_SVD_components(p, sim_mat)
-    get_NMF_components(p, sim_mat)
+            sim_matrix = get_DTW_similarity_matrix()
+  
+    get_SVD_components(p, sim_matrix)
+    get_NMF_components(p, sim_matrix)
