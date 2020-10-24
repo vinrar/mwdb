@@ -24,7 +24,7 @@ def similarity_matrix(option):
     if option == '6':
         find_edit_dist_sim_matrix()
     elif option == '7':
-        find_dtw_sim_matrix
+        find_dtw_sim_matrix()
 
 
 @timeit
