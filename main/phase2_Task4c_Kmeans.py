@@ -5,6 +5,7 @@ import pandas as pd
 from numpy.linalg import norm
 from scipy.spatial import distance
 from collections import defaultdict
+from sklearn.cluster import KMeans
 
 
 centroid_assignments = set()
@@ -18,18 +19,9 @@ def normalize_between_0_and_1(x):
     return x
 
 
-# not used
-def get_dot_product(v1, v2):
-    return np.dot(v1, v2)
-
-
-# not used
-def get_cosine_similarity(v1, v2):
-    return np.dot(v1, v2) / (norm(v1) * norm(v2))
-
-
 def get_euclidean_distance(v1, v2):
-    return distance.euclidean(v1, v2)
+    d = distance.euclidean(v1, v2)
+    return d
 
 
 # initialize centroids with any random values / points
@@ -98,7 +90,7 @@ def multiple_random_starts_k_means(matrix, k: int, max_iters: int, random_starts
     while random_starts > 0:
         clusters = k_means(matrix, k, max_iters)
 
-        # compute the avergae distance of all points from their cluster centroids
+        # compute the average distance of all points from their cluster centroids
         avg_cluster_distance = get_average_clustering_distance(clusters, matrix)
 
         # update the min clusters and min avg distances
@@ -108,6 +100,7 @@ def multiple_random_starts_k_means(matrix, k: int, max_iters: int, random_starts
         random_starts -= 1
 
     print("Initial Centroid Assignments: ", len(centroid_assignments), ", Same Assignment Skipped Count: ", count)
+    # print("Centroids: ", centroid_assignments)
     print("min_avg_dist: ", min_avg_dist, ", random_starts:", random_starts)
     return min_clusters
 
@@ -156,35 +149,98 @@ def k_means(matrix, k: int, max_iters: int):
 
 def print_clusters(clusters, columns):
     for k, v in sorted(clusters.items(), key=lambda kv: kv[0]):
-        print("\nCluster " + str(k+1))
+        print("Cluster: " + str(k+1), ";", end=" ")
         li = [columns[index] for index in v]
-        print("Number of gestures: ", len(li), "\nGestures: ", li)
+        print("n_gestures: ", len(li), "; Gestures: ", li)
 
 
-def main():
-    # Uncomment this for default filename of normalized edit distance sim matrix
-    # file_name = 'task3a_UsrOpt6_sim_matrix_normalized.txt'
-    # file_name = 'edit_dist_sim_matrix.csv'
+def pretty(d, indent=0):
+    for key, value in sorted(d.items()):
+        print('\t' * indent + str(key))
+        if isinstance(value, dict):
+            pretty(value, indent + 1)
+        else:
+            print('\t' * (indent + 1) + str(value))
 
-    # initialize variables
-    file_name = input("Enter gesture-gesture similarity matrix filename: ")
-    p = int(input("Enter p: "))
 
-    # change number of random starts to get better results
-    max_iterations, random_starts = 100, 500
+def task_4c(file_name, p, max_iterations, random_starts):
     sim_mat_df = pd.read_csv(file_name, index_col=0)
     sim_mat = sim_mat_df.to_numpy()
 
-    print("Shape of similarity matrix: ", sim_mat.shape)
-
     # normalize the similarity matrix between 0 and 1
     # sim_mat = normalize_between_0_and_1(sim_mat)
-
+    print("\n-----------------------------------------------------------\n")
+    print("KMeans Clustering Results: ")
+    print("\n-----------------------------------------------------------\n")
+    print("---------------------MWDB K Means Clusters----------------")
     clusters = multiple_random_starts_k_means(sim_mat, p, max_iterations, random_starts)
     # clusters = k_means(sim_mat, p, max_iterations)
-    # print(cluster_assignments)
-    print("Final clusters: ")
+    # pretty(clusters, 2)
     print_clusters(clusters, sim_mat_df.columns)
+    sklearn_kmeans(sim_mat, p, max_iterations, random_starts, sim_mat_df.columns)
+
+
+def task_4d(file_name, p, max_iterations, random_starts):
+    # Read sim matrix
+    df = pd.read_csv(file_name)
+    print("df.shape: ", df.shape)
+
+    # Similarity Graph
+    W = np.zeros((df.shape[0], df.shape[0]))
+
+    for i in range(df.shape[0]):
+        for j in range(1, df.shape[1]):
+            if df.iloc[i, j] >= 0:
+                W[i, j - 1] = df.iloc[i, j]
+
+    D = np.diag(np.sum(W, axis=1))
+    L = D - W
+
+    w, v = np.linalg.eig(L)
+    y = v[:, np.argsort(w)]
+    y = y[:, : p]
+
+    print("\n\n-----------------------------------------------------------\n")
+    print("Spectral Clustering Results: ")
+    print("\n-----------------------------------------------------------\n")
+    print("-------------------MWDB Spectral Clusters-----------------")
+    clusters = multiple_random_starts_k_means(y, p, max_iterations, random_starts)
+    # pretty(clusters, 2)
+    print_clusters(clusters, df.iloc[:, 0])
+    sklearn_kmeans(y, p, max_iterations, random_starts, df.iloc[:, 0])
+
+
+def sklearn_kmeans(sim_mat, p, max_iterations, random_starts, columns):
+    kmeans = KMeans(n_clusters=p, n_init=random_starts, max_iter=max_iterations, verbose=0, random_state=2).fit(sim_mat)
+    clusters = defaultdict(set)
+    for ind, val in enumerate(kmeans.labels_):
+        clusters[val].add(ind)
+
+    print("\n--------------------SKLEARN Clusters----------------------")
+    # pretty(clusters, 2)
+    print_clusters(clusters, columns)
+    # print("kmeans.n_iter_: ", kmeans.n_iter_, ", kmeans.inertia_: ", kmeans.inertia_)
+
+
+def main():
+    # initialize variables
+    file_name = input("Enter gesture-gesture similarity matrix filename: ")
+    # file_name = 'edit_dist_sim_matrix.csv'
+    p = int(input("Enter p: "))
+
+    # change number of random starts to get better results
+    # Add random_starts as an optional argument to the task
+    max_iterations, random_starts = 100, 10000
+
+    # K Means
+    task_4c(file_name, p, max_iterations, random_starts)
+
+    # reset the variable centroid assignments before running task 4d
+    global centroid_assignments
+    centroid_assignments = set()
+
+    # Spectral
+    task_4d(file_name, p, max_iterations, random_starts)
 
 
 # works only for similarity matrices which do not contain NAN or inf
