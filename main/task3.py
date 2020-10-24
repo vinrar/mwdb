@@ -100,7 +100,7 @@ def get_dot_product_similarity_matrix():
             list_of_similarities[each_file] = score
         similarity_matrix[gesture_file] = list_of_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('dot_sim_matrix.csv')
+    s.to_csv('task3_dot_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -117,7 +117,7 @@ def get_pca_similarity_matrix(flattened_matrix, no_of_components):
         print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('pca_sim_matrix.csv')
+    s.to_csv('task3_pca_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -133,7 +133,7 @@ def get_svd_similarity_matrix(flattened_matrix, no_of_components):
         print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('svd_sim_matrix.csv')
+    s.to_csv('task3_svd_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -149,7 +149,7 @@ def get_nmf_similarity_matrix(flattened_matrix, no_of_components):
         print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('nmf_sim_matrix.csv')
+    s.to_csv('task3_nmf_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -165,7 +165,7 @@ def get_lda_similarity_matrix(flattened_matrix, no_of_components):
         print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('lda_sim_matrix.csv')
+    s.to_csv('task3_lda_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -188,15 +188,15 @@ def get_NMF_components(no_of_components, similarity_matrix, data_dir):
     nmf_gestures = NMF(n_components=no_of_components, init='random', random_state=0)
     nmf_gestures.fit_transform(similarity_matrix)
     get_the_output(nmf_gestures, data_dir, "NMF")
-    print("#####################################################")
-    print("Printing various stats for NMF")
-    print("nmf_gestures.components_", len(nmf_gestures.components_))
-    print("nmf_gestures.components_", np.sum(np.array(nmf_gestures.components_[0])))
-    print("nmf_gestures.n_components", nmf_gestures.n_components)
-    print("nmf_gestures.n_features_in_", nmf_gestures.n_features_in_)
-    print("nmf_gestures.components_", nmf_gestures.components_)
-    print("nmf_gestures.l1_ratio", nmf_gestures.l1_ratio)
-    print("nmf_gestures.n_components_", nmf_gestures.n_components_)
+    # print("#####################################################")
+    # print("Printing various stats for NMF")
+    # print("nmf_gestures.components_", len(nmf_gestures.components_))
+    # print("nmf_gestures.components_", np.sum(np.array(nmf_gestures.components_[0])))
+    # print("nmf_gestures.n_components", nmf_gestures.n_components)
+    # print("nmf_gestures.n_features_in_", nmf_gestures.n_features_in_)
+    # print("nmf_gestures.components_", nmf_gestures.components_)
+    # print("nmf_gestures.l1_ratio", nmf_gestures.l1_ratio)
+    # print("nmf_gestures.n_components_", nmf_gestures.n_components_)
 
 def dtw(vector1, vector2, cost1, cost2):
     assert len(vector1) == len(cost1)
@@ -247,10 +247,9 @@ def get_DTW_similarity_matrix(data_dir):
             df[f1][f2] = average
             df[f2][f1] = average
 
-    df.to_csv('DTW_sim_matrix.csv')
-    sim_matrix = df
-    print("dtw similarity matrix", sim_matrix)
-    return sim_matrix
+    df.to_csv('task3_DTW_sim_matrix.csv')
+    print("dtw similarity matrix", df)
+    return df
 
 def editdist(s, t):  # for wrd files
     rows = len(s) + 1
@@ -311,10 +310,9 @@ def get_ED_similarity_matrix(data_dir, k):
             df[f1][f2] = np.average(temp)
             df[f2][f1] = np.average(temp)
 
-    df.to_csv('task3_Edit_Dist_sim_matrix.csv')
-    sim_matrix = df
-    print("edit distance similarity matrix", sim_matrix)
-    return sim_matrix
+    df.to_csv('task3_Edit_Dist_sim_mat.csv')
+    print("edit distance similarity matrix", df)
+    return df
 
 def get_the_output(transformed_object, dir, type):
     component_matrix = transformed_object.components_
@@ -379,14 +377,14 @@ if __name__ == '__main__':
     # element(and only if it is negative) to all the elements in the array
 
     # compute user option here
-    # If the negative error occurs with any other algorithm, add the corresponding user option here
+     # If the negative error occurs with any other algorithm, add the corresponding user option to set here
     if user_option in set('2'):
-        min = np.amin(sim_matrix)
-        nrows = sim_matrix.shape[0]
-        ncols = sim_matrix.shape[1]
-        if min < 0:
-            min = math.fabs(min)
-            for i in range(nrows):
-                for j in range(ncols):
-                    sim_matrix[i][j] += min
+        min_entry = np.amin(sim_matrix)
+        row_count = sim_matrix.shape[0]
+        col_count = sim_matrix.shape[1]
+        if min_entry < 0:
+            min_entry = math.fabs(min_entry)
+            for i in range(row_count):
+                for j in range(col_count):
+                    sim_matrix[i][j] += min_entry
     get_NMF_components(p, sim_matrix, data_dir)
