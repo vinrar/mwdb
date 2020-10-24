@@ -16,67 +16,41 @@ import pickle
 import glob
 import sys
 
-# Task 3a Part 1 user option 6:
+from main import phase2_EDIT_Dist as edit_distance
 
-def editdist(s, t): # for wrd files
-    rows = len(s)+1
-    cols = len(t)+1
-    
-    dist = [[0 for x in range(cols)] for x in range(rows)]
-
-    for row in range(1, rows):
-        dist[row][0] = row * 3  
-
-    for col in range(1, cols):
-        dist[0][col] = col * 3 
-        
-    for row in range(1, rows):
-        for col in range(1, cols):
-            if s[row-1] == t[col-1]:
-                cost = 0
-            else:
-                cost = 0
-                for i in range(len(s[row-1])):
-                    if s[row-1][i]!=t[col-1][i]:
-                        cost+=1
-
-            dist[row][col] = min(dist[row-1][col] + 3, #deletes
-                                 dist[row][col-1] + 3, #inserts
-                                 dist[row-1][col-1] + cost) # substitution   
-    return dist[row][col]
 
 # Task 3a Part 1 user option 6:
 dir = 'data'
-fnames = glob.glob("./"+dir+"/*.wrd")
+fnames = glob.glob("./" + dir + "/*.wrd")
 fnames.sort()
 for i in range(len(fnames)):
     fnames[i] = os.path.splitext(os.path.basename(fnames[i]))[0]
 
-df = pd.DataFrame(0.0,index=fnames,columns=fnames)
+df = pd.DataFrame(0.0, index=fnames, columns=fnames)
 
 for i in range(len(fnames)):
-    for j in range(i,len(fnames)):
-        f1 = json.load(open('./'+dir+'/'+fnames[i]+'.wrd'))
-        f2 = json.load(open('./'+dir+'/'+fnames[j]+'.wrd'))
+    for j in range(i, len(fnames)):
+        f1 = json.load(open('./' + dir + '/' + fnames[i] + '.wrd'))
+        f2 = json.load(open('./' + dir + '/' + fnames[j] + '.wrd'))
         comp = list(f1.keys())
 
         temp = []
         for c in comp:
             for senid in f1[c]:
-                w1 = list(np.array(f1[c][str(senid)]['words'])[:,0])
-                w2 = list(np.array(f2[c][str(senid)]['words'])[:,0])
-                temp.append(editdist(w1,w2))   
+                w1 = list(np.array(f1[c][str(senid)]['words'])[:, 0])
+                w2 = list(np.array(f2[c][str(senid)]['words'])[:, 0])
+                temp.append(edit_distance.editdist(w1, w2))
 
         f1 = fnames[i]
         f2 = fnames[j]
 
         for k in range(len(temp)):
-            temp[k] = 1/(1+temp[k])
+            temp[k] = 1 / (1 + temp[k])
 
         df[f1][f2] = np.average(temp)
         df[f2][f1] = np.average(temp)
 
-df.to_csv('task3a_Edit_Dist_sim_matrix.csv') 
+df.to_csv('task3a_Edit_Dist_sim_matrix.csv')
 # np.savetxt('task3a_UsrOpt6_sim_matrix.txt', sim_mat)
 # sim_mat = np.loadtxt('task3a_UsrOpt6_sim_matrix.txt')
 # sim_mat
