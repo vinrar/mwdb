@@ -2,7 +2,7 @@ import math
 import os
 import pickle
 from collections import Counter
-
+import sys
 import glob
 import json
 import numpy as np
@@ -11,12 +11,11 @@ from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.decomposition import NMF
 from sklearn.decomposition import PCA
 from sklearn.decomposition import TruncatedSVD
-from main import phase2_EDIT_Dist as edit_distance
-from main import phase2_DTW as dtw
 
 vector_model_data = {}
 the_matrix = {}
 flattening_map = []
+output_data = {}
 
 
 def get_list_of_files(dir, vector_model):
@@ -101,11 +100,12 @@ def get_dot_product_similarity_matrix():
             list_of_similarities[each_file] = score
         similarity_matrix[gesture_file] = list_of_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('task3_dot_sim_matrix.csv')
+    s.to_csv('dot_sim_matrix.csv')
     return s.to_numpy()
 
 
 def get_pca_similarity_matrix(flattened_matrix, no_of_components):
+    print('PCA, k= ', no_of_components)
     similarity_matrix = {}
     pca_gestures = PCA(no_of_components)
     transformed_matrix = pca_gestures.fit_transform(flattened_matrix)
@@ -117,7 +117,7 @@ def get_pca_similarity_matrix(flattened_matrix, no_of_components):
         print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('task3_pca_sim_matrix.csv')
+    s.to_csv('pca_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -133,7 +133,7 @@ def get_svd_similarity_matrix(flattened_matrix, no_of_components):
         print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('task3_svd_sim_matrix.csv')
+    s.to_csv('svd_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -149,7 +149,7 @@ def get_nmf_similarity_matrix(flattened_matrix, no_of_components):
         print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('task3_nmf_sim_matrix.csv')
+    s.to_csv('nmf_sim_matrix.csv')
     return s.to_numpy()
 
 
@@ -165,26 +165,29 @@ def get_lda_similarity_matrix(flattened_matrix, no_of_components):
         print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
-    s.to_csv('task3_lda_sim_matrix.csv')
+    s.to_csv('lda_sim_matrix.csv')
     return s.to_numpy()
 
 
 def get_SVD_components(no_of_components, similarity_matrix):
     svd_gestures = TruncatedSVD(no_of_components)
     svd_gestures.fit_transform(similarity_matrix)
-    print("#####################################################")
-    print("Printing various stats for SVD")
-    print("n_components_", svd_gestures.n_components)
-    print("n_features_", svd_gestures.n_features_in_)
-    print("components_", svd_gestures.components_)
-    print("explained_variance_", svd_gestures.explained_variance_)
-    print("explained_variance_ratio_", svd_gestures.explained_variance_ratio_)
-    print("singular_values_", svd_gestures.singular_values_)
+    get_the_output(svd_gestures, data_dir, "SVD")
+    # print("#####################################################")
+    # print("Printing various stats for SVD")
+    # print("n_components_", svd_gestures.n_components)
+    # print("n_features_", svd_gestures.n_features_in_)
+    # print("components_", svd_gestures.components_)
+    # print("explained_variance_", svd_gestures.explained_variance_)
+    # print("explained_variance_ratio_", svd_gestures.explained_variance_ratio_)
+    # print("singular_values_", svd_gestures.singular_values_)
 
 
-def get_NMF_components(no_of_components, similarity_matrix):
+def get_NMF_components(no_of_components, similarity_matrix, data_dir):
+    print("NMF, p", no_of_components)
     nmf_gestures = NMF(n_components=no_of_components, init='random', random_state=0)
     nmf_gestures.fit_transform(similarity_matrix)
+    get_the_output(nmf_gestures, data_dir, "NMF")
     print("#####################################################")
     print("Printing various stats for NMF")
     print("nmf_gestures.components_", len(nmf_gestures.components_))
@@ -195,9 +198,24 @@ def get_NMF_components(no_of_components, similarity_matrix):
     print("nmf_gestures.l1_ratio", nmf_gestures.l1_ratio)
     print("nmf_gestures.n_components_", nmf_gestures.n_components_)
 
+def dtw(vector1, vector2, cost1, cost2):
+    assert len(vector1) == len(cost1)
+    assert len(vector2) == len(cost2)
+    row = len(vector1) + 1
+    col = len(vector2) + 1
+    cost1.reverse()
+    dp = [[float('inf')] * col for i in range(row)]
+    dp[row - 1][0] = 0
+    for i in range(row - 2, -1, -1):
+        for j in range(1, col):
+            cost = 0
+            if vector1[i] != vector2[j - 1]:
+                cost = abs(cost1[i] - cost2[j - 1])
+            dp[i][j] = cost + min(dp[i + 1][j], dp[i][j - 1], dp[i + 1][j - 1])
 
-def get_DTW_similarity_matrix():
-    data_dir = 'data'
+    return dp[0][-1]
+
+def get_DTW_similarity_matrix(data_dir):
 
     file_names = glob.glob("./" + data_dir + "/*.wrd")
     file_names.sort()
@@ -218,7 +236,7 @@ def get_DTW_similarity_matrix():
                     w1_c = list(np.array(f1[c][str(sensor_id)]['words'])[:, 1])
                     w2 = list(np.array(f2[c][str(sensor_id)]['words'])[:, 0])
                     w2_c = list(np.array(f2[c][str(sensor_id)]['words'])[:, 1])
-                    dtw_val = dtw.dtw(w1, w2, w1_c, w2_c)
+                    dtw_val = dtw(w1, w2, w1_c, w2_c)
                     temp.append(1 / (1 + dtw_val))
 
             f1 = file_names[i]
@@ -229,14 +247,41 @@ def get_DTW_similarity_matrix():
             df[f1][f2] = average
             df[f2][f1] = average
 
-    df.to_csv('task3_DTW_sim_matrix.csv')
-    print("dtw similarity matrix", df)
-    return df
+    df.to_csv('DTW_sim_matrix.csv')
+    sim_matrix = df
+    print("dtw similarity matrix", sim_matrix)
+    return sim_matrix
+
+def editdist(s, t):  # for wrd files
+    rows = len(s) + 1
+    cols = len(t) + 1
+
+    dist = [[0 for x in range(cols)] for x in range(rows)]
+
+    for row in range(1, rows):
+        dist[row][0] = row * 3
+
+    for col in range(1, cols):
+        dist[0][col] = col * 3
+
+    for row in range(1, rows):
+        for col in range(1, cols):
+            if s[row - 1] == t[col - 1]:
+                cost = 0
+            else:
+                cost = 0
+                for i in range(len(s[row - 1])):
+                    if s[row - 1][i] != t[col - 1][i]:
+                        cost += 1
+
+            dist[row][col] = min(dist[row - 1][col] + 3,  # deletes
+                                 dist[row][col - 1] + 3,  # inserts
+                                 dist[row - 1][col - 1] + cost)  # substitution
+    return dist[row][col]
 
 
-def get_ED_similarity_matrix():
+def get_ED_similarity_matrix(data_dir, k):
     # Task 3a Part 1 user option 6:
-    data_dir = 'data'
     file_names = glob.glob("./" + data_dir + "/*.wrd")
     file_names.sort()
     for i in range(len(file_names)):
@@ -255,7 +300,7 @@ def get_ED_similarity_matrix():
                 for sensor_id in f1[c]:
                     w1 = list(np.array(f1[c][str(sensor_id)]['words'])[:, 0])
                     w2 = list(np.array(f2[c][str(sensor_id)]['words'])[:, 0])
-                    temp.append(edit_distance.editdist(w1, w2))
+                    temp.append(editdist(w1, w2))
 
             f1 = file_names[i]
             f2 = file_names[j]
@@ -266,19 +311,39 @@ def get_ED_similarity_matrix():
             df[f1][f2] = np.average(temp)
             df[f2][f1] = np.average(temp)
 
-    df.to_csv('task3_Edit_Dist_sim_mat.csv')
-    print("edit distance similarity matrix", df)
-    return df
+    df.to_csv('task3_Edit_Dist_sim_matrix.csv')
+    sim_matrix = df
+    print("edit distance similarity matrix", sim_matrix)
+    return sim_matrix
 
+def get_the_output(transformed_object, dir, type):
+    component_matrix = transformed_object.components_
+    latent_semantic_number = 1
+    for each_latent_semantic in component_matrix:
+        temp_list = {}
+        for i in range(len(each_latent_semantic)):
+            temp_list[flattening_map[i]] = each_latent_semantic[i]
+        key = str(latent_semantic_number)
+        output_data[key] = temp_list
+        print("Printing the type of output_data_entry ", key)
+        latent_semantic_number = latent_semantic_number + 1
+
+    file_name = "phase_3_task3_" + type + "_output.csv"
+    semantic_contributions = pd.DataFrame.from_dict(output_data, orient='index')
+    semantic_contributions.to_csv(file_name)
 
 if __name__ == '__main__':
-    data_dir = "./data"
-    vector_model = "tf"
-    k = 50
-    p = 3
-    # TODO Should p and k be constants or inputs from the user?
-    # k = int(input('Enter k: \t'))
-    # p = int(input('Enter p: \t'))
+
+    if len(sys.argv) < 5:
+        print('Run python Task_1.py <Directory> <Vector Model> <User Option> <p> <k>')
+        sys.exit(0)
+    data_dir = sys.argv[1]
+    vector_model = sys.argv[2]
+    user_option = sys.argv[3]
+    k = int(sys.argv[4])
+    p = int(sys.argv[5])
+
+    print("Directory: {}\nVector Model: {}\nUser Option: {}\np: {}\nk: {}\n".format(data_dir, vector_model, user_option, p, k))
 
     list_of_files = get_list_of_files(data_dir, vector_model)
     read_file_data(list_of_files, data_dir)
@@ -287,7 +352,6 @@ if __name__ == '__main__':
     form_the_matrix(set_of_features)
 
     sim_matrix = None
-    user_option = input('1. Dot product | [2,3,4,5]. [PCA,SVD,NMF,LDA] | 6. Edit dist | 7. DTW :\n')
 
     if user_option == '1':
         sim_matrix = get_dot_product_similarity_matrix()
@@ -303,22 +367,26 @@ if __name__ == '__main__':
         elif user_option == '5':
             sim_matrix = get_lda_similarity_matrix(flattened_matrix, k)
         elif user_option == '6':
-            sim_matrix = get_ED_similarity_matrix()
+            sim_matrix = get_ED_similarity_matrix(data_dir, k)
         elif user_option == '7':
-            sim_matrix = get_DTW_similarity_matrix()
+            sim_matrix = get_DTW_similarity_matrix(data_dir)
 
+    # Performing latent semantic analysis with SVD
     get_SVD_components(p, sim_matrix)
+
+    # Performing latent semantic analysis with NMF
     # currently, NMF is giving out error only with PCA results. So for PCA results we are adding the minimum most
     # element(and only if it is negative) to all the elements in the array
 
     # compute user option here
-    # If the negative error occurs with any other algorithm, add the corresponding user option to set here
+    # If the negative error occurs with any other algorithm, add the corresponding user option here
     if user_option in set('2'):
-        min_entry = math.fabs(np.amin(sim_matrix))
-        row_count = sim_matrix.shape[0]
-        col_count = sim_matrix.shape[1]
-        if min_entry < 0:
-            for i in range(row_count):
-                for j in range(col_count):
-                    sim_matrix[i][j] += min_entry
-    get_NMF_components(p, sim_matrix)
+        min = np.amin(sim_matrix)
+        nrows = sim_matrix.shape[0]
+        ncols = sim_matrix.shape[1]
+        if min < 0:
+            min = math.fabs(min)
+            for i in range(nrows):
+                for j in range(ncols):
+                    sim_matrix[i][j] += min
+    get_NMF_components(p, sim_matrix, data_dir)
