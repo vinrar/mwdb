@@ -15,11 +15,13 @@ import json
 import pickle
 import glob
 import sys
+from scipy.linalg import sqrtm
+from numpy.linalg import inv
+
 
 # Task 4d
 
 #Read sim matrix
-
 df = pd.read_csv('./edit_dist_sim_matrix.csv')
 
 W = np.zeros((df.shape[0],df.shape[0]))
@@ -32,7 +34,9 @@ for i in range(df.shape[0]):
 D = np.diag(np.sum(W, axis=1))
 L = D - W
 
-w, v = np.linalg.eig(L)
+Lnorm = np.matmul(np.matmul(sqrtm(inv(D)),L), sqrtm(inv(D)))
+
+w, v = np.linalg.eig(Lnorm)
 y = v[:, np.argsort(w)]
 p = 10
-y = y[:,:p] # This y is the direct input to Kmeans
+y = y[:,:p] # This y is direct input to Kmeans
