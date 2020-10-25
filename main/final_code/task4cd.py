@@ -248,7 +248,7 @@ def main():
     # Add random_starts as an optional argument to the task
     max_iterations, random_starts = 100, 100
 
-    if task == "A":
+    if task == "C":
         # K Means
         task_4c(file_name, p, max_iterations, random_starts)
 
@@ -256,7 +256,7 @@ def main():
     # global centroid_assignments
     # centroid_assignments = set()
 
-    if task == "B":
+    if task == "D":
         # Spectral
         task_4d(file_name, p, max_iterations, random_starts)
 
