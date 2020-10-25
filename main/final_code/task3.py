@@ -351,23 +351,21 @@ if __name__ == '__main__':
 
     sim_matrix = None
 
+    flattened_matrix = flatten_the_matrix()
     if user_option == '1':
         sim_matrix = get_dot_product_similarity_matrix()
-    else:
-        flattened_matrix = flatten_the_matrix()
-
-        if user_option == '2':
-            sim_matrix = get_pca_similarity_matrix(flattened_matrix, k)
-        elif user_option == '3':
-            sim_matrix = get_svd_similarity_matrix(flattened_matrix, k)
-        elif user_option == '4':
-            sim_matrix = get_nmf_similarity_matrix(flattened_matrix, k)
-        elif user_option == '5':
-            sim_matrix = get_lda_similarity_matrix(flattened_matrix, k)
-        elif user_option == '6':
-            sim_matrix = get_ED_similarity_matrix(data_dir, k)
-        elif user_option == '7':
-            sim_matrix = get_DTW_similarity_matrix(data_dir)
+    elif user_option == '2':
+        sim_matrix = get_pca_similarity_matrix(flattened_matrix, k)
+    elif user_option == '3':
+        sim_matrix = get_svd_similarity_matrix(flattened_matrix, k)
+    elif user_option == '4':
+        sim_matrix = get_nmf_similarity_matrix(flattened_matrix, k)
+    elif user_option == '5':
+        sim_matrix = get_lda_similarity_matrix(flattened_matrix, k)
+    elif user_option == '6':
+        sim_matrix = get_ED_similarity_matrix(data_dir, k)
+    elif user_option == '7':
+        sim_matrix = get_DTW_similarity_matrix(data_dir)
 
     # Performing latent semantic analysis with SVD
     get_SVD_components(p, sim_matrix)
