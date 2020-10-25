@@ -223,7 +223,7 @@ def sklearn_kmeans(sim_mat, p, max_iterations, random_starts, columns):
 
 def main():
     if len(sys.argv) < 3:
-        print('Run python Task_1.py <User Option> <p> <Task>')
+        print('Run python Task4cd.py <User Option> <p> <Task>')
         sys.exit(0)
     user_option = sys.argv[1]
     p = int(sys.argv[2])

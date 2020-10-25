@@ -96,7 +96,7 @@ def get_tf_idf_vector(dir):
 if __name__ == '__main__':
 
     if len(sys.argv) < 1:
-        print('Run python Task_1.py <Directory> ')
+        print('Run python Task0b.py <Directory> ')
         sys.exit(0)
     directory = sys.argv[1]
 

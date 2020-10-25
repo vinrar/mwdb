@@ -32,7 +32,7 @@ def convert(o):
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        print('Run python Task_1.py <Directory> <Resolution> <Window Length> <Shift Length>')
+        print('Run python Task0a.py <Directory> <Resolution> <Window Length> <Shift Length>')
         sys.exit(0)
     directory = sys.argv[1]
     r = int(sys.argv[2])
