@@ -145,7 +145,7 @@ def write_transformed_matrix(transformed_object, dir, flattened_matrix):
 if __name__ == '__main__':
 
     if len(sys.argv) < 4:
-        print('Run python Task1.py <Directory> <Vector Model> <User Option> <k>')
+        print('Run python task1.py <Directory> <Vector Model> <User Option> <k>')
         sys.exit(0)
     dir = sys.argv[1]
     vector_model = sys.argv[2]

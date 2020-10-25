@@ -99,9 +99,9 @@ def multiple_random_starts_k_means(matrix, k: int, max_iters: int, random_starts
 
         random_starts -= 1
 
-    print("Initial Centroid Assignments: ", len(centroid_assignments), ", Same Assignment Skipped Count: ", count)
+    # print("Initial Centroid Assignments: ", len(centroid_assignments), ", Same Assignment Skipped Count: ", count)
     # print("Centroids: ", centroid_assignments)
-    print("min_avg_dist: ", min_avg_dist, ", random_starts:", random_starts)
+    print("min_avg_dist: ", min_avg_dist, ", n_random_starts:", len(centroid_assignments))
     return min_clusters
 
 
@@ -149,9 +149,9 @@ def k_means(matrix, k: int, max_iters: int):
 
 def print_clusters(clusters, columns):
     for k, v in sorted(clusters.items(), key=lambda kv: kv[0]):
-        print("Cluster: " + str(k+1), ";", end=" ")
+        print("\nCluster: " + str(k+1), ";", end=" ")
         li = [columns[index] for index in v]
-        print("n_gestures: ", len(li), "; Gestures: ", li)
+        print("n_gestures: ", len(li), ";\nGestures: ", li)
 
 
 def pretty(d, indent=0):
@@ -172,7 +172,7 @@ def task_4c(file_name, p, max_iterations, random_starts):
     print("\n-----------------------------------------------------------\n")
     print("KMeans Clustering Results: ")
     print("\n-----------------------------------------------------------\n")
-    print("---------------------MWDB K Means Clusters----------------")
+    print("---------------------K Means Clusters----------------")
     clusters = multiple_random_starts_k_means(sim_mat, p, max_iterations, random_starts)
     # clusters = k_means(sim_mat, p, max_iterations)
     # pretty(clusters, 2)
@@ -203,7 +203,7 @@ def task_4d(file_name, p, max_iterations, random_starts):
     print("\n\n-----------------------------------------------------------\n")
     print("Spectral Clustering Results: ")
     print("\n-----------------------------------------------------------\n")
-    print("-------------------MWDB Spectral Clusters-----------------")
+    print("-------------------Spectral Clusters-----------------")
     clusters = multiple_random_starts_k_means(y, p, max_iterations, random_starts)
     # pretty(clusters, 2)
     print_clusters(clusters, df.iloc[:, 0])
@@ -216,14 +216,14 @@ def sklearn_kmeans(sim_mat, p, max_iterations, random_starts, columns):
     for ind, val in enumerate(kmeans.labels_):
         clusters[val].add(ind)
 
-    print("\n--------------------SKLEARN Clusters----------------------")
+    print("\n--------------------SKLEARN Clustering Result----------------------")
     # pretty(clusters, 2)
     print_clusters(clusters, columns)
     # print("kmeans.n_iter_: ", kmeans.n_iter_, ", kmeans.inertia_: ", kmeans.inertia_)
 
 def main():
     if len(sys.argv) < 3:
-        print('Run python Task4cd.py <User Option> <p> <Task>')
+        print('Run python task4cd.py <User Option> <p> <Task>')
         sys.exit(0)
     user_option = sys.argv[1]
     p = int(sys.argv[2])

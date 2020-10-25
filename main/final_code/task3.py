@@ -317,7 +317,7 @@ def get_the_output(transformed_object, dir, type):
 if __name__ == '__main__':
 
     if len(sys.argv) < 5:
-        print('Run python Task3.py <Directory> <Vector Model> <User Option> <p> <k>')
+        print('Run python task3.py <Directory> <Vector Model> <User Option> <p> <k>')
         sys.exit(0)
     data_dir = sys.argv[1]
     vector_model = sys.argv[2]

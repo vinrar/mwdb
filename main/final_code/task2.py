@@ -171,7 +171,7 @@ def print_results(result):
 if __name__ == '__main__':
 
     if len(sys.argv) < 5:
-        print('Run python Task2.py <Directory> <Gesture File> <Vector Model> <User Option> <k>')
+        print('Run python task2.py <Directory> <Gesture File> <Vector Model> <User Option> <k>')
         sys.exit(0)
     dir = sys.argv[1]
     gesture_file = sys.argv[2]
