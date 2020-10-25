@@ -212,16 +212,16 @@ if __name__ == '__main__':
             print("Printing the lda similarity results")
             print_results(result)
         elif user_option == '6':
-            fnames = glob.glob("./" + dir + "/*.wrd")
+            fnames = glob.glob("./" + dir + "/*.wrds")
             fnames.sort()
 
-            qword = json.load(open('./' + dir + '/' + gesture_file + '.wrd'))  # .wrd
+            qword = json.load(open('./' + dir + '/' + gesture_file + '.wrds'))  # .wrd
             comp = list(qword.keys())
 
             sim = []
             for gfile in fnames:
                 f = os.path.splitext(os.path.basename(gfile))[0]
-                fword = json.load(open('./' + dir + '/' + f + '.wrd'))  # .wrd
+                fword = json.load(open('./' + dir + '/' + f + '.wrds'))  # .wrd
 
                 temp = []
                 for c in comp:
@@ -237,16 +237,16 @@ if __name__ == '__main__':
             print(np.array(sim)[:10])
 
         elif user_option == '7':
-            fnames = glob.glob("./" + dir + "/*.wrd")
+            fnames = glob.glob("./" + dir + "/*.wrds")
             fnames.sort()
 
-            qword = json.load(open('./' + dir + '/' + gesture_file + '.wrd'))  # .wrd
+            qword = json.load(open('./' + dir + '/' + gesture_file + '.wrds'))  # .wrd
             comp = list(qword.keys())
 
             sim = []
             for gfile in fnames:
                 f = os.path.splitext(os.path.basename(gfile))[0]
-                fword = json.load(open('./' + dir + '/' + f + '.wrd'))  # .wrd
+                fword = json.load(open('./' + dir + '/' + f + '.wrds'))  # .wrd
 
                 temp = []
                 for c in comp:

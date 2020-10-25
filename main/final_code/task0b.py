@@ -10,7 +10,7 @@ tf_idf_dict = {}
 
 def get_files_list(dir):
     list_of_files = os.listdir(dir)
-    return [ file for file in list_of_files if file.endswith('.wrd')]
+    return [ file for file in list_of_files if file.endswith('.wrds')]
 
 def count_of_words_across_dimensions(dict_of_words):
     count_of_words = 0

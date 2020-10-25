@@ -56,6 +56,7 @@ if __name__ == "__main__":
         representative_map[i] = (lengths[i - 1] + lengths[i]) / 2
 
     result = {}
+    result_display = {}
     for dir_path, dir_names, filenames in os.walk(directory):
         for dir_name in dir_names:
             new_directory = os.path.join(directory, dir_name) + "\\"
@@ -65,6 +66,9 @@ if __name__ == "__main__":
 
                     curr_file = result[f] if f in result.keys() else {}
                     curr_file[dir_name] = {}
+
+                    curr_file_display = result_display[f] if f in result_display.keys() else {}
+                    curr_file_display[dir_name] = {}
 
                     # store sensor values from csv file to an array
                     arr = np.genfromtxt(os.path.join(new_directory, file), delimiter=",")
@@ -80,6 +84,7 @@ if __name__ == "__main__":
 
                     for i in range(len(discrete)):
                         word_list = []
+                        word_list_display = []
                         time_length = len(discrete[i])
                         # slide the window on the time series data and write window words to the file
                         for j in range((time_length - w + 1) // s):
@@ -87,11 +92,22 @@ if __name__ == "__main__":
                             word_avg = np.vectorize(representative_map.get)(word)
                             word_avg = np.mean(word_avg)
                             word_list.append([list(word), word_avg])
+                            word_list_display.append([dir_name, i, list(word)])
                         curr_file[dir_name][i] = {"avg": avg_values[i], "stdev": std_values[i], "words": word_list}
+                        curr_file_display[dir_name][i] = {"words": word_list_display}
                     result[f] = curr_file
+                    result_display[f] = curr_file_display
         break
 
+    new_directory = directory + '//data'
+    if not os.path.exists(new_directory):
+        os.mkdir(new_directory)
     for f in result.keys():
-        outF = open(os.path.join(directory, f + ".wrd"), "w")
+        outF = open(os.path.join(new_directory, f + ".wrd"), "w")
+        json.dump(result_display[f], outF, default=convert)
+        outF.close()
+
+    for f in result_display.keys():
+        outF = open(os.path.join(directory, f + ".wrds"), "w")
         json.dump(result[f], outF, default=convert)
         outF.close()

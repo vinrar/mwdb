@@ -201,7 +201,7 @@ def dtw(vector1, vector2, cost1, cost2):
 
 def get_DTW_similarity_matrix(data_dir):
 
-    file_names = glob.glob("./" + data_dir + "/*.wrd")
+    file_names = glob.glob("./" + data_dir + "/*.wrds")
     file_names.sort()
     for i in range(len(file_names)):
         file_names[i] = os.path.splitext(os.path.basename(file_names[i]))[0]
@@ -209,8 +209,8 @@ def get_DTW_similarity_matrix(data_dir):
     df = pd.DataFrame(0.0, index=file_names, columns=file_names)
     for i in range(len(file_names)):
         for j in range(i, len(file_names)):
-            f1 = json.load(open('./' + data_dir + '/' + file_names[i] + '.wrd'))
-            f2 = json.load(open('./' + data_dir + '/' + file_names[j] + '.wrd'))
+            f1 = json.load(open('./' + data_dir + '/' + file_names[i] + '.wrds'))
+            f2 = json.load(open('./' + data_dir + '/' + file_names[j] + '.wrds'))
             comp = list(f1.keys())
 
             temp = []
@@ -274,8 +274,8 @@ def get_ED_similarity_matrix(data_dir, k):
 
     for i in range(len(file_names)):
         for j in range(i, len(file_names)):
-            f1 = json.load(open('./' + data_dir + '/' + file_names[i] + '.wrd'))
-            f2 = json.load(open('./' + data_dir + '/' + file_names[j] + '.wrd'))
+            f1 = json.load(open('./' + data_dir + '/' + file_names[i] + '.wrds'))
+            f2 = json.load(open('./' + data_dir + '/' + file_names[j] + '.wrds'))
             comp = list(f1.keys())
 
             temp = []
