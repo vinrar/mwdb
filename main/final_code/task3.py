@@ -265,7 +265,7 @@ def editdist(s, t):  # for wrd files
 
 def get_ED_similarity_matrix(data_dir, k):
     # Task 3a Part 1 user option 6:
-    file_names = glob.glob("./" + data_dir + "/*.wrd")
+    file_names = glob.glob("./" + data_dir + "/*.wrds")
     file_names.sort()
     for i in range(len(file_names)):
         file_names[i] = os.path.splitext(os.path.basename(file_names[i]))[0]
