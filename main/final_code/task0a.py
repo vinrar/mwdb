@@ -67,57 +67,49 @@ if __name__ == "__main__":
             ranges.append((newr[j], newr[j + 1]))
     # print(ranges)
 
-    for gfile in wfnames: #file
+    for gfile in wfnames:  # file
         f = os.path.splitext(os.path.basename(gfile))[0]
         print(f)
         wrd_dict = {}
-        for c in comp: #components
-            df = pd.read_csv("./"+dir+"/"+c+"/"+f+".csv", header=None)
+        for c in comp:  # components
+            df = pd.read_csv("./" + directory + "/" + c + "/" + f + ".csv", header=None)
             avg = 0
             stdev = 0
             comp_dict = {}
-            for i in range(df.shape[0]): #sensors
+            for i in range(df.shape[0]):  # sensors
                 sensor_dict = {}
-                sensor_dict['avg'] = np.average(df.iloc[i,:])
-                sensor_dict['stdev'] = np.std(df.iloc[i,:])
+                sensor_dict['avg'] = np.average(df.iloc[i, :])
+                sensor_dict['stdev'] = np.std(df.iloc[i, :])
 
-                df.iloc[i,:] = 2 * ((df.iloc[i,:] - min(df.iloc[i,:])) / (max(df.iloc[i,:]) - min(df.iloc[i,:]))) - 1
-                # quant = copy.deepcopy(df)
-                quant = pd.DataFrame(index=range(df.shape[0]),columns=range(df.shape[1]))
+                df.iloc[i, :] = 2 * ((df.iloc[i, :] - min(df.iloc[i, :])) / (max(df.iloc[i, :]) - min(df.iloc[i, :]))) - 1
+                quant = copy.deepcopy(df)
                 for k in range(df.shape[1]):
                     for j in range(len(ranges)):
-                        if df.iloc[i,k] >= ranges[j][0] and df.iloc[i,k] < ranges[j][1]:
-                            # quant.iloc[i,k] = j
-                            # quant.iloc[i,k] = [j, (ranges[j][0]+ranges[j][1])/2]
-                            quant.iloc[i,k] = [j+1, (ranges[j][0]+ranges[j][1])/2]
+                        if df.iloc[i, k] >= ranges[j][0] and df.iloc[i, k] < ranges[j][1]:
+                            quant.iloc[i, k] = j
                             break
-                        if df.iloc[i,k] == 1:
-                            # quant.iloc[i,k] = len(ranges) - 1
-                            # quant.iloc[i,k] = [len(ranges) - 1, (ranges[-1][0] + ranges[-1][1]) / 2]
-                            quant.iloc[i,k] = [len(ranges), (ranges[-1][0] + ranges[-1][1]) / 2]
+                        if df.iloc[i, k] == 1:
+                            quant.iloc[i, k] = len(ranges) - 1
                             break
-                
+
                 words = []
-                for j in range(0,df.shape[1],s):
-                    if (j+w-1 <= df.shape[1]-1):
-                        # winQ = [quant.iloc[i,k] for k in range(j,j+w)]
-                        winSym = [quant.iloc[i,k][0] for k in range(j,j+w)] #H
-                        # winN = [df.iloc[i,k] for k in range(j,j+w)]
-                        winQuant = [quant.iloc[i,k][1] for k in range(j,j+w)]
-                        avgQuant = np.average(np.array(winQuant)) #G
-                        # avgSym = 0
-                        # for k in range(len(ranges)):
-                        #     if avgN >= ranges[k][0] and avgN < ranges[k][1]:
-                        #         avgSym = k
-                        #         break
-                        #     if avgN == 1:
-                        #         avgSym = len(ranges) - 1
-                        #         break
-                        # words.append([winQ,avgN,avgSym])
-                        words.append([winSym,avgQuant])
-                sensor_dict['words'] = words 
+                for j in range(0, df.shape[1], s):
+                    if (j + w - 1 <= df.shape[1] - 1):
+                        winQ = [quant.iloc[i, k] for k in range(j, j + w)]
+                        winN = [df.iloc[i, k] for k in range(j, j + w)]
+                        avgN = np.average(np.array(winN))
+                        avgSym = 0
+                        for k in range(len(ranges)):
+                            if avgN >= ranges[k][0] and avgN < ranges[k][1]:
+                                avgSym = k
+                                break
+                            if avgN == 1:
+                                avgSym = len(ranges) - 1
+                                break
+                        words.append([winQ, avgN, avgSym])
+                sensor_dict['words'] = words
 
                 comp_dict[i] = sensor_dict
             wrd_dict[c] = comp_dict
 
-    json.dump(wrd_dict, open('./'+dir+'/'+f+'.wrd','w'))
+        json.dump(wrd_dict, open('./' + directory + '/' + f + '.wrd', 'w'))
