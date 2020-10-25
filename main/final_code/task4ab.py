@@ -5,7 +5,7 @@ import sys
 # Row containing latent topics
 # Col containing Gestures
 # value being its contribution
-def group_by_semantics(file_name='phase_3_task3_SVD_output.csv', take_absolute=False):
+def group_by_semantics(file_name, take_absolute=False):
     similarity_matrix = pd.read_csv(file_name, index_col=0)
     p_groups = {}
     for file_number, col in similarity_matrix.transpose().iterrows():
@@ -28,13 +28,13 @@ def main():
     print("\n-----------------------------------------------------------\n")
     print("Task 4a Results: ")
     print("\n-----------------------------------------------------------\n")
-    group_by_semantics('phase_3_task3_SVD_output.csv', take_absolute=True)
+    group_by_semantics('phase_2_task3_SVD_contributions.csv', take_absolute=True)
 
     # Task 4b
     print("\n-----------------------------------------------------------\n")
     print("Task 4b Results: ")
     print("\n-----------------------------------------------------------\n")
-    group_by_semantics('phase_3_task3_NMF_output.csv', take_absolute=True)
+    group_by_semantics('phase_2_task3_NMF_contributions.csv', take_absolute=True)
 
 if __name__ == "__main__":
     main()

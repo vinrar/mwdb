@@ -310,7 +310,7 @@ def get_the_output(transformed_object, dir, type):
         print("Printing the type of output_data_entry ", key)
         latent_semantic_number = latent_semantic_number + 1
 
-    file_name = "phase_3_task3_" + type + "_output.csv"
+    file_name = "phase_2_task3_" + type + "_contributions.csv"
     semantic_contributions = pd.DataFrame.from_dict(output_data, orient='index')
     semantic_contributions.to_csv(file_name)
 
