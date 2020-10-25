@@ -9,6 +9,7 @@ from sklearn.decomposition import LatentDirichletAllocation
 import sys
 import json
 import glob
+import math
 
 vector_model_data = {}
 the_matrix = {}
@@ -99,10 +100,14 @@ def get_orthonormal_dot(transformed_matrix, gesture_vector):
     list_of_similarities = []
     for i in range(len(transformed_matrix)):
         score = 0
+        gesture_score = 0
+        vector_score = 0
         for j in range(len(transformed_matrix[i])):
             score = score + (gesture_vector[j] * transformed_matrix[i][j])
-
-        list_of_similarities.append((flattening_map[i], score))
+            gesture_score += gesture_vector[j] ** 2
+            vector_score += transformed_matrix[i][j] ** 2
+        final_score = score/(math.sqrt(gesture_score) * math.sqrt(vector_score))
+        list_of_similarities.append((flattening_map[i], final_score))
 
     return sorted(list_of_similarities, key=lambda x: x[1], reverse=True)
 

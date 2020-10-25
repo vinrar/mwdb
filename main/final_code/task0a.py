@@ -1,24 +1,37 @@
-"""
-Multimedia Web Databases - Fall 2020: Project Group 1
-Author: Amey Athale
-This is the program for task 0a of Phase 2 of the project
-"""
-import pandas as pd
-import numpy as np
 import os
+import numpy as np
+import scipy
 import json
-import glob
-import sys
 from scipy.integrate import quad
-import copy
+from scipy import stats
+import sys
 
-def gauss(x, mu, sig):
-    denom = (1 / sig * np.sqrt(2 * np.pi))
-    num = np.power(np.e, (-0.5 * ((x - mu) / sig) ** 2))
-    return num / denom
+def format_float(value):
+    return "%.6f" % value
+
+
+# returns the gaussian distribution (mean=0, std=0.25) value of x
+def normal_distribution_function(x):
+    mean = 0
+    std = 0.25
+    value = scipy.stats.norm.pdf(x, mean, std)
+    return value
+
+
+# returns the definite integral of gaussian distribution between x1 and x2
+def definite_integral(x1, x2):
+    res, err = quad(normal_distribution_function, x1, x2)
+    return res
+
+
+def convert(o):
+    if isinstance(o, np.int64):
+        return int(o)
+    raise TypeError
+
 
 if __name__ == "__main__":
-    if len(sys.argv) < 5:
+    if len(sys.argv) < 4:
         print('Run python Task_1.py <Directory> <Resolution> <Window Length> <Shift Length>')
         sys.exit(0)
     directory = sys.argv[1]
@@ -26,90 +39,59 @@ if __name__ == "__main__":
     w = int(sys.argv[3])
     s = int(sys.argv[4])
 
-    print("Directory: {}\nResolution: {}\nShift: {}\nWindow: {}".format(directory, r, s, w))
+    levels = 2 * r  # number of bands the sensor value needs to be quantized into
+    lengths = []  # list with the lengths of the band
 
-    wfnames = glob.glob("./" + directory + "/W/*.csv")
-    xfnames = glob.glob("./" + directory + "/X/*.csv")
-    yfnames = glob.glob("./" + directory + "/Y/*.csv")
-    zfnames = glob.glob("./" + directory + "/Z/*.csv")
+    # append lengths of each band in the lengths list
+    for i in range(1, levels + 1):
+        lengths.append(2 * (definite_integral((i - r - 1) / r, (i - r) / r) / definite_integral(-1, 1)))
 
-    wfnames.sort()
-    xfnames.sort()
-    yfnames.sort()
-    zfnames.sort()
+    # initialize the end of band 1 from -1
+    lengths[0] += -1
+    representative_map = {0: (-1 + lengths[0]) / 2}
 
-    comp = ['W', 'X', 'Y', 'Z']
+    # represent the band from its mid-point
+    for i in range(1, levels):
+        lengths[i] += lengths[i - 1]
+        representative_map[i] = (lengths[i - 1] + lengths[i]) / 2
 
-    mu = 0
-    sig = 0.25
-    A = quad(gauss, -1, 1, args=(mu, sig))
-    lens = []
-    for j in range(1, 2 * r + 1):
-        ll = (j - r - 1) / r
-        ul = (j - r) / r
-        interg = quad(gauss, ll, ul, args=(mu, sig))
-        lens.append(2 * (interg[0] / A[0]))
+    result = {}
+    for dir_path, dir_names, filenames in os.walk(directory):
+        for dir_name in dir_names:
+            new_directory = os.path.join(directory, dir_name) + "\\"
+            for file in os.listdir(new_directory):
+                if file.endswith(".csv"):
+                    f = file.split('.')[0]
 
-    newr = []
-    newr.append(-1)
-    for j in range(len(lens)):
-        newr.append(newr[j] + lens[j])
+                    curr_file = result[f] if f in result.keys() else {}
+                    curr_file[dir_name] = {}
 
-    ranges = []
-    for j in range(len(newr) - 1):
-        if j == r:
-            ranges.append((0, newr[j + 1]))
-        elif j == r - 1:
-            ranges.append((newr[j], 0))
-        elif j == len(newr) - 2:
-            ranges.append((newr[j], 1))
-        else:
-            ranges.append((newr[j], newr[j + 1]))
-    # print(ranges)
+                    # store sensor values from csv file to an array
+                    arr = np.genfromtxt(os.path.join(new_directory, file), delimiter=",")
 
-    for gfile in wfnames:  # file
-        f = os.path.splitext(os.path.basename(gfile))[0]
-        print(f)
-        wrd_dict = {}
-        for c in comp:  # components
-            df = pd.read_csv("./" + directory + "/" + c + "/" + f + ".csv", header=None)
-            avg = 0
-            stdev = 0
-            comp_dict = {}
-            for i in range(df.shape[0]):  # sensors
-                sensor_dict = {}
-                sensor_dict['avg'] = np.average(df.iloc[i, :])
-                sensor_dict['stdev'] = np.std(df.iloc[i, :])
+                    avg_values = arr.mean(axis=1)
+                    std_values = arr.std(axis=1)
 
-                df.iloc[i, :] = 2 * ((df.iloc[i, :] - min(df.iloc[i, :])) / (max(df.iloc[i, :]) - min(df.iloc[i, :]))) - 1
-                quant = copy.deepcopy(df)
-                for k in range(df.shape[1]):
-                    for j in range(len(ranges)):
-                        if df.iloc[i, k] >= ranges[j][0] and df.iloc[i, k] < ranges[j][1]:
-                            quant.iloc[i, k] = j
-                            break
-                        if df.iloc[i, k] == 1:
-                            quant.iloc[i, k] = len(ranges) - 1
-                            break
+                    # normalize all the values between -1 and 1
+                    arr = -1 + (2 * (arr - arr.min(axis=1)[:, None]) / (arr.max(axis=1) - arr.min(axis=1))[:, None])
 
-                words = []
-                for j in range(0, df.shape[1], s):
-                    if (j + w - 1 <= df.shape[1] - 1):
-                        winQ = [quant.iloc[i, k] for k in range(j, j + w)]
-                        winN = [df.iloc[i, k] for k in range(j, j + w)]
-                        avgN = np.average(np.array(winN))
-                        avgSym = 0
-                        for k in range(len(ranges)):
-                            if avgN >= ranges[k][0] and avgN < ranges[k][1]:
-                                avgSym = k
-                                break
-                            if avgN == 1:
-                                avgSym = len(ranges) - 1
-                                break
-                        words.append([winQ, avgN, avgSym])
-                sensor_dict['words'] = words
+                    # quantize all the values into one of the levels based on the lengths
+                    discrete = np.digitize(arr, lengths, right=True)
 
-                comp_dict[i] = sensor_dict
-            wrd_dict[c] = comp_dict
+                    for i in range(len(discrete)):
+                        word_list = []
+                        time_length = len(discrete[i])
+                        # slide the window on the time series data and write window words to the file
+                        for j in range((time_length - w + 1) // s):
+                            word = discrete[i][j * s:j * s + w]
+                            word_avg = np.vectorize(representative_map.get)(word)
+                            word_avg = np.mean(word_avg)
+                            word_list.append([list(word), word_avg])
+                        curr_file[dir_name][i] = {"avg": avg_values[i], "stdev": std_values[i], "words": word_list}
+                    result[f] = curr_file
+        break
 
-        json.dump(wrd_dict, open('./' + directory + '/' + f + '.wrd', 'w'))
+    for f in result.keys():
+        outF = open(os.path.join(directory, f + ".wrd"), "w")
+        json.dump(result[f], outF, default=convert)
+        outF.close()

@@ -69,14 +69,15 @@ def get_orthonormal_dot(transformed_matrix, gesture_vector):
     list_of_similarities = {}
     for i in range(len(transformed_matrix)):
         score = 0
-        # curr_score = 0
-        # gest_score = 0
+        curr_score = 0
+        gest_score = 0
         for j in range(len(transformed_matrix[i])):
             score = score + (gesture_vector[j] * transformed_matrix[i][j])
-            # curr_score += transformed_matrix[i][j] ** 2
-            # gest_score += gesture_vector[j] ** 2
-        list_of_similarities[flattening_map[i]] = score
-        # list_of_similarities[flattening_map[i]] = score / (math.sqrt(curr_score) * math.sqrt(gest_score))
+            curr_score += transformed_matrix[i][j] ** 2
+            gest_score += gesture_vector[j] ** 2
+        # list_of_similarities[flattening_map[i]] = score
+        final_score = score / (math.sqrt(curr_score) * math.sqrt(gest_score))
+        list_of_similarities[flattening_map[i]] = final_score
     return list_of_similarities
 
 
@@ -114,7 +115,7 @@ def get_pca_similarity_matrix(flattened_matrix, no_of_components):
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
         gesture_similarities = get_orthonormal_dot(transformed_matrix, gesture_vector)
         x = {k: v for k, v in sorted(gesture_similarities.items(), key=lambda item: item[1], reverse=True)}
-        print(gesture_file, x)
+        # print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
     s.to_csv('task3_pca_sim_matrix.csv')
@@ -130,7 +131,7 @@ def get_svd_similarity_matrix(flattened_matrix, no_of_components):
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
         gesture_similarities = get_orthonormal_dot(transformed_matrix, gesture_vector)
         x = {k: v for k, v in sorted(gesture_similarities.items(), key=lambda item: item[1], reverse=True)}
-        print(gesture_file, x)
+        # print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
     s.to_csv('task3_svd_sim_matrix.csv')
@@ -146,7 +147,7 @@ def get_nmf_similarity_matrix(flattened_matrix, no_of_components):
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
         gesture_similarities = get_orthonormal_dot(transformed_matrix, gesture_vector)
         x = {k: v for k, v in sorted(gesture_similarities.items(), key=lambda item: item[1], reverse=True)}
-        print(gesture_file, x)
+        # print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
     s.to_csv('task3_nmf_sim_matrix.csv')
@@ -162,7 +163,7 @@ def get_lda_similarity_matrix(flattened_matrix, no_of_components):
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
         gesture_similarities = get_orthonormal_dot(transformed_matrix, gesture_vector)
         x = {k: v for k, v in sorted(gesture_similarities.items(), key=lambda item: item[1], reverse=True)}
-        print(gesture_file, x)
+        # print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
     s.to_csv('task3_lda_sim_matrix.csv')
@@ -170,33 +171,16 @@ def get_lda_similarity_matrix(flattened_matrix, no_of_components):
 
 
 def get_SVD_components(no_of_components, similarity_matrix):
+    print("SVD, p=", no_of_components)
     svd_gestures = TruncatedSVD(no_of_components)
     svd_gestures.fit_transform(similarity_matrix)
     get_the_output(svd_gestures, data_dir, "SVD")
-    # print("#####################################################")
-    # print("Printing various stats for SVD")
-    # print("n_components_", svd_gestures.n_components)
-    # print("n_features_", svd_gestures.n_features_in_)
-    # print("components_", svd_gestures.components_)
-    # print("explained_variance_", svd_gestures.explained_variance_)
-    # print("explained_variance_ratio_", svd_gestures.explained_variance_ratio_)
-    # print("singular_values_", svd_gestures.singular_values_)
-
 
 def get_NMF_components(no_of_components, similarity_matrix, data_dir):
-    print("NMF, p", no_of_components)
+    print("NMF, p=", no_of_components)
     nmf_gestures = NMF(n_components=no_of_components, init='random', random_state=0)
     nmf_gestures.fit_transform(similarity_matrix)
     get_the_output(nmf_gestures, data_dir, "NMF")
-    # print("#####################################################")
-    # print("Printing various stats for NMF")
-    # print("nmf_gestures.components_", len(nmf_gestures.components_))
-    # print("nmf_gestures.components_", np.sum(np.array(nmf_gestures.components_[0])))
-    # print("nmf_gestures.n_components", nmf_gestures.n_components)
-    # print("nmf_gestures.n_features_in_", nmf_gestures.n_features_in_)
-    # print("nmf_gestures.components_", nmf_gestures.components_)
-    # print("nmf_gestures.l1_ratio", nmf_gestures.l1_ratio)
-    # print("nmf_gestures.n_components_", nmf_gestures.n_components_)
 
 def dtw(vector1, vector2, cost1, cost2):
     assert len(vector1) == len(cost1)
