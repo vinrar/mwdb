@@ -314,6 +314,25 @@ def get_the_output(transformed_object, dir, type):
     semantic_contributions = pd.DataFrame.from_dict(output_data, orient='index')
     semantic_contributions.to_csv(file_name)
 
+    final_output = {}
+    latent_semantic_number = 1
+    for each_latent_semantic in component_matrix:
+        temp_list = []
+        for i in range(len(each_latent_semantic)):
+            temp_list.append((flattening_map[i], each_latent_semantic[i]))
+        final_output[latent_semantic_number] = sorted(temp_list, key=lambda x: x[1], reverse=True)
+        latent_semantic_number += 1
+
+    file_name = "phase_2_task3_" + type + "_output"
+    outF = open(os.path.join(file_name + ".json"), "w")
+    json.dump(final_output, outF, default=convert)
+    outF.close()
+
+def convert(o):
+    if isinstance(o, np.int64):
+        return int(o)
+    raise TypeError
+
 if __name__ == '__main__':
 
     if len(sys.argv) < 5:
