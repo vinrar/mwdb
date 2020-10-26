@@ -17,19 +17,19 @@ the_matrix = {}
 flattening_map = []
 output_data = {}
 
-
+# returns list of vector files based on vector model
 def get_list_of_files(dir, vector_model):
     list_of_files = os.listdir(dir)
     return [file for file in list_of_files if file.__contains__(vector_model + '_vectors')]
 
-
+# stores vector model data globally
 def read_file_data(list_of_files, dir):
     for each_file in list_of_files:
         file_path = dir + "/" + each_file
         file_handler = open(file_path, 'rb')
         vector_model_data[each_file.split('.')[0].split('_')[-1]] = pickle.load(file_handler)
 
-
+# return list of features across dimensions
 def get_list_of_features():
     list_of_features = []
     for each_file in vector_model_data:
@@ -39,11 +39,11 @@ def get_list_of_features():
                     list_of_features.append((each_dimension, each_sensor, each_word[0]))
     return list_of_features
 
-
+# returns list of unique features
 def get_unique_features(list_of_features):
     return list(Counter(list_of_features).keys())
 
-
+# globally stores the feature matrix and creates a name map for each file
 def form_the_matrix(set_of_features):
     for each_file in vector_model_data:
         word_list = []
@@ -64,8 +64,8 @@ def form_the_matrix(set_of_features):
 
         the_matrix[each_file] = temp_list
 
-
-def get_orthonormal_dot(transformed_matrix, gesture_vector):
+# returns cosine similarity between two vectors
+def get_cosine_similarity(transformed_matrix, gesture_vector):
     list_of_similarities = {}
     for i in range(len(transformed_matrix)):
         score = 0
@@ -75,11 +75,11 @@ def get_orthonormal_dot(transformed_matrix, gesture_vector):
             score = score + (gesture_vector[j] * transformed_matrix[i][j])
             curr_score += transformed_matrix[i][j] ** 2
             gest_score += gesture_vector[j] ** 2
-        # list_of_similarities[flattening_map[i]] = score
         final_score = score / (math.sqrt(curr_score) * math.sqrt(gest_score))
         list_of_similarities[flattening_map[i]] = final_score
     return list_of_similarities
 
+# returns kl divergence between two probability distributions
 def get_kl_divergence(transformed_matrix, gesture_vector):
     list_of_similarities = {}
     for i in range(len(transformed_matrix)):
@@ -90,6 +90,7 @@ def get_kl_divergence(transformed_matrix, gesture_vector):
         list_of_similarities[flattening_map[i]] = 1 / (1 + score)
     return list_of_similarities
 
+# flattens matrix for decompositions and creates a map for indices to file names
 def flatten_the_matrix():
     temp_matrix = []
     for each_file in the_matrix:
@@ -97,7 +98,7 @@ def flatten_the_matrix():
         temp_matrix.append(the_matrix[each_file])
     return np.array(temp_matrix)
 
-
+# returns the similarity matrix created based on dot product
 def get_dot_product_similarity_matrix():
     similarity_matrix = {}
     for gesture_file in the_matrix:
@@ -113,7 +114,7 @@ def get_dot_product_similarity_matrix():
     s.to_csv('task3_dot_sim_matrix.csv')
     return s.to_numpy()
 
-
+# returns the similarity matrix created based on PCA
 def get_pca_similarity_matrix(flattened_matrix, no_of_components):
     print('PCA, k= ', no_of_components)
     similarity_matrix = {}
@@ -122,15 +123,14 @@ def get_pca_similarity_matrix(flattened_matrix, no_of_components):
 
     for gesture_file in the_matrix:
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
-        gesture_similarities = get_orthonormal_dot(transformed_matrix, gesture_vector)
+        gesture_similarities = get_cosine_similarity(transformed_matrix, gesture_vector)
         x = {k: v for k, v in sorted(gesture_similarities.items(), key=lambda item: item[1], reverse=True)}
-        # print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
     s.to_csv('task3_pca_sim_matrix.csv')
     return s.to_numpy()
 
-
+# returns the similarity matrix created based on SVD
 def get_svd_similarity_matrix(flattened_matrix, no_of_components):
     similarity_matrix = {}
     svd_gestures = TruncatedSVD(no_of_components)
@@ -138,15 +138,14 @@ def get_svd_similarity_matrix(flattened_matrix, no_of_components):
 
     for gesture_file in the_matrix:
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
-        gesture_similarities = get_orthonormal_dot(transformed_matrix, gesture_vector)
+        gesture_similarities = get_cosine_similarity(transformed_matrix, gesture_vector)
         x = {k: v for k, v in sorted(gesture_similarities.items(), key=lambda item: item[1], reverse=True)}
-        # print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
     s.to_csv('task3_svd_sim_matrix.csv')
     return s.to_numpy()
 
-
+# returns the similarity matrix created based on NMF
 def get_nmf_similarity_matrix(flattened_matrix, no_of_components):
     similarity_matrix = {}
     nmf_gestures = NMF(n_components=no_of_components, init='random', random_state=0, max_iter=4000)
@@ -154,15 +153,14 @@ def get_nmf_similarity_matrix(flattened_matrix, no_of_components):
 
     for gesture_file in the_matrix:
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
-        gesture_similarities = get_orthonormal_dot(transformed_matrix, gesture_vector)
+        gesture_similarities = get_cosine_similarity(transformed_matrix, gesture_vector)
         x = {k: v for k, v in sorted(gesture_similarities.items(), key=lambda item: item[1], reverse=True)}
-        # print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
     s.to_csv('task3_nmf_sim_matrix.csv')
     return s.to_numpy()
 
-
+# returns the similarity matrix created based on LDA
 def get_lda_similarity_matrix(flattened_matrix, no_of_components):
     similarity_matrix = {}
     lda_gestures = LatentDirichletAllocation(n_components=no_of_components, random_state=0)
@@ -172,25 +170,26 @@ def get_lda_similarity_matrix(flattened_matrix, no_of_components):
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
         gesture_similarities = get_kl_divergence(transformed_matrix, gesture_vector)
         x = {k: v for k, v in sorted(gesture_similarities.items(), key=lambda item: item[1], reverse=True)}
-        # print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
     s.to_csv('task3_lda_sim_matrix.csv')
     return s.to_numpy()
 
-
+# performs SVD on similarity matrix and writes output as per project requirement
 def get_SVD_components(no_of_components, similarity_matrix):
     print("SVD, p=", no_of_components)
     svd_gestures = TruncatedSVD(no_of_components)
     svd_gestures.fit_transform(similarity_matrix)
     get_the_output(svd_gestures, data_dir, "SVD")
 
+# performs SVD on similarity matrix and writes output as per project requirement
 def get_NMF_components(no_of_components, similarity_matrix, data_dir):
     print("NMF, p=", no_of_components)
     nmf_gestures = NMF(n_components=no_of_components, init='random', random_state=0)
     nmf_gestures.fit_transform(similarity_matrix)
     get_the_output(nmf_gestures, data_dir, "NMF")
 
+# returns the dtw cost between two vectors
 def dtw(vector1, vector2, cost1, cost2):
     assert len(vector1) == len(cost1)
     assert len(vector2) == len(cost2)
@@ -208,6 +207,7 @@ def dtw(vector1, vector2, cost1, cost2):
 
     return dp[0][-1]
 
+# returns the similarity matrix created based on DTW
 def get_DTW_similarity_matrix(data_dir):
 
     file_names = glob.glob("./" + data_dir + "/*.wrds")
@@ -244,6 +244,7 @@ def get_DTW_similarity_matrix(data_dir):
     print("dtw similarity matrix", df)
     return df
 
+# returns the edit distance cost between two files
 def editdist(s, t):  # for wrd files
     rows = len(s) + 1
     cols = len(t) + 1
@@ -271,7 +272,7 @@ def editdist(s, t):  # for wrd files
                                  dist[row - 1][col - 1] + cost)  # substitution
     return dist[row][col]
 
-
+# returns the similarity matrix created based on Edit Distance
 def get_ED_similarity_matrix(data_dir, k):
     # Task 3a Part 1 user option 6:
     file_names = glob.glob("./" + data_dir + "/*.wrds")
@@ -307,6 +308,7 @@ def get_ED_similarity_matrix(data_dir, k):
     print("edit distance similarity matrix", df)
     return df
 
+# stores the output in descending order of contribution scores
 def get_the_output(transformed_object, dir, type):
     component_matrix = transformed_object.components_
     latent_semantic_number = 1
@@ -319,6 +321,7 @@ def get_the_output(transformed_object, dir, type):
         print("Printing the type of output_data_entry ", key)
         latent_semantic_number = latent_semantic_number + 1
 
+    # stores the output as a matrix for use in futute tasks
     file_name = "phase_2_task3_" + type + "_contributions.csv"
     semantic_contributions = pd.DataFrame.from_dict(output_data, orient='index')
     semantic_contributions.to_csv(file_name)
@@ -337,6 +340,7 @@ def get_the_output(transformed_object, dir, type):
     json.dump(final_output, outF, default=convert)
     outF.close()
 
+# returns the integer version of a numpy integer
 def convert(o):
     if isinstance(o, np.int64):
         return int(o)
