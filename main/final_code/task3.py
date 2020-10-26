@@ -80,6 +80,15 @@ def get_orthonormal_dot(transformed_matrix, gesture_vector):
         list_of_similarities[flattening_map[i]] = final_score
     return list_of_similarities
 
+def get_kl_divergence(transformed_matrix, gesture_vector):
+    list_of_similarities = {}
+    for i in range(len(transformed_matrix)):
+        score = 0
+        for j in range(len(transformed_matrix[i])):
+            score = score + (gesture_vector[j] * np.log(gesture_vector[j]/transformed_matrix[i][j]))
+
+        list_of_similarities[flattening_map[i]] = score
+    return list_of_similarities
 
 def flatten_the_matrix():
     temp_matrix = []
@@ -161,7 +170,7 @@ def get_lda_similarity_matrix(flattened_matrix, no_of_components):
 
     for gesture_file in the_matrix:
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
-        gesture_similarities = get_orthonormal_dot(transformed_matrix, gesture_vector)
+        gesture_similarities = get_kl_divergence(transformed_matrix, gesture_vector)
         x = {k: v for k, v in sorted(gesture_similarities.items(), key=lambda item: item[1], reverse=True)}
         # print(gesture_file, x)
         similarity_matrix[gesture_file] = gesture_similarities
