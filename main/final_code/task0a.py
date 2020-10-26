@@ -59,7 +59,7 @@ if __name__ == "__main__":
     result_display = {}
     for dir_path, dir_names, filenames in os.walk(directory):
         for dir_name in dir_names:
-            new_directory = os.path.join(directory, dir_name) + "\\"
+            new_directory = os.path.join(directory, dir_name) + "/"
             for file in os.listdir(new_directory):
                 if file.endswith(".csv"):
                     f = file.split('.')[0]
@@ -99,7 +99,7 @@ if __name__ == "__main__":
                     result_display[f] = curr_file_display
         break
 
-    new_directory = directory + '\\data'
+    new_directory = directory + '/data'
     if not os.path.exists(new_directory):
         os.mkdir(new_directory)
     for f in result.keys():
