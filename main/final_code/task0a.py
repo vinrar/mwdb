@@ -99,7 +99,7 @@ if __name__ == "__main__":
                     result_display[f] = curr_file_display
         break
 
-    new_directory = directory + '//data'
+    new_directory = directory + '\\data'
     if not os.path.exists(new_directory):
         os.mkdir(new_directory)
     for f in result.keys():
