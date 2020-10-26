@@ -117,8 +117,9 @@ def get_kl_divergence(transformed_matrix, gesture_vector):
         score = 0
         for j in range(len(transformed_matrix[i])):
             score = score + (gesture_vector[j] * np.log(gesture_vector[j]/transformed_matrix[i][j]))
-
-        list_of_similarities.append((flattening_map[i], score))
+        
+        final_score = 1 / (1 + score)
+        list_of_similarities.append((flattening_map[i], final_score))
     return sorted(list_of_similarities, key=lambda x: x[1], reverse=True)
 
 def flatten_the_matrix():
