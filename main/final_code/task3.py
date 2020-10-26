@@ -116,17 +116,17 @@ def get_dot_product_similarity_matrix():
 
 # returns the similarity matrix created based on PCA
 def get_pca_similarity_matrix(flattened_matrix, no_of_components):
-    print('PCA, k= ', no_of_components)
     similarity_matrix = {}
     pca_gestures = PCA(no_of_components)
     transformed_matrix = pca_gestures.fit_transform(flattened_matrix)
-
+    print("Creating similarity matrix based on PCA")
     for gesture_file in the_matrix:
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
         gesture_similarities = get_cosine_similarity(transformed_matrix, gesture_vector)
         x = {k: v for k, v in sorted(gesture_similarities.items(), key=lambda item: item[1], reverse=True)}
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
+    print("Saving similarity matrix")
     s.to_csv('task3_pca_sim_matrix.csv')
     return s.to_numpy()
 
@@ -135,7 +135,7 @@ def get_svd_similarity_matrix(flattened_matrix, no_of_components):
     similarity_matrix = {}
     svd_gestures = TruncatedSVD(no_of_components)
     transformed_matrix = svd_gestures.fit_transform(flattened_matrix)
-
+    print("Creating similarity matrix based on SVD")
     for gesture_file in the_matrix:
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
         gesture_similarities = get_cosine_similarity(transformed_matrix, gesture_vector)
@@ -150,13 +150,14 @@ def get_nmf_similarity_matrix(flattened_matrix, no_of_components):
     similarity_matrix = {}
     nmf_gestures = NMF(n_components=no_of_components, init='random', random_state=0, max_iter=4000)
     transformed_matrix = nmf_gestures.fit_transform(flattened_matrix)
-
+    print("Creating similarity matrix based on NMF")
     for gesture_file in the_matrix:
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
         gesture_similarities = get_cosine_similarity(transformed_matrix, gesture_vector)
         x = {k: v for k, v in sorted(gesture_similarities.items(), key=lambda item: item[1], reverse=True)}
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
+    print("Saving similarity matrix")
     s.to_csv('task3_nmf_sim_matrix.csv')
     return s.to_numpy()
 
@@ -165,26 +166,27 @@ def get_lda_similarity_matrix(flattened_matrix, no_of_components):
     similarity_matrix = {}
     lda_gestures = LatentDirichletAllocation(n_components=no_of_components, random_state=0)
     transformed_matrix = lda_gestures.fit_transform(flattened_matrix)
-
+    print("Creating similarity matrix based on LDA")
     for gesture_file in the_matrix:
         gesture_vector = transformed_matrix[flattening_map.index(gesture_file)]
         gesture_similarities = get_kl_divergence(transformed_matrix, gesture_vector)
         x = {k: v for k, v in sorted(gesture_similarities.items(), key=lambda item: item[1], reverse=True)}
         similarity_matrix[gesture_file] = gesture_similarities
     s = pd.DataFrame.from_dict(similarity_matrix, orient="index")
+    print("Saving similarity matrix")
     s.to_csv('task3_lda_sim_matrix.csv')
     return s.to_numpy()
 
 # performs SVD on similarity matrix and writes output as per project requirement
 def get_SVD_components(no_of_components, similarity_matrix):
-    print("SVD, p=", no_of_components)
+    print("Performing SVD on similarity matrix")
     svd_gestures = TruncatedSVD(no_of_components)
     svd_gestures.fit_transform(similarity_matrix)
     get_the_output(svd_gestures, data_dir, "SVD")
 
 # performs SVD on similarity matrix and writes output as per project requirement
 def get_NMF_components(no_of_components, similarity_matrix, data_dir):
-    print("NMF, p=", no_of_components)
+    print("Performing NMF on similarity matrix")
     nmf_gestures = NMF(n_components=no_of_components, init='random', random_state=0)
     nmf_gestures.fit_transform(similarity_matrix)
     get_the_output(nmf_gestures, data_dir, "NMF")
