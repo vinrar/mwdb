@@ -121,7 +121,7 @@ def get_the_output(transformed_object, dir):
 
 # stores the transformed matrix as metadata
 def write_transformed_matrix(transformed_object, dir, flattened_matrix):
-        print("Storing the transformed matrix after decomposition")
+    print("Storing the transformed matrix after decomposition")
     file_name = "phase_2_task_1_transformed_matrix"
     transformed_matrix = transformed_object.fit_transform(flattened_matrix)
 

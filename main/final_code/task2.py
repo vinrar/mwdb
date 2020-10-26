@@ -212,26 +212,26 @@ if __name__ == '__main__':
 
     if user_option == '1':
         result = get_dot_product_similarity(gesture_vector)[:10]
-        print("Printing dot product result")
+        print("Printing the similarity results based on dot product")
         print_results(result)
     else:
         flattened_matrix = flatten_the_matrix()
 
         if user_option == '2':
             result = get_pca_similarity(flattened_matrix, gesture_file, k)[:10]
-            print("Printing the pca similarity results")
+            print("Printing the similarity results based on PCA")
             print_results(result)
         elif user_option == '3':
             result = get_svd_similarity(flattened_matrix, gesture_file, k)[:10]
-            print("Printing the svd similarity results")
+            print("Printing the similarity results based on SVD")
             print_results(result)
         elif user_option == '4':
             result = get_nmf_similarity(flattened_matrix, gesture_file, k)[:10]
-            print("Printing the nmf similarity results")
+            print("Printing the similarity results based on NMF")
             print_results(result)
         elif user_option == '5':
             result = get_lda_similarity(flattened_matrix, gesture_file, k)[:10]
-            print("Printing the lda similarity results")
+            print("Printing the similarity results based on LDA")
             print_results(result)
         elif user_option == '6':
             fnames = glob.glob("./" + dir + "/*.wrds")
@@ -255,7 +255,7 @@ if __name__ == '__main__':
                 sim.append((f, 1 / (1 + np.average(temp))))
 
             sim.sort(key=lambda x: x[1], reverse=True)
-            print("Printing the edit distance similarity results")
+            print("Printing the similarity results based on edit distance")
             print(np.array(sim)[:10])
 
         elif user_option == '7':
@@ -283,5 +283,5 @@ if __name__ == '__main__':
                 sim.append((f, 1 / (1 + np.average(temp))))
 
             sim.sort(key=lambda x: x[1], reverse=True)
-            print("Printing the dtw similarity results")
+            print("Printing the similarity results based on dtw")
             print(np.array(sim)[:10])

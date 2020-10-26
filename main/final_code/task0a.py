@@ -68,7 +68,7 @@ if __name__ == "__main__":
             for file in os.listdir(new_directory):
                 if file.endswith(".csv"):
                     f = file.split('.')[0]
-                    print(f)
+                    
                     curr_file = result[f] if f in result.keys() else {}
                     curr_file[dir_name] = {}
 
