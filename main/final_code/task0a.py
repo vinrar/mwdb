@@ -92,9 +92,9 @@ if __name__ == "__main__":
                             word_avg = np.vectorize(representative_map.get)(word)
                             word_avg = np.mean(word_avg)
                             word_list.append([list(word), word_avg])
-                            word_list_display.append([dir_name, i, list(word)])
+                            word_list_display.append([[dir_name, i, list(word)], word_avg])
                         curr_file[dir_name][i] = {"avg": avg_values[i], "stdev": std_values[i], "words": word_list}
-                        curr_file_display[dir_name][i] = {"words": word_list_display}
+                        curr_file_display[dir_name][i] = {"avg": avg_values[i], "stdev": std_values[i], "words": word_list_display}
                     result[f] = curr_file
                     result_display[f] = curr_file_display
         break
