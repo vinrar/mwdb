@@ -22,6 +22,7 @@ def count_of_words_across_dimensions(dict_of_words):
 
 # return the time series data of all 20 sensor data
 def read_file_data(dir, list_of_files):
+    print("Generating tf vectors")
     for each_file in list_of_files:
         file_path = dir + "/" + each_file
         file_handler = open(file_path, 'r')
@@ -30,7 +31,7 @@ def read_file_data(dir, list_of_files):
         word_count_across_dimensions = count_of_words_across_dimensions(dict_of_words)
         tf_idf_dict[str(each_file.split('.')[0])] = dict_of_words
         get_tf_vector(dict_of_words, word_count_across_dimensions, each_file.split('.')[0], dir)
-    
+    print("Generating tfidf vectors")
     get_tf_idf_vector(dir)
 
 # returns the tf vector for a particular file
