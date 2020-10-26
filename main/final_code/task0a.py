@@ -9,7 +9,6 @@ import sys
 def format_float(value):
     return "%.6f" % value
 
-
 # returns the gaussian distribution (mean=0, std=0.25) value of x
 def normal_distribution_function(x):
     mean = 0
@@ -17,13 +16,12 @@ def normal_distribution_function(x):
     value = scipy.stats.norm.pdf(x, mean, std)
     return value
 
-
 # returns the definite integral of gaussian distribution between x1 and x2
 def definite_integral(x1, x2):
     res, err = quad(normal_distribution_function, x1, x2)
     return res
 
-
+# returns the integer version of a numpy integer
 def convert(o):
     if isinstance(o, np.int64):
         return int(o)
@@ -39,8 +37,12 @@ if __name__ == "__main__":
     w = int(sys.argv[3])
     s = int(sys.argv[4])
 
-    levels = 2 * r  # number of bands the sensor value needs to be quantized into
-    lengths = []  # list with the lengths of the band
+    print("Directory: {}\nResolution: {}\nWindow Length: {}\nShift Length: {}".format(directory, r, w, s))
+
+    # number of bands the sensor value needs to be quantized into
+    levels = 2 * r
+    # list with the lengths of the band
+    lengths = []  
 
     # append lengths of each band in the lengths list
     for i in range(1, levels + 1):
@@ -55,8 +57,11 @@ if __name__ == "__main__":
         lengths[i] += lengths[i - 1]
         representative_map[i] = (lengths[i - 1] + lengths[i]) / 2
 
+    # map to store metadata
     result = {}
+    # map to store output as per project requirement
     result_display = {}
+
     for dir_path, dir_names, filenames in os.walk(directory):
         for dir_name in dir_names:
             new_directory = os.path.join(directory, dir_name) + "/"
@@ -93,12 +98,18 @@ if __name__ == "__main__":
                             word_avg = np.mean(word_avg)
                             word_list.append([list(word), word_avg])
                             word_list_display.append([[dir_name, i, list(word)], word_avg])
+                        
+                        # store metadata
                         curr_file[dir_name][i] = {"avg": avg_values[i], "stdev": std_values[i], "words": word_list}
+                        # store display data
                         curr_file_display[dir_name][i] = {"avg": avg_values[i], "stdev": std_values[i], "words": word_list_display}
+                    
                     result[f] = curr_file
                     result_display[f] = curr_file_display
         break
 
+    # store the .wrd files as per the project requirement
+    # note: these won't be used in future tasks
     new_directory = directory + '/data'
     if not os.path.exists(new_directory):
         os.mkdir(new_directory)
@@ -107,6 +118,7 @@ if __name__ == "__main__":
         json.dump(result_display[f], outF, default=convert)
         outF.close()
 
+    # store the .wrds files as metadata to be used in future tasks
     for f in result_display.keys():
         outF = open(os.path.join(directory, f + ".wrds"), "w")
         json.dump(result[f], outF, default=convert)
