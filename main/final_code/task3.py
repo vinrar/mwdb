@@ -394,7 +394,7 @@ if __name__ == '__main__':
 
     # compute user option here
      # If the negative error occurs with any other algorithm, add the corresponding user option to set here
-    if user_option in set('2'):
+    if user_option in set(['2','3']):
         min_entry = np.amin(sim_matrix)
         row_count = sim_matrix.shape[0]
         col_count = sim_matrix.shape[1]
