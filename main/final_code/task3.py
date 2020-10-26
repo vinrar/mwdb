@@ -100,7 +100,9 @@ def flatten_the_matrix():
 
 # returns the similarity matrix created based on dot product
 def get_dot_product_similarity_matrix():
+    # Task 3a Part 1 user option 1:
     similarity_matrix = {}
+    print("Creating similarity matrix based on dot product")
     for gesture_file in the_matrix:
         gesture_vector = the_matrix[gesture_file]
         list_of_similarities = {}
@@ -116,6 +118,7 @@ def get_dot_product_similarity_matrix():
 
 # returns the similarity matrix created based on PCA
 def get_pca_similarity_matrix(flattened_matrix, no_of_components):
+    # Task 3a Part 1 user option 2:
     similarity_matrix = {}
     pca_gestures = PCA(no_of_components)
     transformed_matrix = pca_gestures.fit_transform(flattened_matrix)
@@ -132,6 +135,7 @@ def get_pca_similarity_matrix(flattened_matrix, no_of_components):
 
 # returns the similarity matrix created based on SVD
 def get_svd_similarity_matrix(flattened_matrix, no_of_components):
+    # Task 3a Part 1 user option 3:
     similarity_matrix = {}
     svd_gestures = TruncatedSVD(no_of_components)
     transformed_matrix = svd_gestures.fit_transform(flattened_matrix)
@@ -147,6 +151,7 @@ def get_svd_similarity_matrix(flattened_matrix, no_of_components):
 
 # returns the similarity matrix created based on NMF
 def get_nmf_similarity_matrix(flattened_matrix, no_of_components):
+    # Task 3a Part 1 user option 4:
     similarity_matrix = {}
     nmf_gestures = NMF(n_components=no_of_components, init='random', random_state=0, max_iter=4000)
     transformed_matrix = nmf_gestures.fit_transform(flattened_matrix)
@@ -163,6 +168,7 @@ def get_nmf_similarity_matrix(flattened_matrix, no_of_components):
 
 # returns the similarity matrix created based on LDA
 def get_lda_similarity_matrix(flattened_matrix, no_of_components):
+    # Task 3a Part 1 user option 5:
     similarity_matrix = {}
     lda_gestures = LatentDirichletAllocation(n_components=no_of_components, random_state=0)
     transformed_matrix = lda_gestures.fit_transform(flattened_matrix)
@@ -179,6 +185,7 @@ def get_lda_similarity_matrix(flattened_matrix, no_of_components):
 
 # performs SVD on similarity matrix and writes output as per project requirement
 def get_SVD_components(no_of_components, similarity_matrix):
+    # Task 3a Part 3:
     print("Performing SVD on similarity matrix")
     svd_gestures = TruncatedSVD(no_of_components)
     svd_gestures.fit_transform(similarity_matrix)
@@ -186,6 +193,7 @@ def get_SVD_components(no_of_components, similarity_matrix):
 
 # performs SVD on similarity matrix and writes output as per project requirement
 def get_NMF_components(no_of_components, similarity_matrix, data_dir):
+    # Task 3a Part 3:
     print("Performing NMF on similarity matrix")
     nmf_gestures = NMF(n_components=no_of_components, init='random', random_state=0)
     nmf_gestures.fit_transform(similarity_matrix)
@@ -211,7 +219,8 @@ def dtw(vector1, vector2, cost1, cost2):
 
 # returns the similarity matrix created based on DTW
 def get_DTW_similarity_matrix(data_dir):
-
+    # Task 3a Part 1 user option 7:
+    print("Creating similarity matrix based on DTW")
     file_names = glob.glob("./" + data_dir + "/*.wrds")
     file_names.sort()
     for i in range(len(file_names)):
@@ -243,7 +252,6 @@ def get_DTW_similarity_matrix(data_dir):
             df[f2][f1] = average
 
     df.to_csv('task3_DTW_sim_matrix.csv')
-    print("dtw similarity matrix", df)
     return df
 
 # returns the edit distance cost between two files
@@ -276,6 +284,7 @@ def editdist(s, t):  # for wrd files
 
 # returns the similarity matrix created based on Edit Distance
 def get_ED_similarity_matrix(data_dir, k):
+    print("Creating similarity matrix based on Edit Distance")
     # Task 3a Part 1 user option 6:
     file_names = glob.glob("./" + data_dir + "/*.wrds")
     file_names.sort()
@@ -307,7 +316,6 @@ def get_ED_similarity_matrix(data_dir, k):
             df[f2][f1] = np.average(temp)
 
     df.to_csv('task3_Edit_Dist_sim_mat.csv')
-    print("edit distance similarity matrix", df)
     return df
 
 # stores the output in descending order of contribution scores
@@ -320,7 +328,6 @@ def get_the_output(transformed_object, dir, type):
             temp_list[flattening_map[i]] = each_latent_semantic[i]
         key = str(latent_semantic_number)
         output_data[key] = temp_list
-        print("Printing the type of output_data_entry ", key)
         latent_semantic_number = latent_semantic_number + 1
 
     # stores the output as a matrix for use in futute tasks
