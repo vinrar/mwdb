@@ -2,10 +2,11 @@ import pandas as pd
 from utils import print_dict
 import sys
 
-# Row containing latent topics
-# Col containing Gestures
-# value being its contribution
+# groups gestures based on their contribution to the latent components
 def group_by_semantics(file_name, take_absolute=False):
+    # Row containing latent topics
+    # Col containing Gestures
+    # value being its contribution
     similarity_matrix = pd.read_csv(file_name, index_col=0)
     p_groups = {}
     for file_number, col in similarity_matrix.transpose().iterrows():

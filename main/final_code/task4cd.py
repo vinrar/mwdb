@@ -11,18 +11,17 @@ import sys
 centroid_assignments = set()
 count = 0
 
-
+# returns data normalized between 0 and 1
 def normalize_between_0_and_1(x):
     x_max, x_min = x.max(), x.min()
     # print("x_max: ", x_max, ", x_min: ", x_min)
     x = (x - x_min) / (x_max - x_min) if x_max != x_min else x
     return x
 
-
+# returns Euclidian distance between two vectors
 def get_euclidean_distance(v1, v2):
     d = distance.euclidean(v1, v2)
     return d
-
 
 # initialize centroids with any random values / points
 def randomly_initialize_cluster_centroids(k, matrix):
@@ -30,7 +29,6 @@ def randomly_initialize_cluster_centroids(k, matrix):
     for i in range(k):
         centroids[i] = np.random.rand(len(matrix))
     return centroids
-
 
 # assign random points in the sim_matrix as centroids
 def initialize_cluster_centroids(k, matrix):
@@ -45,7 +43,6 @@ def initialize_cluster_centroids(k, matrix):
         centroids[k_idx] = matrix[k_value]
     return centroids
 
-
 # given the cluster and the points in that cluster, compute the cluster centroids
 def compute_cluster_centroids(clusters: dict, matrix) -> dict:
     centroids = {}
@@ -57,13 +54,11 @@ def compute_cluster_centroids(clusters: dict, matrix) -> dict:
         centroids[cluster_idx] = np.mean(arr, axis=0)
     return centroids
 
-
 # check whether two cluster assignments are the same
 def are_clusters_same(c1, c2):
     # print("Old: ", c1)
     # print("New: ", c2)
     return c1 == c2
-
 
 # get average distance of all points in a cluster from its centroid
 def get_distance_from_centroid(centroid, point_index_list, matrix):
@@ -72,7 +67,6 @@ def get_distance_from_centroid(centroid, point_index_list, matrix):
         dist_sum += get_euclidean_distance(centroid, matrix[idx])
     return dist_sum / num_points if num_points != 0 else 0  ### check?
 
-
 # get average distance of all points from their centroids in a given cluster assignment
 def get_average_clustering_distance(clusters: dict, matrix):
     k_centroids = compute_cluster_centroids(clusters, matrix)
@@ -80,7 +74,6 @@ def get_average_clustering_distance(clusters: dict, matrix):
     for i, val in k_centroids.items():
         dist_sum += get_distance_from_centroid(val, clusters[i], matrix)
     return dist_sum / k
-
 
 # run the K means algorithm for multiple random starts and return the clusters with least avg distance
 def multiple_random_starts_k_means(matrix, k: int, max_iters: int, random_starts: int) -> dict:
@@ -174,8 +167,6 @@ def task_4c(file_name, p, max_iterations, random_starts):
     print("\n-----------------------------------------------------------\n")
     print("---------------------K Means Clusters----------------")
     clusters = multiple_random_starts_k_means(sim_mat, p, max_iterations, random_starts)
-    # clusters = k_means(sim_mat, p, max_iterations)
-    # pretty(clusters, 2)
     print_clusters(clusters, sim_mat_df.columns)
     sklearn_kmeans(sim_mat, p, max_iterations, random_starts, sim_mat_df.columns)
 
@@ -205,7 +196,6 @@ def task_4d(file_name, p, max_iterations, random_starts):
     print("\n-----------------------------------------------------------\n")
     print("-------------------Spectral Clusters-----------------")
     clusters = multiple_random_starts_k_means(y, p, max_iterations, random_starts)
-    # pretty(clusters, 2)
     print_clusters(clusters, df.iloc[:, 0])
     sklearn_kmeans(y, p, max_iterations, random_starts, df.iloc[:, 0])
 
@@ -251,10 +241,6 @@ def main():
     if task == "C":
         # K Means
         task_4c(file_name, p, max_iterations, random_starts)
-
-    # # reset the variable centroid assignments before running task 4d
-    # global centroid_assignments
-    # centroid_assignments = set()
 
     if task == "D":
         # Spectral
