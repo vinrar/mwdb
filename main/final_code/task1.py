@@ -15,17 +15,19 @@ the_matrix_name_map = []
 map_of_words = []
 output_data = {}
 
+# returns list of vector files based on vector model
 def get_list_of_files(dir, vector_model):
     list_of_files = os.listdir(dir)
     return [file for file in list_of_files if file.__contains__(vector_model + '_vectors')]
 
+# stores vector model data globally
 def read_file_data(list_of_files, dir):
     for each_file in list_of_files:
         file_path = dir + "/" + each_file
         file_handler = open(file_path, 'rb')
         vector_model_data[each_file.split('.')[0].split('_')[-1]] = pickle.load(file_handler)
 
-
+# return list of features across dimensions
 def get_list_of_features():
     list_of_features = []
     for each_file in vector_model_data:
@@ -36,9 +38,11 @@ def get_list_of_features():
 
     return list_of_features
 
+# returns list of unique features
 def get_unique_features(list_of_features):
     return list(Counter(list_of_features).keys())
 
+# globally stores the feature matrix and creates a name map for each file
 def form_the_matrix(set_of_features):
     for each_file in vector_model_data:
         word_list = []
@@ -60,6 +64,7 @@ def form_the_matrix(set_of_features):
         the_matrix.append(temp_list)
         the_matrix_name_map.append(each_file)
 
+# performs PCA on flattened matrix and writes output as per project requirement
 def get_PCA_components(no_of_components, dir):
     flattened_matrix = np.array(the_matrix)
     pca_gestures = PCA(no_of_components)
@@ -68,6 +73,7 @@ def get_PCA_components(no_of_components, dir):
     get_the_output(pca_gestures, dir)
     write_transformed_matrix(pca_gestures, dir, flattened_matrix)
 
+# performs SVD on flattened matrix and writes output as per project requirement
 def get_SVD_components(no_of_components, dir):
     flattened_matrix = np.array(the_matrix)
     svd_gestures = TruncatedSVD(no_of_components)
@@ -75,6 +81,7 @@ def get_SVD_components(no_of_components, dir):
     get_the_output(svd_gestures, dir)
     write_transformed_matrix(svd_gestures, dir, flattened_matrix)
 
+# performs NMF on flattened matrix and writes output as per project requirement
 def get_NMF_components(no_of_components, dir):
     flattened_matrix = np.array(the_matrix)
     nmf_gestures = NMF(n_components=no_of_components, init='random', random_state=0)
@@ -82,6 +89,7 @@ def get_NMF_components(no_of_components, dir):
     get_the_output(nmf_gestures, dir)
     write_transformed_matrix(nmf_gestures, dir, flattened_matrix)
 
+# performs LDA on flattened matrix and writes output as per project requirement
 def get_LDA_components(no_of_components, dir):
     flattened_matrix = np.array(the_matrix)
     lda_gestures = LatentDirichletAllocation(n_components=no_of_components, random_state=0)
@@ -89,7 +97,7 @@ def get_LDA_components(no_of_components, dir):
     get_the_output(lda_gestures, dir)
     write_transformed_matrix(lda_gestures, dir, flattened_matrix)
 
-
+# stores the output in descending order of contribution scores
 def get_the_output(transformed_object, dir):
     component_matrix = transformed_object.components_
     latent_semantic_number = 1
@@ -99,20 +107,16 @@ def get_the_output(transformed_object, dir):
             temp_list.append((map_of_words[i], each_latent_semantic[i]))
 
         output_data[str(latent_semantic_number)] = sorted(temp_list, key=lambda x: x[1], reverse=True)
-        # print("prinitng the type of output_data_entry ", type(output_data[str(latent_semantic_number)]))
         latent_semantic_number = latent_semantic_number + 1
 
     file_name = "phase_2_task_1_output"
-    # file_handler = open(dir + "/" + file_name, 'wb')
     outF = open(os.path.join(file_name + ".json"), "w")
     json.dump(output_data, outF, default=convert)
     outF.close()
-    # pickle.dump(output_data, file_handler)
 
-
+# stores the transformed matrix as metadata
 def write_transformed_matrix(transformed_object, dir, flattened_matrix):
     file_name = "phase_2_task_1_transformed_matrix"
-    # file_handler = open(dir + "/" + file_name, 'wb')
     transformed_matrix = transformed_object.fit_transform(flattened_matrix)
 
     output_dictionary = {}
@@ -124,8 +128,8 @@ def write_transformed_matrix(transformed_object, dir, flattened_matrix):
     outF = open(os.path.join(file_name + ".json"), "w")
     json.dump(output_dictionary, outF, default=convert)
     outF.close()
-    # pickle.dump(output_dictionary,  file_handler)
 
+# returns the integer version of a numpy integer
 def convert(o):
     if isinstance(o, np.int64):
         return int(o)
@@ -136,25 +140,26 @@ if __name__ == '__main__':
     if len(sys.argv) < 4:
         print('Run python task1.py <Directory> <Vector Model> <User Option> <k>')
         sys.exit(0)
-    dir = sys.argv[1]
+    directory = sys.argv[1]
     vector_model = sys.argv[2]
     user_option = int(sys.argv[3])
     k = int(sys.argv[4])
 
-    print("Directory: {}\nVector Model: {}\nUser Option: {}\nk: {}".format(dir, vector_model, user_option, k))
+    print("Directory: {}\nVector Model: {}\nUser Option: {}\nk: {}".format(directory, vector_model, user_option, k))
 
-    list_of_files = get_list_of_files(dir, vector_model)
-    read_file_data(list_of_files, dir)
+    # function calls to initialize all global variables
+    list_of_files = get_list_of_files(directory, vector_model)
+    read_file_data(list_of_files, directory)
     list_of_features = get_list_of_features()
     set_of_features = get_unique_features(list_of_features)
     map_of_words = set_of_features
     form_the_matrix(set_of_features)
 
     if user_option == 1:
-        get_PCA_components(k, dir)
+        get_PCA_components(k, directory)
     if user_option == 2:
-        get_SVD_components(k, dir)
+        get_SVD_components(k, directory)
     if user_option == 3:
-        get_NMF_components(k, dir)
+        get_NMF_components(k, directory)
     if user_option == 4:
-        get_LDA_components(k, dir)
+        get_LDA_components(k, directory)
