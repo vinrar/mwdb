@@ -66,6 +66,7 @@ def form_the_matrix(set_of_features):
 
 # performs PCA on flattened matrix and writes output as per project requirement
 def get_PCA_components(no_of_components, dir):
+    print("Performing PCA on flattented matrix")
     flattened_matrix = np.array(the_matrix)
     pca_gestures = PCA(no_of_components)
     pca_gestures.fit_transform(flattened_matrix)
@@ -75,6 +76,7 @@ def get_PCA_components(no_of_components, dir):
 
 # performs SVD on flattened matrix and writes output as per project requirement
 def get_SVD_components(no_of_components, dir):
+    print("Performing SVD on flattened matrix")
     flattened_matrix = np.array(the_matrix)
     svd_gestures = TruncatedSVD(no_of_components)
     svd_gestures.fit_transform(flattened_matrix)
@@ -83,6 +85,7 @@ def get_SVD_components(no_of_components, dir):
 
 # performs NMF on flattened matrix and writes output as per project requirement
 def get_NMF_components(no_of_components, dir):
+    print("Performing NMF on flattened matrix")
     flattened_matrix = np.array(the_matrix)
     nmf_gestures = NMF(n_components=no_of_components, init='random', random_state=0)
     nmf_gestures.fit_transform(flattened_matrix)
@@ -91,6 +94,7 @@ def get_NMF_components(no_of_components, dir):
 
 # performs LDA on flattened matrix and writes output as per project requirement
 def get_LDA_components(no_of_components, dir):
+    print("Performing LDA on flattened matrix")
     flattened_matrix = np.array(the_matrix)
     lda_gestures = LatentDirichletAllocation(n_components=no_of_components, random_state=0)
     lda_gestures.fit_transform(flattened_matrix)
@@ -99,6 +103,7 @@ def get_LDA_components(no_of_components, dir):
 
 # stores the output in descending order of contribution scores
 def get_the_output(transformed_object, dir):
+    print("Storing the output after decomposition")
     component_matrix = transformed_object.components_
     latent_semantic_number = 1
     for each_latent_semantic in component_matrix:
@@ -116,6 +121,7 @@ def get_the_output(transformed_object, dir):
 
 # stores the transformed matrix as metadata
 def write_transformed_matrix(transformed_object, dir, flattened_matrix):
+        print("Storing the transformed matrix after decomposition")
     file_name = "phase_2_task_1_transformed_matrix"
     transformed_matrix = transformed_object.fit_transform(flattened_matrix)
 
