@@ -268,11 +268,7 @@ if __name__ == '__main__':
                         wq_c = list(np.array(qword[c][str(senid)]['words'])[:, 1])
                         temp.append(dtw(wf, wq, wf_c, wq_c))
 
-                if np.average(temp) == 0:
-                    sim.append((f, float('inf')))
-                else:
-                    sim.append((f, 1 / np.average(temp)))
-            print(sim)
+                sim.append((f, 1 / (1 + np.average(temp))))
 
             sim.sort(key=lambda x: x[1], reverse=True)
             print("Printing the dtw similarity results")
