@@ -1,26 +1,50 @@
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-import csv
+import sys
 
-if __name__ == '__main__':
+def main():
 
-    data_file_path = input("Enter the path of the gesture file: ")
-    # data_file_path = "/Users/vchitteti/Projects/mwdb/main/final_code/task3_dot_sim_matrix.csv"
-    heat_map = []
-    x_labels = []
+    if len(sys.argv) < 1:
+        print('Run python Task_1.py <User Option> <p> <Task>')
+        sys.exit(0)
+    user_option = sys.argv[1]
 
-    with open(data_file_path, newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
-        print(reader)
-        i = 0
+    if user_option == '1':
+        file_name = "task3_dot_sim_matrix.csv"
+        task = "dot"
+    elif user_option == '2':
+        file_name = "task3_pca_sim_matrix.csv"
+        task = "pca"
+    elif user_option == '3':
+        file_name = "task3_svd_sim_matrix.csv"
+        task = "svd"
+    elif user_option == '4':
+        file_name = "task3_nmf_sim_matrix.csv"
+        task = "nmf"
+    elif user_option == '5':
+        file_name = "task3_lda_sim_matrix.csv"
+        task = "lda"
+    elif user_option == '6':
+        file_name = "task3_Edit_Dist_sim_mat.csv"
+        task = "edit"
+    elif user_option == '7':
+        file_name = "task3_DTW_sim_matrix.csv"
+        task = "dtw"
 
-        for row in reader:
-            if i == 0:
-                i += 1
-            else:
-                x_labels.append(row[0])
-                heat_map.append(row[1:-1])
+    df = pd.read_csv(file_name, index_col=0)
+    cols = list(df.columns.values)
+    cols = [int(c) for c in cols]
+    new_cols = [str(c) for c in sorted(cols)]
+    new_df = df[new_cols]
+    new_df = new_df.sort_index()
+    new_df.to_csv('test.csv')
+    heatmap = new_df.to_numpy()
+    sns.set(font_scale=1)
+    fig, ax = plt.subplots(figsize=(20,20))
+    hp = sns.heatmap(heatmap, cmap='CMRmap', xticklabels=new_df.index, yticklabels=new_df.index)
+    fig = hp.get_figure()
+    fig.savefig('heatmap_' + task + '.png')
 
-    sns.heatmap(heat_map, cmap='CMRmap')
-    plt.show()
-    print("end")
+if __name__ == "__main__":
+    main()
