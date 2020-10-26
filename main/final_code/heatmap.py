@@ -6,7 +6,7 @@ import sys
 def main():
 
     if len(sys.argv) < 1:
-        print('Run python Task_1.py <User Option> <p> <Task>')
+        print('Run python heatmap.py <User Option>')
         sys.exit(0)
     user_option = sys.argv[1]
 
