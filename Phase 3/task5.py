@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 
-def get_ppr2(qfile, k, m, c, gesture_list, relevant_gestures, irrelavant_gestures):
-    df = pd.read_csv("./cosine_sim_matrix.csv")
+def get_ppr2(qfile, k, m, c, gesture_list, relevant_gestures):
+    df = pd.read_csv("./task3_Edit_Dist_sim_mat.csv")
     df = df.set_index('Unnamed: 0')
 
     A = df.copy(deep=True)
@@ -26,7 +26,7 @@ def get_ppr2(qfile, k, m, c, gesture_list, relevant_gestures, irrelavant_gesture
 
     # top k for new similarity graph
     for r in gesture_list:
-        temp = np.array(df[result].loc[int(r)])
+        temp = np.array(df[gesture_list].loc[int(r)])
         print('temp', temp)
         topk = temp.argsort()[-k:][::-1]
         print('topk', topk)
@@ -40,11 +40,11 @@ def get_ppr2(qfile, k, m, c, gesture_list, relevant_gestures, irrelavant_gesture
 
     vecA = np.array(A)
     vq = np.zeros(A.shape[0])
-    if not relevant:
+    if not relevant_gestures:
         vq[A.columns.get_loc(qfile)] = 1
     else:
-        length = len(relevant)
-        for file in relevant:
+        length = len(relevant_gestures)
+        for file in relevant_gestures:
             vq[A.columns.get_loc(file)] = 1 / length
     uq = vq
     for i in range(1000):
@@ -108,12 +108,14 @@ if __name__ == '__main__':
     k = 30
     m = 10
     c = 0.85
-    get_ppr(qfiles, k, m, c)
+    gesture_list = ['1','11','2','31','4']
+    relevant_gestures = ['1','4']
+    get_ppr2(qfiles, k, m, c, gesture_list, relevant_gestures)
 
-    print("Enter the relevant gestures (comma separated)")
-    relevant_gestures = input().split(",")
-    print("Enter the irrelavant gestures (comma separated)")
-    irrelevant_gestures = input().split(",")
-    get_ppr(qfiles, k, m, c, relevant=relevant_gestures)
+    # print("Enter the relevant gestures (comma separated)")
+    # relevant_gestures = input().split(",")
+    # print("Enter the irrelavant gestures (comma separated)")
+    # irrelevant_gestures = input().split(",")
+    # get_ppr(qfiles, k, m, c, relevant)
 
 
