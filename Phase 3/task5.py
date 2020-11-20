@@ -10,8 +10,13 @@ def get_ppr2(qfile, k, m, c, gesture_list, relevant_gestures, irrelavant_gesture
     A = A[gesture_list]
     A = A.loc[A.index.isin(gesture_list)]
 
+
+    col_index_map = {}
+    i = 0
     for col in A.columns:
         A[col].values[:] = 0
+        col_index_map[i] = col
+        i += 1
 
     # for i in range(df.shape[0]):
     #     temp = np.array(df.iloc[i, :])
@@ -21,13 +26,13 @@ def get_ppr2(qfile, k, m, c, gesture_list, relevant_gestures, irrelavant_gesture
 
     # top k for new similarity graph
     for r in gesture_list:
-        temp = np.array(df[result].loc[df[result].index == int(r)])
+        temp = np.array(df[result].loc[int(r)])
         print('temp', temp)
-        topk = temp[0].argsort()[-k:][::-1]
+        topk = temp.argsort()[-k:][::-1]
         print('topk', topk)
         for j in topk:
-            print(r,j, temp[0][j])
-            A[r].iloc[j] = temp[0][j]
+            print(r,j, temp[j])
+            A.loc[int(r), col_index_map[j]] = temp[j]
 
     for i in range(A.shape[0]):
         A.iloc[i, :] = (A.iloc[i, :] - min(A.iloc[i, :])) / (max(A.iloc[i, :]) - min(A.iloc[i, :]))
