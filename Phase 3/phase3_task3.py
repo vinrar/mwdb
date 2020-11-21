@@ -38,7 +38,7 @@ def preprocessing(L, k, d):
             hashtable[code].append(gesture)
 
         hash_tables.append(hashtable)
-    print_hash_tables()
+    # print_hash_tables()
 
 
 def print_hash_tables():
@@ -75,32 +75,37 @@ def query_algorithm(q):
     return sorted_x
 
 
-def locality_sensitive_hashing(L, k, query, t):
+def locality_sensitive_hashing(L, k):
     dims = len(list(vectors.values())[0])
     preprocessing(L, k, dims)
-    result = query_algorithm(query)
-    print("\n-----", t, "most similar gestures using Locality Sensitive Hashing Index structure -----\n")
-    for i, (k, v) in zip(range(t), result.items()):
-        print("Gesture: ", k, ",\tSimilarity Score: ", v)
+    query_gesture = input("\n\nEnter query gesture name for similar gestures or q to quit: ")
+    while query_gesture != 'Q' and query_gesture != 'q':
+        t = int(input("Enter number of similar gestures to be returned, t: "))
+        similar_gestures_file = open(query_gesture+'_lsh_similarity.txt', 'w')
+        # query_gesture, t = '10', 10
+        result = query_algorithm(query_gesture)
+        print("\n-----", t, "most similar gestures using Locality Sensitive Hashing Index structure -----\n")
+        for i, (k, v) in zip(range(t), result.items()):
+            similar_gestures_file.write(k+'\n')
+            print("Gesture: ", k, ",\tSimilarity Score: ", v)
+        similar_gestures_file.close()
+        query_gesture = input("\n\nEnter query gesture name for similar gestures or q to quit: ")
 
 
 def main():
     global vectors
-    # L = int(input("Enter the number of layers, L: "))
-    # k = int(input("Enter the number of hashes per layer, k: "))
+    L = int(input("Enter the number of layers, L: "))
+    k = int(input("Enter the number of hashes per layer, k: "))
     # v_dir = input("Enter directory of vectors: ")
-    # model = input("Enter vector model - tf or tfidf: ")
-    # query_gesture = input("Enter query gesture name, q: ")
-    # t = int(input("Enter number of similar gestures to be returned, t: "))
+    model = input("Enter vector model - tf or tfidf: ")
 
-    L, k, v_dir, model = 10, 6, "3_class_gesture_data", "tf"  # default values
-    query_gesture, t = '10', 10
+    # L, k, v_dir, model = 10, 6, "3_class_gesture_data", "tf"  # default values
     # query_gesture, t = '260', 10
 
     with open(model + '_vectors.json', 'r') as fp:
         vectors = json.load(fp)
 
-    locality_sensitive_hashing(L, k, query_gesture, t)
+    locality_sensitive_hashing(L, k)
 
 
 if __name__ == '__main__':
