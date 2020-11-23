@@ -2,6 +2,7 @@ import os
 import pickle
 from collections import Counter
 import json
+import sys
 
 vector_model_data = {}
 the_matrix = []
@@ -71,35 +72,44 @@ def pretty(d, indent=0):
             print('\t' * (indent + 1) + str(value))
 
 
-def main():
-    # L = int(input("Enter the number of layers, L: "))
-    # k = int(input("Enter the number of hashes per layer, k: "))
+def initialize():
+    global vector_model_data, the_matrix, the_matrix_name_map
+    vector_model_data = {}
+    the_matrix = []
+    the_matrix_name_map = []
+
+
+def generate_vector_matrix(v_dir):
     # v_dir = input("Enter directory of vectors: ")
     # model = input("Enter vector model - tf or tfidf: ")
+    models = ['tf', 'tfidf']
 
-    L, k, v_dir, model = 5, 3, "3_class_gesture_data", "tf"  # default values
+    # v_dir, model = "3_class_gesture_data", "tf"  # default values
+    for model in models:
+        initialize()
+        file_list = get_list_of_files(v_dir, model)
+        read_file_data(file_list, v_dir)
+        list_of_features = get_list_of_features()
+        set_of_features = get_unique_features(list_of_features)
+        form_the_matrix(set_of_features)
 
-    file_list = get_list_of_files(v_dir, model)
-    read_file_data(file_list, v_dir)
-    list_of_features = get_list_of_features()
-    set_of_features = get_unique_features(list_of_features)
-    form_the_matrix(set_of_features)
+        with open(model + '_feature_list.pkl', 'wb') as f:
+            pickle.dump(set_of_features, f)
 
-    # pretty(vector_model_data, 2)
-    # print("The matrix: ", len(the_matrix), len(the_matrix[0]))
-    # print("Set of features: ", len(set_of_features))
+        output_vectors = {}
 
-    # np.savetxt(model + '_vector_matrix.txt', np.array(the_matrix))
-    # print("The matrix name map: ", the_matrix_name_map)
+        for (i, j) in zip(the_matrix_name_map, the_matrix):
+            output_vectors[i] = j
 
-    output_vectors = {}
-
-    for (i, j) in zip(the_matrix_name_map, the_matrix):
-        output_vectors[i] = j
-
-    with open(model+'_vectors.json', 'w') as fp:
-        json.dump(output_vectors, fp)
+        with open(model+'_vectors.json', 'w') as fp:
+            json.dump(output_vectors, fp)
 
 
 if __name__ == '__main__':
-    main()
+
+    if len(sys.argv) < 1:
+        print('Run python create_vector_matrix.py <Directory>')
+        sys.exit(0)
+    user_dir = sys.argv[1]
+    # user_dir = input("Enter directory of vectors: ")
+    generate_vector_matrix(user_dir)
