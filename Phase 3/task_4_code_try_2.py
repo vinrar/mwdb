@@ -1,5 +1,6 @@
 import numpy as np
 import json
+import pickle
 
 # sample dataset that was manually verified for calculations
 # dataset = [[1, 0, 0, 1], [1, 1, 0, 1], [0, 0, 1, 0],[1, 1, 1, 0], [1, 0, 0, 0], [0, 0, 0, 1]]
@@ -108,7 +109,9 @@ def get_feedback_results(list_of_similarity, number_of_required_results):
         similarity_results.append(map[each_index])
         retrieved_dataset.append(dataset[each_index])
 
-    return similarity_results, retrieved_dataset
+    numpy_form = numpy_form[index_of_largest]
+
+    return similarity_results[::-1], retrieved_dataset[::-1], numpy_form[::-1]
 
 
 def get_input_from_LSH(LSH_ranking_file):
@@ -149,6 +152,26 @@ def get_re_ordered_results(relevance_results, initial_similarity_results, retrie
 
     return reordered_initial_similarity_results[::-1], numpy_form_similarity[::-1]
 
+def get_modified_query(pi_values, ui_values):
+    new_query = []
+    for i in range(len(pi_values)):
+        if (ui_values[i] == 0):
+            ui_values[i] = 0.0001
+
+        if (pi_values[i] == 1):
+            pi_values[i] = 0.9999
+
+        if (ui_values[i] == 1):
+            ui_values[i] = 0.9999
+
+        if (pi_values[i] == 0):
+            pi_values[i] = 0.0001
+
+        new_query.append(np.log2((pi_values[i] * (1 - ui_values[i]))/ui_values[i]*(1 - pi_values[i])))
+
+    return new_query
+
+
 
 if __name__ == "__main__":
 
@@ -161,7 +184,7 @@ if __name__ == "__main__":
 
     # this is the intial ranking that is read from LSH..so basically,  LSH takes the query from the user and writes the
     # initial set of results in the ranking file and it is read here...this needs to be read as well
-    LSH_ranking_file = "11_lsh_similarity.txt"
+    LSH_ranking_file = "588_lsh_similarity.txt"
 
     # reading the dataset and converting things to binary format
     read_the_file(the_file)
@@ -193,10 +216,11 @@ if __name__ == "__main__":
                 pi_values, ui_values = get_improved_params(relevance_results, feedback_retrieved_dataset)
 
             feedback_similarity = get_feedback_similarity(pi_values, ui_values)
-            feedback_similarity_results, feedback_retrieved_dataset = get_feedback_results(feedback_similarity, number_of_required_results)
+            feedback_similarity_results, feedback_retrieved_dataset, similarity_scores = get_feedback_results(feedback_similarity, number_of_required_results)
             print("prinitng the feedback results")
             print(feedback_similarity_results)
-
+            print("prinitngg the similarity scores")
+            print(similarity_scores)
         # mode 1 denoting the workflow where the results are re-ordered
         else:
             print("running the re-ordering of results workflow")
