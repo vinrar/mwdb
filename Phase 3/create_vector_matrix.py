@@ -20,7 +20,7 @@ def read_file_data(list_of_files, v_dir):
     for each_file in list_of_files:
         file_path = v_dir + "/" + each_file
         file_handler = open(file_path, 'rb')
-        vector_model_data[each_file.split('.')[0].split('_')[-1]] = pickle.load(file_handler)
+        vector_model_data[each_file.split('.')[0].split('_', 2)[-1]] = pickle.load(file_handler)
 
 
 # return list of features across dimensions
