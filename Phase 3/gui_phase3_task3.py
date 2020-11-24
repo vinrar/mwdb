@@ -53,26 +53,35 @@ def print_hash_tables(hash_tables):
                 print("Code: ", key, ", Bucket: ", val)
 
 
-def query_algorithm(q, vectors, hash_tables):
-    # global vectors, hash_tables
-    gestures_to_compare, q_vec, num_buckets = set(), vectors[q], 0
-    for hashtable in hash_tables:
-        unit_vectors, code = hashtable["unit_vectors"], ""
-        for vec in unit_vectors:
-            code += get_code_from_vectors(vec, q_vec)
-        num_buckets += 1
-        for k in hashtable[code]:
-            gestures_to_compare.add(k)
+# given a query and t, returns the t most similar gestures to the query gesture
+def query_algorithm(q, vectors, hash_tables, t, k):
+    gestures_to_compare, q_vec = set(), vectors[q]
+    print("\nQuery gesture: ", q)
 
-    # print("\nNumber of buckets searched: ", num_buckets)
-    # print("Total number of gestures in dataset: ", len(vectors.keys()))
-    # print("Number of unique gestures compared: ", len(gestures_to_compare))
-    # print("Query gesture: ", q)
-    # print("List of gestures compared: ", gestures_to_compare)
+    while len(gestures_to_compare) < t:
+        num_buckets = 0
+        for hashtable in hash_tables:
+            unit_vectors, code = hashtable["unit_vectors"], ""
+            for vec in unit_vectors:
+                code += get_code_from_vectors(vec, q_vec)
+            for key, value in hashtable.items():
+                # print("Code: ", code, ", k: ", k, ", code[:k]: ", code[:k])
+                if key.startswith(code[:k]):
+                    num_buckets += 1
+                    for bucket_vector in value:
+                        gestures_to_compare.add(bucket_vector)
+        k -= 1
+        print("\nNumber of buckets searched: ", num_buckets)
+        print("Total number of gestures in dataset: ", len(vectors.keys()))
+        print("Number of unique gestures compared: ", len(gestures_to_compare))
+        print("List of gestures compared: ", sorted(gestures_to_compare))
+
+        if len(gestures_to_compare) < t:
+            print("\nNumber of gestures retrieved are less than ", t, ", searching more buckets...")
 
     distance_map = {}
     for gesture in gestures_to_compare:
-        distance_map[gesture] = cosine_similarity(vectors[q], vectors[gesture])
+        distance_map[gesture] = cosine_similarity(q_vec, vectors[gesture])
 
     sorted_x = {k: v for k, v in sorted(distance_map.items(), key=lambda item: item[1], reverse=True)}
     return sorted_x
@@ -81,15 +90,34 @@ def query_algorithm(q, vectors, hash_tables):
 def locality_sensitive_hashing(L, k, query, t, vectors, hash_tables, gui=False):
     # dims = len(list(vectors.values())[0])
     # preprocessing(L, k, dims)
-    result = query_algorithm(query, vectors, hash_tables)
+    result = query_algorithm(query, vectors, hash_tables, t, k)
     print("\n-", t, "most similar gestures using Locality Sensitive Hashing Index structure -\n")
     output = ''
+    gesture_list = []
     for i, (k, v) in zip(range(t), result.items()):
-        print(i+1,"Gesture: ", k, ",\tSimilarity Score: ", v)
-        output += '{} - Gesture: {},\tSimilarity Score: {}\n'.format(i+1, k, np.round(v, 3))
-    if(gui):
-        return output
+        print(i + 1, "Gesture: ", k, ",\tSimilarity Score: ", v)
+        output += '{} - Gesture: {},\tSimilarity Score: {}\n'.format(i + 1, k, np.round(v, 3))
+        gesture_list.append(str(k))
+    if (gui):
+        return output, gesture_list
 
+
+def set_updated_query(rel_gestures, ratio, vectors):
+    new_vectors = []
+    for i, gesture in enumerate(rel_gestures):
+        new_vectors.append([element * ratio[i] for element in vectors[gesture]])
+    new_vectors = np.array(new_vectors)
+    new_vectors = new_vectors.sum(axis=0)
+    return list(new_vectors)
+
+
+def get_appropriate_ratio(gesture_list, rel_gestures, ratio):
+    gesture_ratio_map = {}
+    for gesture, ratio_val in zip(rel_gestures, ratio):
+        gesture_ratio_map[gesture] = ratio_val
+    ratio = np.array([gesture_ratio_map[gesture] for gesture in gesture_list])
+    ratio = ratio / np.sum(ratio)
+    return ratio
 
 def main():
     global vectors

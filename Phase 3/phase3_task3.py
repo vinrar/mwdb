@@ -27,6 +27,16 @@ def cosine_similarity(u, v):
     return np.dot(u, v) / (norm(u) * norm(v))
 
 
+def check_nearby_codes(string_1, string_2, n):
+    count_diffs = 0
+    for a, b in zip(string_1, string_2):
+        if a != b:
+            count_diffs += 1
+            if count_diffs > n:
+                return False
+    return True
+
+
 # creates the in-memory index structures using hash_tables and stores the gestures in buckets
 def preprocessing(L, k, d):
     for table in range(L):
@@ -57,6 +67,7 @@ def print_hash_tables():
 
 # given a query and t, returns the t most similar gestures to the query gesture
 def query_algorithm(q, t, k):
+    K = k
     global vectors, hash_tables
     gestures_to_compare, q_vec = set(), vectors[q]
     print("\nQuery gesture: ", q)
@@ -69,15 +80,16 @@ def query_algorithm(q, t, k):
                 code += get_code_from_vectors(vec, q_vec)
             for key, value in hashtable.items():
                 # print("Code: ", code, ", k: ", k, ", code[:k]: ", code[:k])
-                if key.startswith(code[:k]):
+                # if key.startswith(code[:k]):
+                if check_nearby_codes(key, code, K-k):
                     num_buckets += 1
                     for bucket_vector in value:
                         gestures_to_compare.add(bucket_vector)
-        k -= 1
+        k -= 2
         print("\nNumber of buckets searched: ", num_buckets)
         print("Total number of gestures in dataset: ", len(vectors.keys()))
         print("Number of unique gestures compared: ", len(gestures_to_compare))
-        print("List of gestures compared: ", sorted(gestures_to_compare))
+        # print("List of gestures compared: ", sorted(gestures_to_compare))
 
         if len(gestures_to_compare) < t:
             print("\nNumber of gestures retrieved are less than ", t, ", searching more buckets...")

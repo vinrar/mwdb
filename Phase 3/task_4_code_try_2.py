@@ -9,6 +9,7 @@ import pickle
 dataset = []
 map = []
 
+
 def read_the_file(the_file):
     with open(the_file) as f:
         data = json.load(f)
@@ -17,11 +18,13 @@ def read_the_file(the_file):
         map.append(each_file)
         dataset.append(data[each_file])
 
+
 def convert_to_binary_form():
     for i in range(len(dataset)):
         for j in range(len(dataset[i])):
-            if(dataset[i][j] != 0):
+            if (dataset[i][j] != 0):
                 dataset[i][j] = 1
+
 
 def get_ni():
     list_of_proportions = [0] * len(dataset[0])
@@ -32,17 +35,19 @@ def get_ni():
 
     return list_of_proportions
 
+
 def get_initial_similarity(list_of_ni):
     similarity_scores = [0] * len(dataset)
     length_of_dataset = len(dataset)
     for i in range(len(dataset)):
         for j in range(len(dataset[0])):
-            if(list_of_ni[j] == length_of_dataset):
+            if (list_of_ni[j] == length_of_dataset):
                 the_value = (length_of_dataset - (list_of_ni[j] - 1)) / list_of_ni[j]
             else:
                 the_value = (length_of_dataset - list_of_ni[j]) / list_of_ni[j]
             similarity_scores[i] = similarity_scores[i] + (dataset[i][j] * np.log2(the_value))
     return similarity_scores
+
 
 def get_improved_params(relevance_results, retrieved_dataset):
     N = len(relevance_results)
@@ -55,15 +60,15 @@ def get_improved_params(relevance_results, retrieved_dataset):
             if (retrieved_dataset[i][j] == 1):
                 ni_values[j] = ni_values[j] + 1
 
-            if((retrieved_dataset[i][j] == 1) and (relevance_results[i] == 1)):
+            if ((retrieved_dataset[i][j] == 1) and (relevance_results[i] == 1)):
                 ri_values[j] = ri_values[j] + 1
 
-    pi_values = [0] *  len(retrieved_dataset[0])
+    pi_values = [0] * len(retrieved_dataset[0])
     ui_values = [0] * len(retrieved_dataset[0])
 
     for i in range(len(ni_values)):
-        pi_values[i] = (ri_values[i] + (ni_values[i]/N)) / (R + 1)
-        ui_values[i] = (ni_values[i] - ri_values[i] + (ni_values[i]/N)) / (N - R + 1)
+        pi_values[i] = (ri_values[i] + (ni_values[i] / N)) / (R + 1)
+        ui_values[i] = (ni_values[i] - ri_values[i] + (ni_values[i] / N)) / (N - R + 1)
 
     return pi_values, ui_values
 
@@ -72,26 +77,29 @@ def get_feedback_similarity(pi_values, ui_values):
     similarity_scores = [0] * len(dataset)
     for i in range(len(dataset)):
         for j in range(len(dataset[0])):
-            if(ui_values[j] == 0):
+            if (ui_values[j] == 0):
                 ui_values[j] = 0.0001
 
-            if(pi_values[j] == 1):
+            if (pi_values[j] == 1):
                 pi_values[j] = 0.9999
 
-            if(ui_values[j] == 1):
+            if (ui_values[j] == 1):
                 ui_values[j] = 0.9999
 
-            if(pi_values[j] == 0):
+            if (pi_values[j] == 0):
                 pi_values[j] = 0.0001
 
-            similarity_scores[i] = similarity_scores[i] + (dataset[i][j] * (np.log2((pi_values[j]*(1 - ui_values[j]))/(ui_values[j] * (1 - pi_values[j])))))
+            similarity_scores[i] = similarity_scores[i] + (dataset[i][j] * (
+                np.log2((pi_values[j] * (1 - ui_values[j])) / (ui_values[j] * (1 - pi_values[j])))))
 
     return similarity_scores
+
 
 def get_details_about_query(query):
     index_of_query = map.index(query)
     query_representation = dataset[index_of_query]
     return query_representation
+
 
 def get_initial_results(list_of_similarity):
     retrieved_dataset = []
@@ -99,6 +107,7 @@ def get_initial_results(list_of_similarity):
         index = map.index(each_item)
         retrieved_dataset.append(dataset[index])
     return retrieved_dataset
+
 
 def get_feedback_results(list_of_similarity, number_of_required_results):
     numpy_form = np.array(list_of_similarity)
@@ -130,27 +139,29 @@ def get_re_ordered_results(relevance_results, initial_similarity_results, retrie
 
     for i in range(len(retrieved_dataset)):
         for j in range(len(retrieved_dataset[0])):
-            if(ui_values[j] == 0):
+            if (ui_values[j] == 0):
                 ui_values[j] = 0.0001
 
-            if(pi_values[j] == 1):
+            if (pi_values[j] == 1):
                 pi_values[j] = 0.9999
 
-            if(ui_values[j] == 1):
+            if (ui_values[j] == 1):
                 ui_values[j] = 0.9999
 
-            if(pi_values[j] == 0):
+            if (pi_values[j] == 0):
                 pi_values[j] = 0.0001
 
-            similarity_scores[i] = similarity_scores[i] + (retrieved_dataset[i][j] * (np.log2((pi_values[j]*(1 - ui_values[j]))/(ui_values[j] * (1 - pi_values[j])))))
+            similarity_scores[i] = similarity_scores[i] + (retrieved_dataset[i][j] * (
+                np.log2((pi_values[j] * (1 - ui_values[j])) / (ui_values[j] * (1 - pi_values[j])))))
 
     numpy_form_similarity = np.array(similarity_scores)
     sorted_indexes = numpy_form_similarity.argsort()
     initial_similarity_results = np.array(initial_similarity_results)
-    reordered_initial_similarity_results  = initial_similarity_results[sorted_indexes]
+    reordered_initial_similarity_results = initial_similarity_results[sorted_indexes]
     numpy_form_similarity = numpy_form_similarity[sorted_indexes]
 
     return reordered_initial_similarity_results[::-1], numpy_form_similarity[::-1]
+
 
 def get_modified_query(pi_values, ui_values):
     new_query = []
@@ -167,24 +178,24 @@ def get_modified_query(pi_values, ui_values):
         if (pi_values[i] == 0):
             pi_values[i] = 0.0001
 
-        new_query.append(np.log2((pi_values[i] * (1 - ui_values[i]))/ui_values[i]*(1 - pi_values[i])))
+        new_query.append(np.log2((pi_values[i] * (1 - ui_values[i])) / ui_values[i] * (1 - pi_values[i])))
 
     return new_query
 
 
-
-if __name__ == "__main__":
-
+# if __name__ == "__main__":
+def get_task4_results(mode, vector_model, initial_similarity_results, relevance_results):
     # mode 0 for changing the query and giving better results
     # mode 1 for simply re-ordering the results
-    mode = 0
+    # mode = 0
 
     # this file is generated when phase 3 is run and depending on model(tf or idf) that is taken, we need to read this
-    the_file = "tf_vectors.json"
+    # vector_model = "tf"
+    the_file = "%s_vectors.json" % vector_model
 
     # this is the intial ranking that is read from LSH..so basically,  LSH takes the query from the user and writes the
     # initial set of results in the ranking file and it is read here...this needs to be read as well
-    LSH_ranking_file = "588_lsh_similarity.txt"
+    # LSH_ranking_file = "588_lsh_similarity.txt"
 
     # reading the dataset and converting things to binary format
     read_the_file(the_file)
@@ -193,8 +204,7 @@ if __name__ == "__main__":
     first_feedback = True
 
     # Evaluating similarity based on initial input from LSH
-    initial_similarity_results = get_input_from_LSH(LSH_ranking_file)
-
+    # initial_similarity_results = get_input_from_LSH(LSH_ranking_file)
 
     number_of_required_results = len(initial_similarity_results)
     retrieved_dataset = get_initial_results(initial_similarity_results)
@@ -202,32 +212,33 @@ if __name__ == "__main__":
     print("Initial similarity results are")
     print(initial_similarity_results)
 
-    while(1):
-        # mode 0 denoting the workflow where the query is modified based on the feedback and
-        # we get progressively better results
-        if(mode == 0):
-            print("Enter the relevance results")
-            relevance_results = [int(x) for x in input().split()]
-            #relevance_results = [0, 1, 0, 0, 0, 1, 0, 1, 1, 0]
-            if(first_feedback):
-                first_feedback = False
-                pi_values, ui_values = get_improved_params(relevance_results, retrieved_dataset)
-            else:
-                pi_values, ui_values = get_improved_params(relevance_results, feedback_retrieved_dataset)
-
-            feedback_similarity = get_feedback_similarity(pi_values, ui_values)
-            feedback_similarity_results, feedback_retrieved_dataset, similarity_scores = get_feedback_results(feedback_similarity, number_of_required_results)
-            print("prinitng the feedback results")
-            print(feedback_similarity_results)
-            print("prinitngg the similarity scores")
-            print(similarity_scores)
-        # mode 1 denoting the workflow where the results are re-ordered
+    # mode 0 denoting the workflow where the query is modified based on the feedback and
+    # we get progressively better results
+    if (mode == 0):
+        print("Enter the relevance results")
+        relevance_results = [int(x) for x in input().split()]
+        # relevance_results = [0, 1, 0, 0, 0, 1, 0, 1, 1, 0]
+        if (first_feedback):
+            first_feedback = False
+            pi_values, ui_values = get_improved_params(relevance_results, retrieved_dataset)
         else:
-            print("running the re-ordering of results workflow")
-            print("Enter the relevance results")
-            relevance_results = [int(x) for x in input().split()]
-            re_ordered_results, reordered_similarity_scores = get_re_ordered_results(relevance_results, initial_similarity_results, retrieved_dataset)
-            print("printing re-ordered results")
-            print(re_ordered_results)
-            print(reordered_similarity_scores)
-            break
+            pi_values, ui_values = get_improved_params(relevance_results, feedback_retrieved_dataset)
+
+        feedback_similarity = get_feedback_similarity(pi_values, ui_values)
+        feedback_similarity_results, feedback_retrieved_dataset, similarity_scores = get_feedback_results(
+            feedback_similarity, number_of_required_results)
+        print("prinitng the feedback results")
+        print(feedback_similarity_results)
+        print("prinitngg the similarity scores")
+        print(similarity_scores)
+    # mode 1 denoting the workflow where the results are re-ordered
+    else:
+        print("running the re-ordering of results workflow")
+        print("Enter the relevance results")
+        relevance_results = [int(x) for x in input().split()]
+        re_ordered_results, reordered_similarity_scores = get_re_ordered_results(relevance_results,
+                                                                                 initial_similarity_results,
+                                                                                 retrieved_dataset)
+        print("printing re-ordered results")
+        print(re_ordered_results)
+        print(reordered_similarity_scores)
