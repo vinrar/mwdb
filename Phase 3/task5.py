@@ -4,7 +4,7 @@ import numpy as np
 
 def get_ppr_changing_query(k, m, c, relevant_gestures, gui=False):
     # TODO: Make the file name uniform with task 3 input
-    df = pd.read_csv("./cosine_sim_matrix.csv")
+    df = pd.read_csv("./pca_cosine_sim_matrix.csv")
     df = df.set_index('Unnamed: 0')
 
     A = df.copy(deep=True)

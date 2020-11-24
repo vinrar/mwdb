@@ -6,6 +6,7 @@ import numpy as np
 from numpy.linalg import norm
 import sys
 
+
 # hash_tables, vectors = [], {}
 
 
@@ -53,8 +54,21 @@ def print_hash_tables(hash_tables):
                 print("Code: ", key, ", Bucket: ", val)
 
 
+def check_nearby_codes(string_1, string_2, n):
+    count_diffs = 0
+    for a, b in zip(string_1, string_2):
+        if a != b:
+            count_diffs += 1
+            if count_diffs > n:
+                return False
+    return True
+
+
 # given a query and t, returns the t most similar gestures to the query gesture
 def query_algorithm(q, vectors, hash_tables, t, k):
+    k = int(k)
+    K = k
+
     gestures_to_compare, q_vec = set(), vectors[q]
     print("\nQuery gesture: ", q)
 
@@ -66,15 +80,16 @@ def query_algorithm(q, vectors, hash_tables, t, k):
                 code += get_code_from_vectors(vec, q_vec)
             for key, value in hashtable.items():
                 # print("Code: ", code, ", k: ", k, ", code[:k]: ", code[:k])
-                if key.startswith(code[:k]):
+                # if key.startswith(code[:k]):
+                if check_nearby_codes(key, code, K - k):
                     num_buckets += 1
                     for bucket_vector in value:
                         gestures_to_compare.add(bucket_vector)
-        k -= 1
+        k -= 2
         print("\nNumber of buckets searched: ", num_buckets)
         print("Total number of gestures in dataset: ", len(vectors.keys()))
         print("Number of unique gestures compared: ", len(gestures_to_compare))
-        print("List of gestures compared: ", sorted(gestures_to_compare))
+        # print("List of gestures compared: ", sorted(gestures_to_compare))
 
         if len(gestures_to_compare) < t:
             print("\nNumber of gestures retrieved are less than ", t, ", searching more buckets...")
@@ -102,12 +117,12 @@ def locality_sensitive_hashing(L, k, query, t, vectors, hash_tables, gui=False):
         return output, gesture_list
 
 
-def set_updated_query(rel_gestures, ratio, vectors):
+def set_updated_query(rel_gestures, ratio, vectors, query):
     new_vectors = []
     for i, gesture in enumerate(rel_gestures):
         new_vectors.append([element * ratio[i] for element in vectors[gesture]])
     new_vectors = np.array(new_vectors)
-    new_vectors = new_vectors.sum(axis=0)
+    new_vectors = query + 0.4 * new_vectors.sum(axis=0)
     return list(new_vectors)
 
 
@@ -118,6 +133,7 @@ def get_appropriate_ratio(gesture_list, rel_gestures, ratio):
     ratio = np.array([gesture_ratio_map[gesture] for gesture in gesture_list])
     ratio = ratio / np.sum(ratio)
     return ratio
+
 
 def main():
     global vectors
@@ -131,7 +147,8 @@ def main():
     query_gesture = sys.argv[5]
     t = int(sys.argv[6])
 
-    print("L: {}\nk: {}\nDirectory: {}\nVector Model: {}\nQuery Gesture: {}\nt: {}\n".format(L, k, v_dir, model, query_gesture, t))
+    print("L: {}\nk: {}\nDirectory: {}\nVector Model: {}\nQuery Gesture: {}\nt: {}\n".format(L, k, v_dir, model,
+                                                                                             query_gesture, t))
     # L, k, v_dir, model = 10, 6, "3_class_gesture_data", "tf"  # default values
     # query_gesture, t = '10', 10
     # query_gesture, t = '260', 10
@@ -150,3 +167,5 @@ if __name__ == '__main__':
 # Good results for:
 # L, k, v_dir, model = 8, 6, "3_class_gesture_data", "tf"  # default values
 # query_gesture, t = '260' and '588', 10
+
+# =====================================Task 4 =======================================================

@@ -5,7 +5,7 @@ import os, json
 from gui_phase3_task3 import locality_sensitive_hashing, preprocessing, set_updated_query, get_appropriate_ratio, \
     query_algorithm
 from task5 import get_ppr2, get_ppr_changing_query
-from task_4_code_try_2 import get_task4_results
+from task_4_code_try_2 import get_task4_results, read_the_file, convert_to_binary_form, get_initial_results
 
 HEIGHT = 600
 WIDTH = 800
@@ -63,8 +63,14 @@ def generateResults():
     firstRun = True
     runAgain = True
     gesture_list = []
-    feed_back_results = []
     hash_tables = []
+    dataset = []
+    map = []
+    retrieved_dataset = []
+    first_feedback = True
+    similar_gestures = []
+    feedback_retrieved_dataset = []
+    query_vector = []
     while runAgain:
         # generate results for similarity
         if firstRun:
@@ -82,26 +88,50 @@ def generateResults():
 
             query_gesture = QUERY_GESTURE
 
-            with open(model + '_vectors.json', 'r') as fp:
+            with open(model + 'phase_2_task_1_transformed_matrix.json.json', 'r') as fp:
                 vectors = json.load(fp)
 
             # preprocessing for LSH
             dims = len(list(vectors.values())[0])
             hash_tables = preprocessing(L, k, dims, vectors)
             # locality_sensitive_hashing(L, k, )
+            print("Preprocessing Done")
             results_to_display, gesture_list = locality_sensitive_hashing(L, k, query_gesture, t, vectors, hash_tables,
                                                                           gui=True)
-
+            print("Got Results From LSH", gesture_list)
             # results_to_display = [i for i in range(1,11)]
             # resultLabel['text'] = formatResult(results_to_display)
             resultLabel['text'] = results_to_display
             firstRun = False
             RELEVANT_FEEDBACK.append(query_gesture)
+
+            # For Task 5 ================
+            the_file = "%s_vectors.json" % model
+            dataset, map = read_the_file(the_file)
+            dataset = convert_to_binary_form(dataset)
+            number_of_required_results = len(gesture_list)
+            retrieved_dataset = get_initial_results(gesture_list, dataset, map)
+            similar_gestures = gesture_list
+            query_vector = vectors[query_gesture]
         else:
             # run for the subsequent times with feedback
             if TASK_NUMBER == 4:
-                print("Need to do")
-                # feed_back_results = get_task4_results(mode, vector_model, initial_similarity_results, relevance_results):
+                relevance_results = []
+                for gesture in similar_gestures:
+                    if gesture in RELEVANT_FEEDBACK:
+                        relevance_results.append(1)
+                    else:
+                        relevance_results.append(0)
+                print("Relevant List", relevance_results)
+                feed_back_results, feedback_retrieved_dataset, similar_gestures = get_task4_results(QUERY_MODE,
+                                                                                                    gesture_list,
+                                                                                                    relevance_results,
+                                                                                                    dataset, map,
+                                                                                                    retrieved_dataset,
+                                                                                                    len(gesture_list),
+                                                                                                    feedback_retrieved_dataset,
+                                                                                                    first_feedback)
+                first_feedback = False
             else:
                 if QUERY_MODE == 0:
                     feed_back_results = get_ppr2(len(gesture_list), 0.85, gesture_list, RELEVANT_FEEDBACK,
@@ -114,7 +144,8 @@ def generateResults():
                         gesture_list.add(rel_ges)
                     gesture_list = list(gesture_list)
                     query_vector = set_updated_query(gesture_list,
-                                                     get_appropriate_ratio(gesture_list, rel_gestures, ratio), vectors)
+                                                     get_appropriate_ratio(gesture_list, rel_gestures, ratio), vectors,
+                                                     query_vector)
                     vectors[-1] = query_vector
                     result = query_algorithm(-1, vectors, hash_tables, t, k)
                     output = ''
