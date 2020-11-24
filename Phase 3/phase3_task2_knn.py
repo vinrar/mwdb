@@ -14,16 +14,26 @@ flattening_map = []
 
 # returns list of vector files based on vector model
 def get_list_of_files(dir, vector_model):
-    list_of_files = os.listdir(dir)
+    current_folder = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(current_folder, dir)
+    list_of_files = os.listdir(data_dir)
     return [file for file in list_of_files if file.__contains__(vector_model + '_vectors')]
 
 
 # stores vector model data globally
 def read_file_data(list_of_files, dir):
+    current_folder = os.path.dirname(os.path.abspath(__file__))
     for each_file in list_of_files:
-        file_path = dir + "/" + each_file
+        # file_path = dir + "/" + each_file
+        data_dir = os.path.join(current_folder, dir)
+        file_path = os.path.join(data_dir, each_file)
         file_handler = open(file_path, 'rb')
-        vector_model_data[each_file.split('.')[0].split('_')[-1]] = pickle.load(file_handler)
+        if each_file.count("_") == 3:
+            keys = each_file.split('.')[0].split('_')
+            key = keys[-2] + "_" + keys[-1]
+        else:
+            key = each_file.split('.')[0].split('_')[-1]
+        vector_model_data[key] = pickle.load(file_handler)
 
 
 # return list of features across dimensions
@@ -68,15 +78,20 @@ def form_the_matrix(set_of_features):
 def get_distance_similarity(gesture_vector):
     list_of_similarities = []
     for each_file in the_matrix:
-        distance = 0
-        # computing Eucledian distance here
-        for i in range(len(the_matrix[each_file])):
-            distance = distance + (gesture_vector[i] * the_matrix[each_file][i])
+        # compute the similarity for only the main vectors
+        if each_file.count("_") == 0:
+            distance = 0
+            # computing Eucledian distance here
+            for i in range(len(the_matrix[each_file])):
+                distance = distance + (gesture_vector[i] * the_matrix[each_file][i])
 
-        distance = math.sqrt(distance)
-        list_of_similarities.append((each_file, distance))
+            distance = math.sqrt(distance)
+            list_of_similarities.append((each_file, distance))
 
-    return sorted(list_of_similarities, key=lambda x: x[1], reverse=True)
+    if not list_of_similarities:
+        return list_of_similarities
+
+    return sorted(list_of_similarities, key=lambda x: x[1], reverse=True)[:k + 1]
 
 
 # returns cosine similarity between two vectors
@@ -141,10 +156,10 @@ def print_results(result):
 
 
 def perform_knn(similarity_matrix, k, test_key):
-    gesture_6x = 'vattene'
-    gesture_1xx = 'Combinato'
-    gesture_6xx = "D'Accordo"
-    config_map = {gesture_6x: [1, 31], gesture_1xx: [249, 279], gesture_6xx: [559, 589]}
+    gesture_1 = 'vattene'
+    gesture_2 = 'Combinato'
+    gesture_3 = "D'Accordo"
+    config_map = {gesture_1: [1, 31], gesture_2: [249, 279], gesture_3: [559, 589]}
     result_map = {}
     for key in config_map:
         config_range = config_map[key]
@@ -180,44 +195,41 @@ def perform_knn(similarity_matrix, k, test_key):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 5:
-        print('Run python task2.py <Directory> <Gesture File> <Vector Model> <User Option> <k>')
+    if len(sys.argv) < 3:
+        print('Run python phase3_task2_knn.py <Directory> <Vector Model> <k>')
         sys.exit(0)
-    dir = sys.argv[1]
-    gesture_file = sys.argv[2]
-    vector_model = sys.argv[3]
-    user_option = sys.argv[4]
-    k = int(sys.argv[5])
 
-    print("Directory: {}\nGesture File: {}\nVector Model: {}\nUser Option: {}\nk: {}".format(dir, gesture_file,
-                                                                                             vector_model, user_option,
-                                                                                             k))
+    directory = sys.argv[1]
+    vector_model = sys.argv[2]
+    k = int(sys.argv[3])
+
+    print("Directory: {}\nVector Model: {}\nk: {}".format(directory, vector_model, k))
 
     # function calls to initialize all global variables
-    list_of_files = get_list_of_files(dir, vector_model)
-    read_file_data(list_of_files, dir)
+    list_of_files = get_list_of_files(directory, vector_model)
+    read_file_data(list_of_files, directory)
     list_of_features = get_list_of_features()
     set_of_features = get_unique_features(list_of_features)
     form_the_matrix(set_of_features)
 
-
-    if user_option == '1':
-        print(type(the_matrix))
-        keys = list(the_matrix.keys())
-        train, test = train_test_split(keys, test_size=0.2)
-        total_count = 0
-        correct_count = 0
-        # for test_key in test:
-        for test_key in keys:
+    print(type(the_matrix))
+    keys = list(the_matrix.keys())
+    train, test = train_test_split(keys, test_size=0.2)
+    total_count = 0
+    correct_count = 0
+    # for test_key in test:
+    for test_key in keys:
+        if test_key.count("_") == 1:
             total_count += 1
             gesture_vector = the_matrix[test_key]
-            similarity_matrix = get_distance_similarity(gesture_vector)[:k + 1]
+            similarity_matrix = get_distance_similarity(gesture_vector)
             # ignoring the first key
-            similarity_matrix = similarity_matrix[1:]
-            print("Printing the similarity results based on dot product")
-            print_results(similarity_matrix)
-            correct_count += perform_knn(similarity_matrix, k, test_key)
+            if similarity_matrix:
+                similarity_matrix = similarity_matrix[1:]
+                print("Printing the similarity results based on dot product")
+                print_results(similarity_matrix)
+                correct_count += perform_knn(similarity_matrix, k, test_key.split("_")[0])
 
-        print("Total count: " + str(total_count))
-        print("Count: " + str(correct_count))
-        print("Accuracy: " + str(correct_count / total_count))
+    print("Total count: " + str(total_count))
+    print("Count: " + str(correct_count))
+    print("Accuracy: " + str(correct_count / total_count))

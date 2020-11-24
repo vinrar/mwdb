@@ -144,7 +144,7 @@ def convert(o):
 if __name__ == '__main__':
 
     if len(sys.argv) < 4:
-        print('Run python task1.py <Directory> <Vector Model> <User Option> <k>')
+        print('Run python phase2_task1.py <Directory> <Vector Model> <User Option> <k>')
         sys.exit(0)
     directory = sys.argv[1]
     vector_model = sys.argv[2]
