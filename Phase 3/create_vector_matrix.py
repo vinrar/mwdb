@@ -111,5 +111,4 @@ if __name__ == '__main__':
         print('Run python create_vector_matrix.py <Directory>')
         sys.exit(0)
     user_dir = sys.argv[1]
-    # user_dir = input("Enter directory of vectors: ")
     generate_vector_matrix(user_dir)
