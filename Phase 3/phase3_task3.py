@@ -1,9 +1,10 @@
 import json
-from collections import defaultdict
-from random import gauss, uniform
-
 import numpy as np
+import pickle
+import sys
+from collections import defaultdict
 from numpy.linalg import norm
+from random import gauss, uniform
 
 hash_tables, vectors = [], {}
 
@@ -71,6 +72,11 @@ def query_algorithm(q, t, k):
     global vectors, hash_tables
     gestures_to_compare, q_vec = set(), vectors[q]
     print("\nQuery gesture: ", q)
+    print("Total number of gestures in dataset: ", len(vectors.keys()))
+
+    # pca_reload = pickle.load(open("pca_fit_object.pkl", 'rb'))
+    # result_new = pca_reload.transform([np.ones(8110)])
+    # q_vec = result_new[0]
 
     while len(gestures_to_compare) < t:
         num_buckets = 0
@@ -79,16 +85,14 @@ def query_algorithm(q, t, k):
             for vec in unit_vectors:
                 code += get_code_from_vectors(vec, q_vec)
             for key, value in hashtable.items():
-                # print("Code: ", code, ", k: ", k, ", code[:k]: ", code[:k])
-                # if key.startswith(code[:k]):
                 if check_nearby_codes(key, code, K-k):
+                    # print("Code: ", code, ", key: ", key, ", value: ", value)
                     num_buckets += 1
                     for bucket_vector in value:
                         gestures_to_compare.add(bucket_vector)
         k -= 2
         print("\nNumber of buckets searched: ", num_buckets)
-        print("Total number of gestures in dataset: ", len(vectors.keys()))
-        print("Number of unique gestures compared: ", len(gestures_to_compare))
+        print("Number of unique gestures retrieved: ", len(gestures_to_compare))
         # print("List of gestures compared: ", sorted(gestures_to_compare))
 
         if len(gestures_to_compare) < t:
@@ -111,33 +115,40 @@ def locality_sensitive_hashing(L, k):
         t = int(input("Enter number of similar gestures to be returned, t: "))
         similar_gestures_file = open(query_gesture+'_lsh_similarity.txt', 'w')
         result = query_algorithm(query_gesture, t, k)
-        print("\n-----", t, "most similar gestures using Locality Sensitive Hashing Index structure -----\n")
+        print("\n-----", t, "most similar (gesture, score) pairs using Locality Sensitive Hashing Index structure "
+                            "-----\n")
         for i, (key, value) in zip(range(t), result.items()):
             similar_gestures_file.write(key+'\n')
-            print("Gesture: ", key, ",\tSimilarity Score: ", value)
+            print("(", key, ' , ', value, ')')
         similar_gestures_file.close()
+
         query_gesture = input("\n\nEnter query gesture name for similar gestures or q to quit: ")
 
 
 def main():
     global vectors
-    L = int(input("Enter the number of layers, L: "))
-    k = int(input("Enter the number of hashes per layer, k: "))
-    # v_dir = input("Enter directory of vectors: ")
-    model = input("Enter vector model - tf or tfidf: ")
+    if len(sys.argv) < 2:
+        print('Run python phase3_task2_knn.py <L> <k> <Space> <Vector Model>')
+        sys.exit(0)
 
-    # L, k, v_dir, model = 8, 6, "3_class_gesture_data", "tf"  # default values
-    # query_gesture, t = '260', 10
+    L = int(sys.argv[1])
+    k = int(sys.argv[2])
+    space = int(sys.argv[3])
+    model = sys.argv[4]
 
-    with open(model + '_vectors.json', 'r') as fp:
-        vectors = json.load(fp)
+    # L = int(input("Enter the number of layers, L: "))
+    # k = int(input("Enter the number of hashes per layer, k: "))
+    # model = input("Enter vector model, tf or tfidf: ")
+
+    if space == 1:
+        with open('pca_transformed_' + model + '_vectors.json', 'r') as fp:
+            vectors = json.load(fp)
+    elif space == 0:
+        with open(model + '_vectors.json', 'r') as fp:
+            vectors = json.load(fp)
 
     locality_sensitive_hashing(L, k)
 
 
 if __name__ == '__main__':
     main()
-
-# Good results for: L = 10 and k = 10
-# L, k, v_dir, model = 8, 6, "3_class_gesture_data", "tf"  # default values
-# query_gesture, t = '260' and '588', 10

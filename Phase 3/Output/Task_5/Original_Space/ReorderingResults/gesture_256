@@ -1,0 +1,43 @@
+Query: Gesture 256
+
+Gesture:  256 ,	Similarity Score:  1.0000000000000002
+2 Gesture:  266 ,	Similarity Score:  0.7057628656820999
+3 Gesture:  564 ,	Similarity Score:  0.6678850538338801
+4 Gesture:  254 ,	Similarity Score:  0.6414275824643793
+5 Gesture:  263 ,	Similarity Score:  0.6321008265351171
+6 Gesture:  271 ,	Similarity Score:  0.6267650926544001
+7 Gesture:  258 ,	Similarity Score:  0.5892724735836737
+8 Gesture:  3 ,	Similarity Score:  0.5308619240665781
+9 Gesture:  571_9 ,	Similarity Score:  0.3225702280169749
+10 Gesture:  562_2 ,	Similarity Score:  0.314916755767475
+
+Iteration 1:
+Relevant feedback ['266', '258', '263', '254', '256']
+Irrelevant feedback ['564', '571_9', '562_2']
+Gesture List ['256', '266', '564', '254', '263', '271', '258', '3', '571_9', '562_2']
+File:  256 , PPR:  0.18622149359383766
+File:  258 , PPR:  0.18195340237599997
+File:  266 , PPR:  0.17887257896406153
+File:  263 , PPR:  0.1705570643405268
+File:  254 , PPR:  0.1696037763763191
+File:  562_2 , PPR:  0.02670856041296088
+File:  271 , PPR:  0.026248242747617768
+File:  571_9 , PPR:  0.025913367319142695
+File:  3 , PPR:  0.02590700949202952
+File:  564 , PPR:  0.0210400557040224
+
+Iteration 2:
+
+Relevant feedback ['564', '3']
+Irrelevant feedback ['571_9', '562_2']
+Gesture List ['256', '266', '564', '254', '263', '271', '258', '3', '571_9', '562_2']
+File:  564 , PPR:  0.4322603697556388
+File:  3 , PPR:  0.42040402272772887
+File:  266 , PPR:  0.04003752211324331
+File:  258 , PPR:  0.021402057691899155
+File:  271 , PPR:  0.02039891072502744
+File:  571_9 , PPR:  0.020117402286999223
+File:  256 , PPR:  0.019239168778212953
+File:  562_2 , PPR:  0.019091865937851178
+File:  254 , PPR:  0.015364678461330598
+File:  263 , PPR:  0.013863889282801259

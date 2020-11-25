@@ -1,0 +1,29 @@
+Query 3 : Gesture 11_2
+
+Results from LSH
+1 Gesture:  11_2 ,	Similarity Score:  0.9999999999999999
+2 Gesture:  11_9 ,	Similarity Score:  0.9989384991102339
+3 Gesture:  11_5 ,	Similarity Score:  0.9972782482016508
+4 Gesture:  11_3 ,	Similarity Score:  0.9970797883877381
+5 Gesture:  11_1 ,	Similarity Score:  0.9970323915470786
+6 Gesture:  11_8 ,	Similarity Score:  0.9966352288023905
+7 Gesture:  11_6 ,	Similarity Score:  0.9959319172982339
+8 Gesture:  11_0 ,	Similarity Score:  0.9949867306684542
+9 Gesture:  11_4 ,	Similarity Score:  0.994558803057474
+10 Gesture:  11_7 ,	Similarity Score:  0.9927918379411719
+
+
+Iteration 1:
+Relevant feedback ['11_2', '11_4', '11_7']
+Irrelevant feedback ['11_1', '11_5', '11_3']
+Gesture List ['11_2', '11_9', '11_5', '11_3', '11_1', '11_8', '11_6', '11_0', '11_4', '11_7']
+File:  11_2 , PPR:  0.29087131253901843
+File:  11_7 , PPR:  0.28641490667265085
+File:  11_4 , PPR:  0.2836528330696239
+File:  11_0 , PPR:  0.027717807855427407
+File:  11_1 , PPR:  0.027013843124270357
+File:  11_6 , PPR:  0.017640703819470208
+File:  11_5 , PPR:  0.01677155506709433
+File:  11_8 , PPR:  0.01664974362495628
+File:  11_9 , PPR:  0.015871777520351904
+File:  11_3 , PPR:  0.014862043315049044

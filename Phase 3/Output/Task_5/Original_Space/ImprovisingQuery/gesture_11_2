@@ -1,0 +1,28 @@
+Query: 11_2
+
+1 Gesture:  11_2 ,	Similarity Score:  1.0000000000000002
+2 Gesture:  11_9 ,	Similarity Score:  0.818136443267127
+3 Gesture:  11_4 ,	Similarity Score:  0.8164801625007845
+4 Gesture:  11_6 ,	Similarity Score:  0.8007089993052994
+5 Gesture:  11_0 ,	Similarity Score:  0.8005309662182075
+6 Gesture:  11_3 ,	Similarity Score:  0.7986421264495587
+7 Gesture:  11_1 ,	Similarity Score:  0.7979797979797978
+8 Gesture:  11_5 ,	Similarity Score:  0.7943067033976123
+9 Gesture:  11_7 ,	Similarity Score:  0.7863044654281294
+10 Gesture:  1_8 ,	Similarity Score:  0.5741390956208534
+
+Iteration 1:
+
+Relevant feedback ['11_7', '11_5', '11_6', '11_3', '11_1', '11_9', '11_4', '11_0', '11_2']
+Irrelevant feedback ['1_8']
+
+1 Gesture:  11_0 ,	Similarity Score:  0.9151142701166073
+2 Gesture:  11_9 ,	Similarity Score:  0.9122672426853743
+3 Gesture:  11_4 ,	Similarity Score:  0.910861552801916
+4 Gesture:  11_2 ,	Similarity Score:  0.9090734150063797
+5 Gesture:  11_1 ,	Similarity Score:  0.9065581552125587
+6 Gesture:  11_7 ,	Similarity Score:  0.9022711535659652
+7 Gesture:  11_6 ,	Similarity Score:  0.901913400589522
+8 Gesture:  11_5 ,	Similarity Score:  0.8980957090679199
+9 Gesture:  11_3 ,	Similarity Score:  0.896348916019861
+10 Gesture:  11_8 ,	Similarity Score:  0.8793675858900033

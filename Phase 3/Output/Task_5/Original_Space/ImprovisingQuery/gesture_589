@@ -1,0 +1,60 @@
+Query: 589
+
+1 Gesture:  589 ,	Similarity Score:  1.0
+2 Gesture:  582 ,	Similarity Score:  0.6814329143892923
+3 Gesture:  269 ,	Similarity Score:  0.6252229238453505
+4 Gesture:  567 ,	Similarity Score:  0.5802219581239881
+5 Gesture:  587 ,	Similarity Score:  0.5647400108042828
+6 Gesture:  19 ,	Similarity Score:  0.5079370063138373
+7 Gesture:  272 ,	Similarity Score:  0.4892409752266026
+8 Gesture:  589_1 ,	Similarity Score:  0.446066840367473
+9 Gesture:  586_5 ,	Similarity Score:  0.37532920692136734
+10 Gesture:  567_8 ,	Similarity Score:  0.36141505801929763
+
+Iteration 1:
+
+Relevant feedback ['567', '589', '587', '582']
+Irrelevant feedback ['567_8', '586_5', '19', '269', '272', '589_1']
+
+1 Gesture:  582 ,	Similarity Score:  0.8702495650951428
+2 Gesture:  567 ,	Similarity Score:  0.8376381835525554
+3 Gesture:  589 ,	Similarity Score:  0.8342201643170091
+4 Gesture:  587 ,	Similarity Score:  0.8180274535647442
+5 Gesture:  588 ,	Similarity Score:  0.7888635447824577
+6 Gesture:  579 ,	Similarity Score:  0.7770846207290913
+7 Gesture:  564 ,	Similarity Score:  0.7621724374734548
+8 Gesture:  269 ,	Similarity Score:  0.7577192756915452
+9 Gesture:  13 ,	Similarity Score:  0.7539377393161159
+10 Gesture:  568 ,	Similarity Score:  0.740305708598198
+
+Iteration 2:
+
+Relevant feedback ['564', '579', '587', '588', '582', '568', '567', '589']
+Irrelevant feedback ['269', '13']
+
+1 Gesture:  579 ,	Similarity Score:  0.8336470812303322
+2 Gesture:  567 ,	Similarity Score:  0.8315655144019723
+3 Gesture:  564 ,	Similarity Score:  0.8176172883436033
+4 Gesture:  561 ,	Similarity Score:  0.8160227766586611
+5 Gesture:  568 ,	Similarity Score:  0.8129709390240175
+6 Gesture:  589 ,	Similarity Score:  0.8074066169437081
+7 Gesture:  249 ,	Similarity Score:  0.7926350943274368
+8 Gesture:  571 ,	Similarity Score:  0.7871175950619085
+9 Gesture:  13 ,	Similarity Score:  0.7830393584988729
+10 Gesture:  587 ,	Similarity Score:  0.7829375157834015
+
+Iteration 3:
+
+Relevant feedback ['571', '564', '579', '587', '568', '567', '589', '561']
+Irrelevant feedback ['249', '13']
+
+1 Gesture:  561 ,	Similarity Score:  0.8706992367709115
+2 Gesture:  567 ,	Similarity Score:  0.8660536303169138
+3 Gesture:  571 ,	Similarity Score:  0.8462571442387034
+4 Gesture:  564 ,	Similarity Score:  0.8395994473070134
+5 Gesture:  569 ,	Similarity Score:  0.8320581251619542
+6 Gesture:  568 ,	Similarity Score:  0.8309168770241372
+7 Gesture:  565 ,	Similarity Score:  0.823091083828628
+8 Gesture:  563 ,	Similarity Score:  0.8182127476252988
+9 Gesture:  13 ,	Similarity Score:  0.8160022602584935
+10 Gesture:  249 ,	Similarity Score:  0.8036467326756784
