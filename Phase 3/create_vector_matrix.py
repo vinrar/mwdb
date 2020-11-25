@@ -1,18 +1,24 @@
+import json
+import numpy as np
 import os
 import pickle
-from collections import Counter
-import json
 import sys
+from collections import Counter
+from sklearn.decomposition import PCA
 
 vector_model_data = {}
 the_matrix = []
 the_matrix_name_map = []
+map_of_words = []
+output_data = {}
+user_input_model = ""
+vector_model = ""
 
 
 # returns list of vector files based on vector model
-def get_list_of_files(v_dir, vector_model):
+def get_list_of_files(v_dir, v_model):
     list_of_files = os.listdir(v_dir)
-    return [file for file in list_of_files if file.__contains__(vector_model + '_vectors')]
+    return [file for file in list_of_files if file.__contains__(v_model + '_vectors')]
 
 
 # stores vector model data globally
@@ -53,7 +59,7 @@ def form_the_matrix(set_of_features):
 
         temp_list = []
         for each_feature in set_of_features:
-            if (each_feature in word_list):
+            if each_feature in word_list:
                 index = word_list.index(each_feature)
                 temp_list.append(value_list[index])
             else:
@@ -61,6 +67,44 @@ def form_the_matrix(set_of_features):
 
         the_matrix.append(temp_list)
         the_matrix_name_map.append(each_file)
+
+
+# performs PCA on flattened matrix and writes output as per project requirement
+def get_PCA_components(no_of_components, dir):
+    print("Performing PCA on flattented matrix")
+    flattened_matrix = np.array(the_matrix)
+    pca_gestures = PCA(no_of_components)
+    pca_gestures.fit_transform(flattened_matrix)
+    pca_gestures.score(flattened_matrix)
+
+    # get_the_output(pca_gestures, dir)
+    write_transformed_matrix(pca_gestures, dir, flattened_matrix)
+
+
+# stores the transformed matrix as metadata
+def write_transformed_matrix(transformed_object, dir, flattened_matrix):
+    print("Storing the transformed matrix after decomposition")
+    file_name = user_input_model+"_transformed_" + vector_model + "_vectors"
+    transformed_matrix = transformed_object.fit_transform(flattened_matrix)
+
+    pickle.dump(transformed_matrix, open(vector_model+"_"+user_input_model+"_fit_object.pkl", "wb"))
+
+    output_dictionary = {}
+    index = 0
+    for each_file in the_matrix_name_map:
+        output_dictionary[each_file] = transformed_matrix[index].tolist()
+        index = index + 1
+
+    outF = open(os.path.join(file_name + ".json"), "w")
+    json.dump(output_dictionary, outF, default=convert)
+    outF.close()
+
+
+# returns the integer version of a numpy integer
+def convert(o):
+    if isinstance(o, np.int64):
+        return int(o)
+    raise TypeError
 
 
 def pretty(d, indent=0):
@@ -73,31 +117,35 @@ def pretty(d, indent=0):
 
 
 def initialize():
-    global vector_model_data, the_matrix, the_matrix_name_map
+    global vector_model_data, the_matrix, the_matrix_name_map, map_of_words, output_data
     vector_model_data = {}
     the_matrix = []
     the_matrix_name_map = []
+    map_of_words = []
+    output_data = {}
 
 
 def generate_vector_matrix(v_dir):
-    # v_dir = input("Enter directory of vectors: ")
-    # model = input("Enter vector model - tf or tfidf: ")
     models = ['tf', 'tfidf']
+    global vector_model, user_input_model, map_of_words
 
-    # v_dir, model = "3_class_gesture_data", "tf"  # default values
     for model in models:
         initialize()
+        vector_model = model
+        user_input_model = 'pca'
+
         file_list = get_list_of_files(v_dir, model)
         read_file_data(file_list, v_dir)
         list_of_features = get_list_of_features()
         set_of_features = get_unique_features(list_of_features)
+        map_of_words = set_of_features
         form_the_matrix(set_of_features)
+        get_PCA_components(10, v_dir)
 
         with open(model + '_feature_list.pkl', 'wb') as f:
             pickle.dump(set_of_features, f)
 
         output_vectors = {}
-
         for (i, j) in zip(the_matrix_name_map, the_matrix):
             output_vectors[i] = j
 
