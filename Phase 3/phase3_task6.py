@@ -56,7 +56,7 @@ def getTask3Input():
 def generateResults():
     global GESTURE_PATH, TASK_NUMBER, RELEVANT_FEEDBACK, IRRELEVANT_FEEDBACK, QUERY_GESTURE, QUERY_MODE
 
-    q = tkSimpleDialog.askinteger("Query Gesture", "Enter the query gesture", parent=root)
+    q = tkSimpleDialog.askstring("Query Gesture", "Enter the query gesture", parent=root)
     print('Query Gesture: ', q)
     QUERY_GESTURE = str(q)
 
@@ -88,7 +88,7 @@ def generateResults():
 
             query_gesture = QUERY_GESTURE
 
-            with open(model + 'phase_2_task_1_transformed_matrix.json.json', 'r') as fp:
+            with open('phase_2_task_1_transformed_matrix_pca.json', 'r') as fp:
                 vectors = json.load(fp)
 
             # preprocessing for LSH
@@ -105,7 +105,7 @@ def generateResults():
             firstRun = False
             RELEVANT_FEEDBACK.append(query_gesture)
 
-            # For Task 5 ================
+            # For Task 4 ================
             the_file = "%s_vectors.json" % model
             dataset, map = read_the_file(the_file)
             dataset = convert_to_binary_form(dataset)
@@ -134,11 +134,11 @@ def generateResults():
                 first_feedback = False
             else:
                 if QUERY_MODE == 0:
-                    feed_back_results = get_ppr2(len(gesture_list), 0.85, gesture_list, RELEVANT_FEEDBACK,
+                    feed_back_results = get_ppr2(len(gesture_list), 0.8, gesture_list, RELEVANT_FEEDBACK,
                                                  IRRELEVANT_FEEDBACK, gui=True)
                 else:
-                    irrel_gestures, ratio = get_ppr_changing_query(10, 10, 0.85, IRRELEVANT_FEEDBACK)
-                    rel_gestures, ratio = get_ppr_changing_query(10, 10, 0.85, RELEVANT_FEEDBACK)
+                    irrel_gestures, ratio = get_ppr_changing_query(10, 30, 0.8, IRRELEVANT_FEEDBACK)
+                    rel_gestures, ratio = get_ppr_changing_query(10, 30, 0.8, RELEVANT_FEEDBACK)
                     gesture_list = set(rel_gestures) - set(irrel_gestures)
                     for rel_ges in RELEVANT_FEEDBACK:
                         gesture_list.add(rel_ges)
@@ -166,8 +166,8 @@ def generateResults():
             relevant_feedback = string_relevant_feedback.split(',')
             if string_irrelevant_feedback and string_irrelevant_feedback != '':
                 irrelevant_feedback = string_irrelevant_feedback.split(',')
-                IRRELEVANT_FEEDBACK.extend(irrelevant_feedback)
-            RELEVANT_FEEDBACK.extend(relevant_feedback)
+                IRRELEVANT_FEEDBACK = irrelevant_feedback
+            RELEVANT_FEEDBACK = relevant_feedback
             RELEVANT_FEEDBACK = list(set(RELEVANT_FEEDBACK))
             IRRELEVANT_FEEDBACK = list(set(IRRELEVANT_FEEDBACK))
             print("Relevant feedback", RELEVANT_FEEDBACK)
@@ -175,6 +175,9 @@ def generateResults():
             print("Gesture List", gesture_list)
         else:
             print("Exiting feedback loop")
+            RELEVANT_FEEDBACK = []
+            IRRELEVANT_FEEDBACK = []
+            QUERY_MODE = ''
             runAgain = False
             feedback = []
             break
