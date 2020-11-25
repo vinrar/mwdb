@@ -22,3 +22,6 @@ if __name__ == "__main__":
     # print('Executing python create_vector_matrix.py ' + directory)
     os.system('python create_vector_matrix.py ' + directory)
 
+    # print('Executing python Phase3_task1_pca_cos_sim.py' + )
+    os.system('Phase3_task1_pca_cos_sim.py')
+
