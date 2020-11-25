@@ -243,18 +243,27 @@ def print_leaf(counts):
 
 if __name__ == "__main__":
 
-    file_name = "phase_2_task_1_transformed_matrix.json"
-    file_path = file_name
-    file_handler = open(file_path, 'rb')
+    train_data_file_name = "phase2_task1_transformed_matrix_train_PCA.json"
+    train_data_file_handler = open(train_data_file_name, 'rb')
 
-    transformed_matrix = json.load(file_handler)
+    train_data_matrix = json.load(train_data_file_handler)
 
-    # print(transformed_matrix)
+    test_data_file_name = "phase2_task1_transformed_matrix_test_PCA.json"
+    test_data_file_handler = open(test_data_file_name, 'rb')
+
+    test_data_matrix = json.load(test_data_file_handler)
 
     # configure the gesture map here
-    gesture_1 = 'vattene'
-    gesture_2 = 'Combinato'
-    gesture_3 = "D'Accordo"
+    # gesture_1 = 'vattene'
+    # gesture_2 = 'Combinato'
+    # gesture_3 = "D'Accordo"
+    gesture_1 = '[1, 31]'
+    gesture_2 = '[249, 279]'
+    gesture_3 = '[559, 589]'
+    range_gesture_map = {}
+    range_gesture_map[gesture_1] = "Vattene"
+    range_gesture_map[gesture_2] = "Combinato"
+    range_gesture_map[gesture_3] = "D'Accordo"
     # 249 - 279
     # 559 - 589
     config_map = {gesture_1: [1, 31], gesture_2: [249, 279], gesture_3: [559, 589]}
@@ -264,14 +273,23 @@ if __name__ == "__main__":
         for i in range(config_range[0], config_range[1] + 1):
             result_map[str(i)] = key
 
-    input_data = []
+    train_data = []
 
-    for key in transformed_matrix:
-        data_list = transformed_matrix[key]
+    for key in train_data_matrix:
+        data_list = train_data_matrix[key]
         data_list.append(result_map[key])
-        input_data.append(data_list)
+        train_data.append(data_list)
 
-    training_data, testing_data = train_test_split(input_data, test_size=0.2)
+    test_data = []
+
+    for key in test_data_matrix:
+        data_list = test_data_matrix[key]
+        # data_list.append(result_map[key.split("_")[0]])
+        data_list.append(key)
+        test_data.append(data_list)
+
+    # training_data, testing_data = train_test_split(train_Data, test_size=0.2)
+    training_data, testing_data = train_data, test_data
 
     key_size = len(training_data[0]) - 1
     # Column labels.
@@ -322,15 +340,22 @@ if __name__ == "__main__":
     # this is where the last line starts
     total_gestures_in_testing = 0
     correctly_guessed = 0
+    output = []
     for row in testing_data:
         total_gestures_in_testing += 1
         actual_label = row[-1]
         classified_label = print_leaf(classify(row, my_tree))
 
-        if actual_label in classified_label:
+        if result_map[actual_label.split("_")[0]] in classified_label:
             correctly_guessed += 1
 
-        print("Actual: %s. Predicted: %s" % (actual_label, classified_label))
+        # print("Actual: %s. Predicted Range: %s. Predicted gesture: %s" % (actual_label, list(classified_label.keys())[0], range_gesture_map[list(classified_label.keys())[0]]))
+        output.append("Actual: %s. Predicted Range: %s. Predicted gesture: %s" % (actual_label, list(classified_label.keys())[0], range_gesture_map[list(classified_label.keys())[0]]))
+
+    output = sorted(output)
+    # print(output)
+    for each_result in output:
+        print(each_result)
 
     print('Number of gestures in the training data: ' + str(len(training_data)))
     print('Number of gestures in the testing data: ' + str(len(testing_data)))
