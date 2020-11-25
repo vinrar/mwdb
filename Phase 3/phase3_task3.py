@@ -127,14 +127,25 @@ def locality_sensitive_hashing(L, k):
 
 def main():
     global vectors
-    L = int(input("Enter the number of layers, L: "))
-    k = int(input("Enter the number of hashes per layer, k: "))
-    model = input("Enter vector model, tf or tfidf: ")
+    if len(sys.argv) < 2:
+        print('Run python phase3_task2_knn.py <L> <k> <Space> <Vector Model>')
+        sys.exit(0)
 
-    with open('pca_transformed_' + model + '_vectors.json', 'r') as fp:
-        vectors = json.load(fp)
-    # with open(model + '_vectors.json', 'r') as fp:
-    #     vectors = json.load(fp)
+    L = int(sys.argv[1])
+    k = int(sys.argv[2])
+    space = int(sys.argv[3])
+    model = sys.argv[4]
+
+    # L = int(input("Enter the number of layers, L: "))
+    # k = int(input("Enter the number of hashes per layer, k: "))
+    # model = input("Enter vector model, tf or tfidf: ")
+
+    if space == 1:
+        with open('pca_transformed_' + model + '_vectors.json', 'r') as fp:
+            vectors = json.load(fp)
+    elif space == 0:
+        with open(model + '_vectors.json', 'r') as fp:
+            vectors = json.load(fp)
 
     locality_sensitive_hashing(L, k)
 
