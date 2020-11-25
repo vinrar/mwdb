@@ -1,0 +1,105 @@
+Query: Gesture 11_2
+
+1 Gesture:  11_2 ,	Similarity Score:  0.9999999999999999
+2 Gesture:  11_9 ,	Similarity Score:  0.9989384991102339
+3 Gesture:  11_5 ,	Similarity Score:  0.9972782482016508
+4 Gesture:  11_3 ,	Similarity Score:  0.9970797883877381
+5 Gesture:  11_1 ,	Similarity Score:  0.9970323915470786
+6 Gesture:  11_8 ,	Similarity Score:  0.9966352288023905
+7 Gesture:  11_6 ,	Similarity Score:  0.9959319172982339
+8 Gesture:  11_0 ,	Similarity Score:  0.9949867306684542
+9 Gesture:  11_4 ,	Similarity Score:  0.994558803057474
+10 Gesture:  11_7 ,	Similarity Score:  0.9927918379411719
+
+Iteration 1
+Relevant feedback ['11_2', '11_4', '11_5', '11_3']
+Irrelevant feedback ['11_7', '11_8', '11_9', '11_6']
+
+Lsim_relevant
+File:  11_8 , PPR:  0.2200110948309425
+File:  11_7 , PPR:  0.22000321760450922
+File:  11_6 , PPR:  0.22000321745527254
+File:  11_9 , PPR:  0.2199870176777627
+File:  11_1 , PPR:  0.02000357909106762
+File:  11_4 , PPR:  0.019998501645161496
+File:  11_0 , PPR:  0.019996194687998212
+File:  11_2 , PPR:  0.019992058180759078
+File:  11_5 , PPR:  0.01998443718555641
+File:  11_3 , PPR:  0.01998410464638746
+File:  262_8 , PPR:  0.0
+File:  262_7 , PPR:  0.0
+File:  262_9 , PPR:  0.0
+File:  262_5 , PPR:  0.0
+File:  263 , PPR:  0.0
+File:  263_0 , PPR:  0.0
+File:  263_1 , PPR:  0.0
+File:  263_2 , PPR:  0.0
+File:  263_3 , PPR:  0.0
+File:  263_4 , PPR:  0.0
+File:  263_5 , PPR:  0.0
+File:  263_6 , PPR:  0.0
+File:  263_7 , PPR:  0.0
+File:  263_8 , PPR:  0.0
+File:  262_6 , PPR:  0.0
+File:  9_9 , PPR:  0.0
+File:  262_4 , PPR:  0.0
+File:  264 , PPR:  0.0
+File:  262_3 , PPR:  0.0
+File:  262_2 , PPR:  0.0
+
+Lsim_irrelevant
+File:  11_3 , PPR:  0.22002899758841576
+File:  11_5 , PPR:  0.22002686810231264
+File:  11_2 , PPR:  0.22001104574496774
+File:  11_4 , PPR:  0.21999376954271688
+File:  11_9 , PPR:  0.02001429334737605
+File:  11_6 , PPR:  0.01998742310385168
+File:  11_8 , PPR:  0.0199839217839761
+File:  11_7 , PPR:  0.019982225867867756
+File:  11_0 , PPR:  0.019979399518345403
+File:  11_1 , PPR:  0.01997746575572157
+File:  262_8 , PPR:  0.0
+File:  262_7 , PPR:  0.0
+File:  262_9 , PPR:  0.0
+File:  262_5 , PPR:  0.0
+File:  263 , PPR:  0.0
+File:  263_0 , PPR:  0.0
+File:  263_1 , PPR:  0.0
+File:  263_2 , PPR:  0.0
+File:  263_3 , PPR:  0.0
+File:  263_4 , PPR:  0.0
+File:  263_5 , PPR:  0.0
+File:  263_6 , PPR:  0.0
+File:  263_7 , PPR:  0.0
+File:  263_8 , PPR:  0.0
+File:  262_6 , PPR:  0.0
+File:  9_9 , PPR:  0.0
+File:  262_4 , PPR:  0.0
+File:  264 , PPR:  0.0
+File:  262_3 , PPR:  0.0
+File:  262_2 , PPR:  0.0
+
+1 Gesture:  11_2 ,	Similarity Score:  0.9994548823618143
+2 Gesture:  11_9 ,	Similarity Score:  0.998997956276451
+3 Gesture:  11_5 ,	Similarity Score:  0.9980434722226479
+4 Gesture:  11_3 ,	Similarity Score:  0.9975487255698724
+5 Gesture:  11_1 ,	Similarity Score:  0.9963691582810259
+6 Gesture:  11_4 ,	Similarity Score:  0.9960855011001427
+7 Gesture:  11_8 ,	Similarity Score:  0.9957750490175934
+8 Gesture:  11_0 ,	Similarity Score:  0.9957478017956394
+9 Gesture:  11_6 ,	Similarity Score:  0.9955260244726469
+10 Gesture:  11_7 ,	Similarity Score:  0.9945725921513299
+
+Iteration 2
+Relevant feedback ['11_0', '11_2', '11_1', '11_4', '11_3']
+Irrelevant feedback ['11_9', '11_5', '11_8', '11_6', '11_7']
+1 Gesture:  11_2 ,	Similarity Score:  0.9990566436439535
+2 Gesture:  11_9 ,	Similarity Score:  0.9986749333740282
+3 Gesture:  11_1 ,	Similarity Score:  0.9981877456342827
+4 Gesture:  11_0 ,	Similarity Score:  0.9977094141429461
+5 Gesture:  11_4 ,	Similarity Score:  0.9971443994923853
+6 Gesture:  11_8 ,	Similarity Score:  0.9966841722555573
+7 Gesture:  11_6 ,	Similarity Score:  0.996584056466353
+8 Gesture:  11_3 ,	Similarity Score:  0.996359016407712
+9 Gesture:  11_5 ,	Similarity Score:  0.9960775542131898
+10 Gesture:  11_7 ,	Similarity Score:  0.9958569543439459

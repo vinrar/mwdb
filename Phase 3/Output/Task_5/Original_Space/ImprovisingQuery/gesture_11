@@ -1,0 +1,46 @@
+Query: Gesture 11
+
+1 Gesture:  11 ,	Similarity Score:  1.0
+2 Gesture:  249 ,	Similarity Score:  0.669368642639924
+3 Gesture:  261 ,	Similarity Score:  0.6106948952895774
+4 Gesture:  21 ,	Similarity Score:  0.6093409662075522
+5 Gesture:  566 ,	Similarity Score:  0.6081784401676815
+6 Gesture:  560 ,	Similarity Score:  0.6068381798503446
+7 Gesture:  10 ,	Similarity Score:  0.6014445418739246
+8 Gesture:  568 ,	Similarity Score:  0.5831222349047239
+9 Gesture:  3 ,		Similarity Score:  0.5828069157694381
+10 Gesture:  564 ,	Similarity Score:  0.5826256574972628
+
+
+Iteration 1:
+
+Relevant feedback ['3', '21', '10', '11']
+Irrelevant feedback ['568', '560', '249', '261', '566', '564']
+Gesture List [']
+
+1 Gesture:  21 ,	Similarity Score:  0.8687581988108477
+2 Gesture:  10 ,	Similarity Score:  0.8436233661244147
+3 Gesture:  11 ,	Similarity Score:  0.82634588657126
+4 Gesture:  3 ,	Similarity Score:  0.8200571392203272
+5 Gesture:  249 ,	Similarity Score:  0.780750570678633
+6 Gesture:  13 ,	Similarity Score:  0.7769518829157233
+7 Gesture:  18 ,	Similarity Score:  0.7696753062949557
+8 Gesture:  567 ,	Similarity Score:  0.7677298752087701
+9 Gesture:  571 ,	Similarity Score:  0.7537270920401696
+10 Gesture:  16 ,	Similarity Score:  0.749079617164176
+
+
+Iteration 2:
+
+[Relevant feedback ['3', '11', '16', '21', '13', '18', '10']
+Irrelevant feedback ['567', '249', '571']
+1 Gesture:  13 ,	Similarity Score:  0.8583902255727246
+2 Gesture:  18 ,	Similarity Score:  0.8465923728681173
+3 Gesture:  16 ,	Similarity Score:  0.8347893099209461
+4 Gesture:  10 ,	Similarity Score:  0.8318090395903001
+5 Gesture:  561 ,	Similarity Score:  0.8284076795380381
+6 Gesture:  21 ,	Similarity Score:  0.8262278731173428
+7 Gesture:  3 ,	Similarity Score:  0.8086889219216753
+8 Gesture:  249 ,	Similarity Score:  0.8062491511528912
+9 Gesture:  11 ,	Similarity Score:  0.7976599539457933
+10 Gesture:  567 ,	Similarity Score:  0.7920813938257947

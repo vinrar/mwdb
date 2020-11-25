@@ -1,0 +1,49 @@
+Query 2: Gesture 260
+
+LSH Results:
+1 Gesture:  260 ,	Similarity Score:  1.0
+2 Gesture:  266 ,	Similarity Score:  0.9882871803701899
+3 Gesture:  572 ,	Similarity Score:  0.9733871453409366
+4 Gesture:  586 ,	Similarity Score:  0.9528326379355221
+5 Gesture:  264 ,	Similarity Score:  0.9524320593739867
+6 Gesture:  271 ,	Similarity Score:  0.9494574547926048
+7 Gesture:  276 ,	Similarity Score:  0.9476666021441931
+8 Gesture:  256 ,	Similarity Score:  0.9470226945251914
+9 Gesture:  20 ,	Similarity Score:  0.9409376152779952
+10 Gesture:  12 ,	Similarity Score:  0.9398152526887955
+
+
+Iteration 1:
+
+Relevant feedback ['266', '260', '271', '276', '264', '256']
+Irrelevant feedback ['586', '572']
+Gesture List ['260', '266', '572', '586', '264', '271', '276', '256', '20', '12']
+File:  276 , PPR:  0.15864837214497432
+File:  256 , PPR:  0.15558341152627952
+File:  264 , PPR:  0.15507949235383386
+File:  271 , PPR:  0.15485711708406294
+File:  266 , PPR:  0.15426410738638172
+File:  260 , PPR:  0.14960605881335953
+File:  586 , PPR:  0.0242107568551411
+File:  572 , PPR:  0.024114158746837994
+File:  20 , PPR:  0.020940874327465404
+File:  12 , PPR:  0.016823333902625245
+
+
+
+
+Iteration 2:
+
+Relevant feedback ['266', '260', '271', '20', '276', '264', '12', '256']
+Irrelevant feedback ['586', '572']
+Gesture List ['260', '266', '572', '586', '264', '271', '276', '256', '20', '12']
+File:  276 , PPR:  0.12126454803740352
+File:  256 , PPR:  0.12106278743538298
+File:  266 , PPR:  0.12054837709509202
+File:  264 , PPR:  0.12049690664229519
+File:  271 , PPR:  0.11853633418830463
+File:  20 , PPR:  0.11838120925362838
+File:  260 , PPR:  0.11819020569289687
+File:  12 , PPR:  0.11702178601141638
+File:  572 , PPR:  0.019978165738632387
+File:  586 , PPR:  0.019099497797890524
