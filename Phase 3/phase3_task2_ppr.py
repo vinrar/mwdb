@@ -98,7 +98,7 @@ def get_ppr_predictions(data_dir, k, m, c):
 
 if __name__ == '__main__':
     if len(sys.argv) < 4:
-        print('Run python task2_ppr.py <Directory> <k> <m> <c>')
+        print('Run python phase3_task2_ppr.py <Directory> <k> <m> <c>')
         sys.exit(0)
 
     data_dir = sys.argv[1]
