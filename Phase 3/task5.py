@@ -60,7 +60,7 @@ def get_ppr2(k, c, gesture_list, relevant_gestures, irrelevant_gestures, gui=Fal
     non_classified_gestures = list(set(gesture_list) - set(relevant_gestures) - set(irrelevant_gestures))
 
     # TODO: Make the file name uniform with task 3 input
-    df = pd.read_csv("./cosine_sim_matrix.csv")
+    df = pd.read_csv("./pca_cosine_sim_matrix.csv")
     df = df.set_index('Unnamed: 0')
 
     A = df.copy(deep=True)
@@ -77,10 +77,10 @@ def get_ppr2(k, c, gesture_list, relevant_gestures, irrelevant_gestures, gui=Fal
 
     # top k for new similarity graph
     for r in gesture_list:
-        temp = np.array(df[gesture_list].loc[int(r)])
+        temp = np.array(df[gesture_list].loc[r])
         topk = temp.argsort()[-k:][::-1]
         for j in topk:
-            A.loc[int(r), col_index_map[j]] = temp[j]
+            A.loc[r, col_index_map[j]] = temp[j]
 
     for i in range(A.shape[0]):
         A.iloc[i, :] = (A.iloc[i, :] - min(A.iloc[i, :])) / (max(A.iloc[i, :]) - min(A.iloc[i, :]))

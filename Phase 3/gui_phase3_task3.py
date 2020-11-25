@@ -122,7 +122,7 @@ def set_updated_query(rel_gestures, ratio, vectors, query):
     for i, gesture in enumerate(rel_gestures):
         new_vectors.append([element * ratio[i] for element in vectors[gesture]])
     new_vectors = np.array(new_vectors)
-    new_vectors = query + 0.4 * new_vectors.sum(axis=0)
+    new_vectors = new_vectors.sum(axis=0)
     return list(new_vectors)
 
 
