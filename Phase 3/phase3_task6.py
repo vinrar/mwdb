@@ -6,9 +6,10 @@ from gui_phase3_task3 import locality_sensitive_hashing, preprocessing, set_upda
     query_algorithm
 from task5 import get_ppr2, get_ppr_changing_query
 from task_4_code_try_2 import get_task4_results, read_the_file, convert_to_binary_form, get_initial_results
+import numpy as np
 
-HEIGHT = 600
-WIDTH = 800
+HEIGHT = 1000
+WIDTH = 1200
 GESTURE_PATH = ''
 TASK_NUMBER = None
 QUERY_GESTURE = None
@@ -16,19 +17,6 @@ RELEVANT_FEEDBACK = []
 IRRELEVANT_FEEDBACK = []
 QUERY_MODE = None
 
-
-# L = 10
-# k = 6
-# model = 'tf'
-# t = 10
-
-
-# Function to get the directory of gesture files
-def getPath():
-    global GESTURE_PATH
-    filename = tkFileDialog.askdirectory()
-    print('File directory: ', filename)
-    GESTURE_PATH = filename
 
 
 # Function to get the task number
@@ -44,13 +32,25 @@ def getQueryMode():
     global QUERY_MODE
     q = tkSimpleDialog.askinteger("Query Mode", "Enter the query mode(0=Reordering results/1=Revising Query)",
                                   parent=root, minvalue=0, maxvalue=1)
+    if q == 0:
+        print('Query Mode: 0 -> Re-ordering the Results')
+    else:
+        print('Query Mode: 1 -> Revising the Query')
     QUERY_MODE = q
 
 
 # Function to get input for Task 3
 def getTask3Input():
-    pass
+    global QUERY_GESTURE
 
+    LSH_input_string = tkSimpleDialog.askstring("LSH Input", "Enter parameters for LSH (L, k, Vector Model(tf/tfidf), t)")
+    L, k, model, t = LSH_input_string.split(",")
+    L = int(L)
+    k = int(k)
+    t = int(t)
+
+    query_gesture = QUERY_GESTURE
+    return L, k, model, t
 
 # Function to generate similarity results
 def generateResults():
@@ -77,14 +77,7 @@ def generateResults():
             # run for the first time without feedback
 
             # input for LSH
-
-            LSH_input_string = tkSimpleDialog.askstring("LSH Input",
-                                                        "Enter parameters for LSH (L, k, Vector Model(tf/tfidf), t)")
-            L, k, model, t = LSH_input_string.split(",")
-
-            L = int(L)
-            k = int(k)
-            t = int(t)
+            L, k , model, t = getTask3Input()
 
             query_gesture = QUERY_GESTURE
 
@@ -151,7 +144,6 @@ def generateResults():
                     output = ''
                     for i, (k, v) in zip(range(t), result.items()):
                         print(i + 1, "Gesture: ", k, ",\tSimilarity Score: ", v)
-                        import numpy as np
                         output += '{} - Gesture: {},\tSimilarity Score: {}\n'.format(i + 1, k, np.round(v, 3))
                         gesture_list.append(str(k))
                     feed_back_results = output
@@ -209,20 +201,17 @@ titleLabel.place(relheight=1, relwidth=1)
 buttonFrame = tk.Frame(root)
 buttonFrame.place(relx=0.5, rely=0.2, relwidth=0.75, relheight=0.1, anchor='n')
 
-directoryButton = tk.Button(buttonFrame, text="Select Directory", command=lambda: getPath())
-directoryButton.place(relx=0, relheight=1, relwidth=0.25)
-
 taskButton = tk.Button(buttonFrame, text="Select Task No.", command=lambda: getTaskNum())
-taskButton.place(relx=0.25, relheight=1, relwidth=0.25)
+taskButton.place(relx=0.0, relheight=1, relwidth=0.3)
 
 gestureButton = tk.Button(buttonFrame, text="Select Query Mode", command=lambda: getQueryMode())
-gestureButton.place(relx=0.5, relheight=1, relwidth=0.25)
+gestureButton.place(relx=0.35, relheight=1, relwidth=0.3)
 
 startButton = tk.Button(buttonFrame, text="Select Query Gesture", command=lambda: generateResults())
-startButton.place(relx=0.75, relheight=1, relwidth=0.25)
+startButton.place(relx=0.7, relheight=1, relwidth=0.3)
 
 resultFrame = tk.Frame(root, bg='#000000', bd=5)
-resultFrame.place(relx=0.5, rely=0.4, relwidth=0.5, relheight=0.5, anchor='n')
+resultFrame.place(relx=0.5, rely=0.3, relwidth=0.5, relheight=0.65, anchor='n')
 
 resultLabel = tk.Label(resultFrame, font=('Arial Bold', 15))
 resultLabel.place(relwidth=1, relheight=1)
