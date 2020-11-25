@@ -1,5 +1,6 @@
 import json
 from sklearn.model_selection import train_test_split
+import sys
 
 
 header = []
@@ -242,15 +243,23 @@ def print_leaf(counts):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) < 1:
+        print('Run python phase3_task2_decision_tree.py <1.PCA 2.SVD>')
+        sys.exit(0)
 
-    train_data_file_name = "phase2_task1_transformed_matrix_train_PCA.json"
+    user_option = sys.argv[1]
+    train_data_file_name = ''
+    test_data_file_name = ''
+
+    if user_option == 1:
+        train_data_file_name = "phase2_task1_transformed_matrix_train_PCA.json"
+    if user_option == 2:
+        test_data_file_name = "phase2_task1_transformed_matrix_test_SVD.json"
+
     train_data_file_handler = open(train_data_file_name, 'rb')
-
     train_data_matrix = json.load(train_data_file_handler)
 
-    test_data_file_name = "phase2_task1_transformed_matrix_test_PCA.json"
     test_data_file_handler = open(test_data_file_name, 'rb')
-
     test_data_matrix = json.load(test_data_file_handler)
 
     # configure the gesture map here
