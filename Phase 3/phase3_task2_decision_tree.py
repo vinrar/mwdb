@@ -166,9 +166,9 @@ if __name__ == "__main__":
 
     if user_option == '1':
         train_data_file_name = "phase2_task1_transformed_matrix_train_PCA.json"
-        test_data_file_name = "phase2_task1_transformed_matrix_test_SVD.json"
+        test_data_file_name = "phase2_task1_transformed_matrix_test_PCA.json"
     elif user_option == '2':
-        train_data_file_name = "phase2_task1_transformed_matrix_train_PCA.json"
+        train_data_file_name = "phase2_task1_transformed_matrix_train_SVD.json"
         test_data_file_name = "phase2_task1_transformed_matrix_test_SVD.json"
 
     train_data_file_handler = open(train_data_file_name, 'rb')
