@@ -1,0 +1,41 @@
+Query: Gesture 256_3
+1 Gesture:  256_3 ,	Similarity Score:  1.0000000000000002
+2 Gesture:  256_5 ,	Similarity Score:  0.9987894132039219
+3 Gesture:  256_7 ,	Similarity Score:  0.996171075361261
+4 Gesture:  256_4 ,	Similarity Score:  0.9959887504420284
+5 Gesture:  256_9 ,	Similarity Score:  0.9938184286390211
+6 Gesture:  256_6 ,	Similarity Score:  0.9916963304958378
+7 Gesture:  256_0 ,	Similarity Score:  0.9916185350819101
+8 Gesture:  256_1 ,	Similarity Score:  0.9886097437475468
+9 Gesture:  256_2 ,	Similarity Score:  0.9882376567025976
+10 Gesture:  256_8 ,	Similarity Score:  0.9878724393431659
+
+Iteration 1
+Relevant feedback ['256_4', '256_2', '256_3', '256_1', '256_0']
+Irrelevant feedback ['256_7', '256_9', '256_6', '256_8', '256_5']
+
+1 Gesture:  256_9 ,	Similarity Score:  0.9987610046260836
+2 Gesture:  256_4 ,	Similarity Score:  0.9986969494961987
+3 Gesture:  256_5 ,	Similarity Score:  0.9981199379996971
+4 Gesture:  256_7 ,	Similarity Score:  0.9973473541990762
+5 Gesture:  256_1 ,	Similarity Score:  0.9966268829384574
+6 Gesture:  256_0 ,	Similarity Score:  0.9962499722014325
+7 Gesture:  256_3 ,	Similarity Score:  0.9962206203102688
+8 Gesture:  256_2 ,	Similarity Score:  0.995882096406969
+9 Gesture:  256_6 ,	Similarity Score:  0.9958106841477724
+10 Gesture:  256_8 ,	Similarity Score:  0.9940427108783259
+
+Iteration 2
+Relevant feedback ['256_4', '256_2', '256_3', '256_1', '256_0']
+Irrelevant feedback ['256_7', '256_9', '256_6', '256_8', '256_5']
+
+1 Gesture:  256_9 ,	Similarity Score:  0.9987610046260836
+2 Gesture:  256_4 ,	Similarity Score:  0.9986969494961987
+3 Gesture:  256_5 ,	Similarity Score:  0.9981199379996971
+4 Gesture:  256_7 ,	Similarity Score:  0.9973473541990762
+5 Gesture:  256_1 ,	Similarity Score:  0.9966268829384574
+6 Gesture:  256_0 ,	Similarity Score:  0.9962499722014325
+7 Gesture:  256_3 ,	Similarity Score:  0.9962206203102688
+8 Gesture:  256_2 ,	Similarity Score:  0.995882096406969
+9 Gesture:  256_6 ,	Similarity Score:  0.9958106841477724
+10 Gesture:  256_8 ,	Similarity Score:  0.9940427108783259

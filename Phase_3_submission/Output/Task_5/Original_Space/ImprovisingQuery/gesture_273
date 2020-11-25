@@ -1,0 +1,28 @@
+Query: 273
+
+1 Gesture:  273 ,	Similarity Score:  0.9999999999999998
+2 Gesture:  271 ,	Similarity Score:  0.6292531259109176
+3 Gesture:  257 ,	Similarity Score:  0.6259996459738754
+4 Gesture:  274 ,	Similarity Score:  0.6241627204575255
+5 Gesture:  275 ,	Similarity Score:  0.6132282080087201
+6 Gesture:  258 ,	Similarity Score:  0.6069772324327338
+7 Gesture:  251 ,	Similarity Score:  0.6051586460132042
+8 Gesture:  252 ,	Similarity Score:  0.6028449309890179
+9 Gesture:  561 ,	Similarity Score:  0.6012547431157006
+10 Gesture:  581 ,	Similarity Score:  0.5734133993010376
+
+Iteration 1:
+
+Relevant feedback ['274', '251', '258', '252', '257', '275', '273', '271']
+Irrelevant feedback ['581', '561']
+
+1 Gesture:  252 ,	Similarity Score:  0.8378669426779536
+2 Gesture:  271 ,	Similarity Score:  0.8319636643721302
+3 Gesture:  257 ,	Similarity Score:  0.8220251933044159
+4 Gesture:  275 ,	Similarity Score:  0.8186164813046268
+5 Gesture:  565 ,	Similarity Score:  0.7437189981572845
+6 Gesture:  580 ,	Similarity Score:  0.6992822579418715
+7 Gesture:  589 ,	Similarity Score:  0.6786761469949794
+8 Gesture:  585 ,	Similarity Score:  0.6667048752401497
+9 Gesture:  31 ,	Similarity Score:  0.6495391615389603
+10 Gesture:  30 ,	Similarity Score:  0.6462591100582437

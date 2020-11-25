@@ -1,0 +1,27 @@
+Query: Gesture 1
+
+1 Gesture:  1 ,	Similarity Score:  0.9999999999999998
+2 Gesture:  564 ,	Similarity Score:  0.6322212446728644
+3 Gesture:  269 ,	Similarity Score:  0.6284509969462501
+4 Gesture:  251 ,	Similarity Score:  0.6158029483800944
+5 Gesture:  7 ,	Similarity Score:  0.6013111991739365
+6 Gesture:  9 ,	Similarity Score:  0.6005777338881134
+7 Gesture:  567 ,	Similarity Score:  0.5994243179272519
+8 Gesture:  561 ,	Similarity Score:  0.597417725034319
+9 Gesture:  560 ,	Similarity Score:  0.5960583091239133
+10 Gesture:  571 ,	Similarity Score:  0.5913122571019468
+
+Iteration 1:
+Relevant feedback ['1', '9', '7']
+Irrelevant feedback ['251', '560', '571', '269', '564', '567', '561']
+Gesture List ['1', '564', '269', '251', '7', '9', '567', '561', '560', '571']
+File:  9 , PPR:  0.3112160028937738
+File:  1 , PPR:  0.2796843386170013
+File:  7 , PPR:  0.2729115955663062
+File:  269 , PPR:  0.0452378137114322
+File:  561 , PPR:  0.024971150557637527
+File:  571 , PPR:  0.015958825632802525
+File:  560 , PPR:  0.00989028102825277
+File:  567 , PPR:  0.00879950325816814
+File:  564 , PPR:  0.008276464066000412
+File:  251 , PPR:  0.007500738803918495

@@ -1,0 +1,58 @@
+Query: Gesture 11
+1 Gesture:  11 ,	Similarity Score:  1.0
+2 Gesture:  587 ,	Similarity Score:  0.9764475550412038
+3 Gesture:  559 ,	Similarity Score:  0.9715589981194974
+4 Gesture:  1 ,	Similarity Score:  0.9619283972620312
+5 Gesture:  21 ,	Similarity Score:  0.9597536590320616
+6 Gesture:  4 ,	Similarity Score:  0.9513917387242441
+7 Gesture:  2 ,	Similarity Score:  0.9442262016812177
+8 Gesture:  270 ,	Similarity Score:  0.9329739433687729
+9 Gesture:  279 ,	Similarity Score:  0.9327880842826141
+10 Gesture:  13 ,	Similarity Score:  0.9313006531247211
+
+
+Iteration 1:
+Relevant feedback ['1', '4', '21', '11', '2', '13']
+Irrelevant feedback ['559', '587', '270', '279']
+
+1 Gesture:  1 ,	Similarity Score:  0.9876010954273721
+2 Gesture:  11 ,	Similarity Score:  0.9863083251028221
+3 Gesture:  559 ,	Similarity Score:  0.9796827760311697
+4 Gesture:  251 ,	Similarity Score:  0.9681320075084568
+5 Gesture:  560 ,	Similarity Score:  0.9665459476441254
+6 Gesture:  561 ,	Similarity Score:  0.9653599315838357
+7 Gesture:  4 ,	Similarity Score:  0.9648866971725794
+8 Gesture:  568 ,	Similarity Score:  0.963330907055705
+9 Gesture:  2 ,	Similarity Score:  0.9612860977344334
+10 Gesture:  259 ,	Similarity Score:  0.9612811593289341
+
+
+Iteration 2:
+Relevant feedback ['4', '1', '11', '2']
+Irrelevant feedback ['561', '251', '560', '568', '559', '259']
+
+1 Gesture:  1 ,	Similarity Score:  0.9897567235837489
+2 Gesture:  4 ,	Similarity Score:  0.9838957146147471
+3 Gesture:  2 ,	Similarity Score:  0.9807221823132886
+4 Gesture:  11 ,	Similarity Score:  0.9802761379516255
+5 Gesture:  279 ,	Similarity Score:  0.9688091285227493
+6 Gesture:  559 ,	Similarity Score:  0.9684882830608664
+7 Gesture:  560 ,	Similarity Score:  0.9662592175616551
+8 Gesture:  587 ,	Similarity Score:  0.9603965591853044
+9 Gesture:  30 ,	Similarity Score:  0.9545147777696934
+10 Gesture:  251 ,	Similarity Score:  0.9522277398357101
+
+Iteration 3:
+Relevant feedback ['1', '4', '11', '30', '2']
+Irrelevant feedback ['279', '251', '560', '587', '559']
+
+1 Gesture:  1 ,	Similarity Score:  0.9888763952046618
+2 Gesture:  2 ,	Similarity Score:  0.9834796277428347
+3 Gesture:  4 ,	Similarity Score:  0.9783061751483005
+4 Gesture:  11 ,	Similarity Score:  0.9773272037287488
+5 Gesture:  559 ,	Similarity Score:  0.9734313063184278
+6 Gesture:  30 ,	Similarity Score:  0.9688201860555187
+7 Gesture:  279 ,	Similarity Score:  0.967953258672254
+8 Gesture:  560 ,	Similarity Score:  0.96256023800461
+9 Gesture:  587 ,	Similarity Score:  0.9616726665648052
+10 Gesture:  259 ,	Similarity Score:  0.9520776469585789

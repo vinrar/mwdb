@@ -1,0 +1,46 @@
+Query: Gesture 1
+
+LSH Result:
+1 Gesture:  1 ,		Similarity Score:  1.0
+2 Gesture:  4 ,		Similarity Score:  0.9700936453778162
+3 Gesture:  560 ,	Similarity Score:  0.9698486478695874
+4 Gesture:  259 ,	Similarity Score:  0.9679250039410847
+5 Gesture:  279 ,	Similarity Score:  0.9665694944378452
+6 Gesture:  2 ,		Similarity Score:  0.9659015422982948
+7 Gesture:  251 ,	Similarity Score:  0.9646103207270595
+8 Gesture:  11 ,	Similarity Score:  0.9619283972620312
+9 Gesture:  255 ,	Similarity Score:  0.9599010655513732
+10 Gesture:  568 ,	Similarity Score:  0.9574980509594199
+
+Got Results From LSH ['1', '4', '560', '259', '279', '2', '251', '11', '255', '568']
+
+Iteration 1:
+Relevant feedback ['2', '4', '11', '1']
+Irrelevant feedback ['560', '568']
+Gesture List ['1', '4', '560', '259', '279', '2', '251', '11', '255', '568']
+
+File:  4 , PPR:  0.2359402295194773
+File:  1 , PPR:  0.22998864455806492
+File:  11 , PPR:  0.22601955004403623
+File:  2 , PPR:  0.21255540169864406
+File:  560 , PPR:  0.030589035567230076
+File:  251 , PPR:  0.025175493710783658
+File:  255 , PPR:  0.01587888429625349
+File:  259 , PPR:  0.013819525828658879
+File:  568 , PPR:  0.01311798804734118
+File:  279 , PPR:  0.012645990752474268
+
+
+Relevant feedback ['11', '4', '2', '1']
+Irrelevant feedback ['255', '279', '560', '251', '268', '259']
+Gesture List ['1', '4', '560', '259', '279', '2', '251', '11', '255', '568']
+File:  4 , PPR:  0.2359402295194773
+File:  1 , PPR:  0.22998864455806492
+File:  11 , PPR:  0.22601955004403623
+File:  2 , PPR:  0.21255540169864406
+File:  560 , PPR:  0.030589035567230076
+File:  251 , PPR:  0.025175493710783658
+File:  255 , PPR:  0.01587888429625349
+File:  259 , PPR:  0.013819525828658879
+File:  568 , PPR:  0.01311798804734118
+File:  279 , PPR:  0.012645990752474268

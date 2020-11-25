@@ -1,0 +1,28 @@
+Query: Gesture 273
+1 Gesture:  273 ,	Similarity Score:  1.0
+2 Gesture:  274 ,	Similarity Score:  0.9695164708504419
+3 Gesture:  275 ,	Similarity Score:  0.9533103395053975
+4 Gesture:  271 ,	Similarity Score:  0.9223405213861667
+5 Gesture:  256 ,	Similarity Score:  0.9221478490814259
+6 Gesture:  581 ,	Similarity Score:  0.9096170219231521
+7 Gesture:  253 ,	Similarity Score:  0.9065221097958998
+8 Gesture:  277 ,	Similarity Score:  0.9010167946946537
+9 Gesture:  268 ,	Similarity Score:  0.8921169195379482
+10 Gesture:  584 ,	Similarity Score:  0.8875932174609904
+
+
+
+
+Iteration 1:
+Relevant feedback ['275', '256', '274', '277', '268', '253', '273', '271']
+Irrelevant feedback ['584', '581']
+1 Gesture:  256 ,	Similarity Score:  0.9845544044550043
+2 Gesture:  274 ,	Similarity Score:  0.9813654884925785
+3 Gesture:  275 ,	Similarity Score:  0.980930259445361
+4 Gesture:  271 ,	Similarity Score:  0.9698916777977985
+5 Gesture:  278 ,	Similarity Score:  0.9656871393080549
+6 Gesture:  273 ,	Similarity Score:  0.9653572922081345
+7 Gesture:  277 ,	Similarity Score:  0.9618832386596573
+8 Gesture:  253 ,	Similarity Score:  0.9523176514299935
+9 Gesture:  260 ,	Similarity Score:  0.9429874039693309
+10 Gesture:  258 ,	Similarity Score:  0.9397135958912791

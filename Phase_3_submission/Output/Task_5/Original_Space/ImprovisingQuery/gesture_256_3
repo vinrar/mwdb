@@ -1,0 +1,44 @@
+Query: 256_3
+
+1 Gesture:  256_3 ,	Similarity Score:  0.9999999999999998
+2 Gesture:  256_6 ,	Similarity Score:  0.8548243824831864
+3 Gesture:  256_4 ,	Similarity Score:  0.8532451493991645
+4 Gesture:  256_0 ,	Similarity Score:  0.8457523779232047
+5 Gesture:  256_5 ,	Similarity Score:  0.8437985977507321
+6 Gesture:  256_2 ,	Similarity Score:  0.8410683749349822
+7 Gesture:  256_7 ,	Similarity Score:  0.8378183151490625
+8 Gesture:  256_1 ,	Similarity Score:  0.8363411916891559
+9 Gesture:  252_9 ,	Similarity Score:  0.6519507314890882
+10 Gesture:  252_4 ,	Similarity Score:  0.6497684806425238
+
+Iteration 1:
+
+Relevant feedback ['256_5', '256_1', '256_3', '256_7', '256_6', '256_2', '256_0', '256_4']
+Irrelevant feedback ['252_4', '252_9']
+
+1 Gesture:  256_0 ,	Similarity Score:  0.9269983744934254
+2 Gesture:  256_5 ,	Similarity Score:  0.9235262617310853
+3 Gesture:  256_7 ,	Similarity Score:  0.9231995692877913
+4 Gesture:  256_8 ,	Similarity Score:  0.9060475878485318
+5 Gesture:  252_5 ,	Similarity Score:  0.6980950499453122
+6 Gesture:  266_7 ,	Similarity Score:  0.6515238246563159
+7 Gesture:  260_5 ,	Similarity Score:  0.648235205800747
+8 Gesture:  258_1 ,	Similarity Score:  0.5988061539776418
+9 Gesture:  258_0 ,	Similarity Score:  0.5844957079975986
+10 Gesture:  571_6 ,	Similarity Score:  0.5651462389496653
+
+Iteration 2:
+
+Relevant feedback ['256_7', '256_0', '256_5', '256_8']
+Irrelevant feedback ['260_5', '258_1', '571_6', '258_0', '266_7', '252_5']
+
+1 Gesture:  256_0 ,	Similarity Score:  0.9357723435151993
+2 Gesture:  256_7 ,	Similarity Score:  0.9354634183142404
+3 Gesture:  256_5 ,	Similarity Score:  0.9354166145204377
+4 Gesture:  252_5 ,	Similarity Score:  0.693106380067319
+5 Gesture:  273_9 ,	Similarity Score:  0.6582321029275088
+6 Gesture:  266_7 ,	Similarity Score:  0.6438852451506498
+7 Gesture:  260_5 ,	Similarity Score:  0.6403336517911239
+8 Gesture:  258_1 ,	Similarity Score:  0.5948167865007902
+9 Gesture:  258_0 ,	Similarity Score:  0.583094881833085
+10 Gesture:  571_6 ,	Similarity Score:  0.5646375523812782
