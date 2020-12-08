@@ -29,8 +29,8 @@ def get_ppr_predictions(data_dir, k, m, c):
             A.iloc[i,j] = df.iloc[i,j]
 
     for i in range(A.shape[0]):
-        A.iloc[i,:] = (A.iloc[i,:] - min(A.iloc[i,:])) / (max(A.iloc[i,:]) - min(A.iloc[i,:]))
-        A.iloc[i,:] = A.iloc[i,:] / np.sum(A.iloc[i,:])
+        A.iloc[:,i] = (A.iloc[:,i] - min(A.iloc[:,i])) / (max(A.iloc[:,i]) - min(A.iloc[:,i]))
+        A.iloc[:,i] = A.iloc[:,i] / np.sum(A.iloc[:,i])
 
     df_labels = pd.read_excel("./"+data_dir+"/labels.xlsx", sheet_name=None, header=None)
     df_labels['Sheet1'].columns = ['name', 'class']
