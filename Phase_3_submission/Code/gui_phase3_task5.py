@@ -1,10 +1,11 @@
 import pandas as pd
 import numpy as np
+import os
 
-
-def get_ppr_changing_query(k, m, c, relevant_gestures, gui=False):
+def get_ppr_changing_query(k, m, c, relevant_gestures, directory, model, gui=False):
     # TODO: Make the file name uniform with task 3 input
-    df = pd.read_csv("./pca_cosine_sim_matrix.csv")
+    print("Model: ", model)
+    df = pd.read_csv(os.path.join(directory, "pca_cosine_sim_%s.csv" % model))
     df = df.set_index('Unnamed: 0')
 
     A = df.copy(deep=True)
@@ -53,14 +54,15 @@ def get_ppr_changing_query(k, m, c, relevant_gestures, gui=False):
     #     return output
 
 
-def get_ppr2(k, c, gesture_list, relevant_gestures, irrelevant_gestures, gui=False):
+def get_ppr2(k, c, gesture_list, relevant_gestures, irrelevant_gestures, directory, model, gui=False):
+    print("Model 2: ", model)
     relevant_gesture_percentage = 1
     non_classified_gesture_percentage = 1 - relevant_gesture_percentage
 
     non_classified_gestures = list(set(gesture_list) - set(relevant_gestures) - set(irrelevant_gestures))
 
     # TODO: Make the file name uniform with task 3 input
-    df = pd.read_csv("./pca_cosine_sim_matrix.csv")
+    df = pd.read_csv(os.path.join(directory, "pca_cosine_sim_%s.csv" % model))
     df = df.set_index('Unnamed: 0')
 
     A = df.copy(deep=True)

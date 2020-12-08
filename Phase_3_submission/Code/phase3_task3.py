@@ -146,7 +146,7 @@ def main():
         with open(os.path.join(dir, 'pca_transformed_' + model + '_vectors.json'), 'r') as fp:
             vectors = json.load(fp)
     elif space == 0:
-        with open(os.path.join(model + '_vectors.json'), 'r') as fp:
+        with open(os.path.join(dir, model + '_vectors.json'), 'r') as fp:
             vectors = json.load(fp)
 
     locality_sensitive_hashing(L, k)

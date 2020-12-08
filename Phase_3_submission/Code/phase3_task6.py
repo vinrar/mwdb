@@ -18,6 +18,7 @@ QUERY_GESTURE = None
 RELEVANT_FEEDBACK = []
 IRRELEVANT_FEEDBACK = []
 QUERY_MODE = None
+DIRECTORY = None
 
 
 
@@ -27,6 +28,13 @@ def getTaskNum():
     n = tkSimpleDialog.askinteger("Task Number", "Enter the task number (4/5)", parent=root, minvalue=4, maxvalue=5)
     print('Task Number: ', n)
     TASK_NUMBER = n
+
+# Function to get the directory
+def getDirNum():
+    global DIRECTORY
+    n = tkFileDialog.askdirectory()
+    print('Directory: ', n)
+    DIRECTORY = n
 
 
 # Function to get the query gesture
@@ -56,8 +64,9 @@ def getTask3Input():
 
 # Function to generate similarity results
 def generateResults():
-    global GESTURE_PATH, TASK_NUMBER, RELEVANT_FEEDBACK, IRRELEVANT_FEEDBACK, QUERY_GESTURE, QUERY_MODE
+    global GESTURE_PATH, TASK_NUMBER, RELEVANT_FEEDBACK, IRRELEVANT_FEEDBACK, QUERY_GESTURE, QUERY_MODE, DIRECTORY
 
+    model = ""
     q = tkSimpleDialog.askstring("Query Gesture", "Enter the query gesture", parent=root)
     print('Query Gesture: ', q)
     QUERY_GESTURE = str(q)
@@ -84,7 +93,7 @@ def generateResults():
 
             query_gesture = QUERY_GESTURE
 
-            with open('pca_transformed_%s_vectors.json' % model, 'r') as fp:
+            with open(os.path.join(DIRECTORY, 'pca_transformed_%s_vectors.json' % model), 'r') as fp:
                 vectors = json.load(fp)
 
             # preprocessing for LSH
@@ -103,13 +112,13 @@ def generateResults():
 
             # For Task 4 ================
             the_file = "%s_vectors.json" % model
-            dataset, map = read_the_file(the_file)
+            dataset, map = read_the_file(os.path.join(DIRECTORY, the_file))
             dataset = convert_to_binary_form(dataset)
             number_of_required_results = len(gesture_list)
             retrieved_dataset = get_initial_results(gesture_list, dataset, map)
             similar_gestures = gesture_list
             query_vector = vectors[query_gesture]
-            feature_list = read_the_features("%s_feature_list.pkl" % model)
+            feature_list = read_the_features(os.path.join(DIRECTORY, "%s_feature_list.pkl" % model))
         else:
             # run for the subsequent times with feedback
             if TASK_NUMBER == 4:
@@ -133,10 +142,10 @@ def generateResults():
             else:
                 if QUERY_MODE == 0:
                     feed_back_results = get_ppr2(len(gesture_list), 0.8, gesture_list, RELEVANT_FEEDBACK,
-                                                 IRRELEVANT_FEEDBACK, gui=True)
+                                                 IRRELEVANT_FEEDBACK, DIRECTORY, model, gui=True)
                 else:
-                    irrel_gestures, ratio = get_ppr_changing_query(10, 30, 0.8, IRRELEVANT_FEEDBACK)
-                    rel_gestures, ratio = get_ppr_changing_query(10, 30, 0.8, RELEVANT_FEEDBACK)
+                    irrel_gestures, ratio = get_ppr_changing_query(10, 30, 0.8, IRRELEVANT_FEEDBACK, DIRECTORY, model)
+                    rel_gestures, ratio = get_ppr_changing_query(10, 30, 0.8, RELEVANT_FEEDBACK, DIRECTORY, model)
                     gesture_list = set(rel_gestures) - set(irrel_gestures)
                     for rel_ges in RELEVANT_FEEDBACK:
                         gesture_list.add(rel_ges)
@@ -204,16 +213,19 @@ titleLabel = tk.Label(titleFrame, text='MWDB Phase 3 - Task 6', font=('Arial Bol
 titleLabel.place(relheight=1, relwidth=1)
 
 buttonFrame = tk.Frame(root)
-buttonFrame.place(relx=0.5, rely=0.2, relwidth=0.75, relheight=0.1, anchor='n')
+buttonFrame.place(relx=0.5, rely=0.2, relwidth=1, relheight=0.1, anchor='n')
 
 taskButton = tk.Button(buttonFrame, text="Select Task No.", command=lambda: getTaskNum())
-taskButton.place(relx=0.0, relheight=1, relwidth=0.3)
+taskButton.place(relx=0.02, relheight=1, relwidth=0.225)
+
+dirButton = tk.Button(buttonFrame, text="Select Directory.", command=lambda: getDirNum())
+dirButton.place(relx=0.27, relheight=1, relwidth=0.225)
 
 gestureButton = tk.Button(buttonFrame, text="Select Query Mode", command=lambda: getQueryMode())
-gestureButton.place(relx=0.35, relheight=1, relwidth=0.3)
+gestureButton.place(relx=0.52, relheight=1, relwidth=0.225)
 
 startButton = tk.Button(buttonFrame, text="Select Query Gesture", command=lambda: generateResults())
-startButton.place(relx=0.7, relheight=1, relwidth=0.3)
+startButton.place(relx=0.77, relheight=1, relwidth=0.225)
 
 resultFrame = tk.Frame(root, bg='#000000', bd=5)
 resultFrame.place(relx=0.5, rely=0.3, relwidth=0.5, relheight=0.65, anchor='n')

@@ -316,6 +316,8 @@ def get_task4_results(mode, initial_similarity_results, relevance_results, datas
         # print("prinitngg the similarity scores")
         # print(similarity_scores)
         output = generate_output_for_gui(feedback_similarity_results, similarity_scores)
+        print("Results : ", feedback_similarity_results)
+        print("Sim Scores: ", similarity_scores)
         return output, feedback_retrieved_dataset, feedback_similarity_results
     # mode 1 denoting the workflow where the results are re-ordered
     else:
@@ -329,4 +331,6 @@ def get_task4_results(mode, initial_similarity_results, relevance_results, datas
         # print(re_ordered_results)
         # print(reordered_similarity_scores)
         output = generate_output_for_gui(re_ordered_results, reordered_similarity_scores)
+        print("Reordered Results : ", re_ordered_results)
+        print("Reordered Sim Scores: ", reordered_similarity_scores)
         return output, None, re_ordered_results
