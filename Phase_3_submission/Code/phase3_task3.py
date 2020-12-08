@@ -5,6 +5,7 @@ import sys
 from collections import defaultdict
 from numpy.linalg import norm
 from random import gauss, uniform
+import os
 
 hash_tables, vectors = [], {}
 
@@ -90,7 +91,7 @@ def query_algorithm(q, t, k):
                     num_buckets += 1
                     for bucket_vector in value:
                         gestures_to_compare.add(bucket_vector)
-        k -= 2
+        k -= 1
         print("\nNumber of buckets searched: ", num_buckets)
         print("Number of unique gestures retrieved: ", len(gestures_to_compare))
         # print("List of gestures compared: ", sorted(gestures_to_compare))
@@ -127,24 +128,25 @@ def locality_sensitive_hashing(L, k):
 
 def main():
     global vectors
-    if len(sys.argv) < 2:
-        print('Run python phase3_task3.py <L> <k> <Space> <Vector Model>')
+    if len(sys.argv) < 5:
+        print('Run python phase3_task3.py <L> <k> <Space> <Vector Model> <Directory>')
         sys.exit(0)
 
     L = int(sys.argv[1])
     k = int(sys.argv[2])
     space = int(sys.argv[3])
     model = sys.argv[4]
+    dir = sys.argv[5]
 
     # L = int(input("Enter the number of layers, L: "))
     # k = int(input("Enter the number of hashes per layer, k: "))
     # model = input("Enter vector model, tf or tfidf: ")
 
     if space == 1:
-        with open('pca_transformed_' + model + '_vectors.json', 'r') as fp:
+        with open(os.path.join(dir, 'pca_transformed_' + model + '_vectors.json'), 'r') as fp:
             vectors = json.load(fp)
     elif space == 0:
-        with open(model + '_vectors.json', 'r') as fp:
+        with open(os.path.join(model + '_vectors.json'), 'r') as fp:
             vectors = json.load(fp)
 
     locality_sensitive_hashing(L, k)
