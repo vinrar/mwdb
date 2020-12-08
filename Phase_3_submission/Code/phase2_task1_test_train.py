@@ -30,14 +30,15 @@ def get_list_of_files(dir, vector_model, data_type):
 # stores vector model data globally
 def read_file_data(list_of_files, dir):
     for each_file in list_of_files:
-        file_path = dir + "/" + each_file
-        file_handler = open(file_path, 'rb')
-        if each_file.count("_") == 3:
-            keys = each_file.split('.')[0].split('_')
-            key = keys[-2] + "_" + keys[-1]
-        else:
-            key = each_file.split('.')[0].split('_')[-1]
-        vector_model_data[key] = pickle.load(file_handler)
+	    if "txt" in each_file:
+	        file_path = dir + "/" + each_file
+	        file_handler = open(file_path, 'rb')
+	        if each_file.count("_") == 3:
+	            keys = each_file.split('.')[0].split('_')
+	            key = keys[-2] + "_" + keys[-1]
+	        else:
+	            key = each_file.split('.')[0].split('_')[-1]
+	        vector_model_data[key] = pickle.load(file_handler)
 
 
 # return list of features across dimensions

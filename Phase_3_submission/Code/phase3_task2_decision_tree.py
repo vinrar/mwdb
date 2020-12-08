@@ -1,4 +1,6 @@
 import json
+import os
+
 from sklearn.model_selection import train_test_split
 import sys
 
@@ -156,11 +158,12 @@ def print_leaf(counts):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 1:
-        print('Run python phase3_task2_decision_tree.py <1.PCA 2.SVD>')
+    if len(sys.argv) < 2:
+        print('Run python phase3_task2_decision_tree.py <1.PCA 2.SVD> 2.Directory')
         sys.exit(0)
 
     user_option = sys.argv[1]
+    directory = sys.argv[2]
     train_data_file_name = ''
     test_data_file_name = ''
 
@@ -171,26 +174,40 @@ if __name__ == "__main__":
         train_data_file_name = "phase2_task1_transformed_matrix_train_SVD.json"
         test_data_file_name = "phase2_task1_transformed_matrix_test_SVD.json"
 
-    train_data_file_handler = open(train_data_file_name, 'rb')
+    train_data_file_handler = open(os.path.join(directory, train_data_file_name), 'rb')
     train_data_matrix = json.load(train_data_file_handler)
 
-    test_data_file_handler = open(test_data_file_name, 'rb')
+    test_data_file_handler = open(os.path.join(directory, test_data_file_name), 'rb')
     test_data_matrix = json.load(test_data_file_handler)
 
     # configure the gesture map here
     # gesture_1 = 'vattene'
     # gesture_2 = 'Combinato'
     # gesture_3 = "D'Accordo"
-    gesture_1 = '[1, 31]'
-    gesture_2 = '[249, 279]'
-    gesture_3 = '[559, 589]'
-    range_gesture_map = {}
-    range_gesture_map[gesture_1] = "Vattene"
-    range_gesture_map[gesture_2] = "Combinato"
-    range_gesture_map[gesture_3] = "D'Accordo"
-    # 249 - 279
-    # 559 - 589
-    config_map = {gesture_1: [1, 31], gesture_2: [249, 279], gesture_3: [559, 589]}
+    # gesture_1 = '[1, 31]'
+    # gesture_2 = '[249, 279]'
+    # gesture_3 = '[559, 589]'
+    # range_gesture_map = {}
+    # range_gesture_map[gesture_1] = "Vattene"
+    # range_gesture_map[gesture_2] = "Combinato"
+    # range_gesture_map[gesture_3] = "D'Accordo"
+    # # 249 - 279
+    # # 559 - 589
+    # config_map = {gesture_1: [1, 31], gesture_2: [249, 279], gesture_3: [559, 589]}
+
+    gesture_1 = '[32, 62]'
+    gesture_2 = '[63, 93]'
+    gesture_3 = "[156, 186]"
+    gesture_4 = "[187, 217]"
+    gesture_5 = "[590, 620]"
+    gesture_6 = "[621, 651]"
+
+    range_gesture_map = {gesture_1: "Vieni", gesture_2: "Perfetto", gesture_3: "Che_Vuoi", gesture_4: "Vanno_D_Accordo",
+                         gesture_5: "Sono stufo", gesture_6: "Artificial"}
+
+    config_map = {gesture_1: [32, 62], gesture_2: [63, 93], gesture_3: [156, 186], gesture_4: [187, 217],
+                  gesture_5: [590, 620], gesture_6: [621, 651]}
+
     result_map = {}
     for key in config_map:
         config_range = config_map[key]

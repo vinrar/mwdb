@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 
 def get_ppr(data_dir, qfiles, k, m, c):
-    df = pd.read_csv("./pca_cosine_sim_matrix.csv")
+    df = pd.read_csv(os.path.join(data_dir,"pca_cosine_sim_tf.csv"))
     df = df.set_index('Unnamed: 0')
 
     A = df.copy(deep=True)
@@ -58,7 +58,7 @@ def get_ppr(data_dir, qfiles, k, m, c):
         plt.title("Convergence")
         plt.xlabel("Number of Iterations")
         plt.ylabel("Change in uq")
-        plt.savefig("./"+qfile+"csv_converge"+".pdf")
+        plt.savefig(os.path.join(data_dir,qfile+"csv_converge"+".pdf"))
         # plt.show()
         plt.close()
 
@@ -102,7 +102,7 @@ def get_ppr(data_dir, qfiles, k, m, c):
 
             legend_val = ax[0,1].legend(title = "Legend", bbox_to_anchor = (1.05,1), loc='upper left', ncol=2)
 
-            filename = "./"+qfile+"csv_"+f+".pdf"
+            filename = os.path.join(data_dir, qfile+"csv_"+f+".pdf")
             plt.savefig(filename, bbox_inches='tight', format='pdf', dpi=1000)
 
             # plt.show()
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     print("Directory: {}\nk: {}\nm: {}\nc: {}\n".format(data_dir, k, m, c))
 
     print("Enter the query gestures without extension (space separated):")
-    qfiles = [str(x) for x in input().split()]  
+    qfiles = [str(x) for x in input().split()]
     print(qfiles)
     
     get_ppr(data_dir, qfiles, k, m, c)

@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 
 def get_ppr_predictions(data_dir, k, m, c):
-    df = pd.read_csv("./pca_cosine_sim_matrix.csv")
+    df = pd.read_csv(os.path.join(data_dir,"pca_cosine_sim_tf.csv"))
     # df = pd.read_csv("./cosine_sim_matrix.csv")
     df = df.set_index('Unnamed: 0')
 
@@ -47,6 +47,7 @@ def get_ppr_predictions(data_dir, k, m, c):
 
     # for i in range(files.shape[0]):
     #     qfile = str(files[i,0])
+    # print("add_files:", add_files)
     for i in range(len(add_files)):
         qfile = str(add_files[i])
 
@@ -70,6 +71,7 @@ def get_ppr_predictions(data_dir, k, m, c):
                 count += 1
 
         values, count = np.unique(temp, return_counts=True)
+        # print("count:", count)
         pred[qfile] = values[np.argmax(count)]
 
         if qfile not in label_dict:

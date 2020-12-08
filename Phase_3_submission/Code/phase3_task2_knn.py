@@ -27,13 +27,18 @@ def read_file_data(list_of_files, dir):
         # file_path = dir + "/" + each_file
         data_dir = os.path.join(current_folder, dir)
         file_path = os.path.join(data_dir, each_file)
+        print("file path:", file_path)
         file_handler = open(file_path, 'rb')
-        if each_file.count("_") == 3:
-            keys = each_file.split('.')[0].split('_')
-            key = keys[-2] + "_" + keys[-1]
-        else:
-            key = each_file.split('.')[0].split('_')[-1]
-        vector_model_data[key] = pickle.load(file_handler)
+        print("file handler:", file_handler)
+        if "txt" in each_file:
+	        if each_file.count("_") == 3:
+	            keys = each_file.split('.')[0].split('_')
+	            key = keys[-2] + "_" + keys[-1]
+	        elif each_file.count("_") == 2:
+	            key = each_file.split('.')[0].split('_')[-1]
+	        else:
+	            continue
+	        vector_model_data[key] = pickle.load(file_handler)
 
 
 # return list of features across dimensions
@@ -217,7 +222,7 @@ if __name__ == '__main__':
 
     print(type(the_matrix))
     keys = list(the_matrix.keys())
-    train, test = train_test_split(keys, test_size=0.2)
+    # train, test = train_test_split(keys, test_size=0.2)
     total_count = 0
     correct_count = 0
     # for test_key in test:
@@ -228,7 +233,7 @@ if __name__ == '__main__':
             similarity_matrix = get_distance_similarity(gesture_vector)
             # ignoring the first key
             if similarity_matrix:
-                similarity_matrix = similarity_matrix[1:]
+                similarity_matrix = similarity_matrix[:-1]
                 print("Printing the similarity results based on dot product")
                 print_results(similarity_matrix)
                 correct_count += perform_knn(similarity_matrix, k, test_key.split("_")[0])
