@@ -156,10 +156,13 @@ def print_results(result):
 
 
 def perform_knn(similarity_matrix, k, test_key):
-    gesture_1 = 'vattene'
-    gesture_2 = 'Combinato'
-    gesture_3 = "D'Accordo"
-    config_map = {gesture_1: [1, 31], gesture_2: [249, 279], gesture_3: [559, 589]}
+    gesture_1 = 'Vieni'
+    gesture_2 = 'Perfetto'
+    gesture_3 = "Che_Vuoi"
+    gesture_4 = "Vanno_D_Accordo"
+    gesture_5 = "Sono stufo"
+    gesture_6 = "Artificial"
+    config_map = {gesture_1: [32, 62], gesture_2: [63, 93], gesture_3: [156, 186], gesture_4: [187, 217], gesture_5: [590, 620], gesture_6: [621, 651]}
     result_map = {}
     for key in config_map:
         config_range = config_map[key]
