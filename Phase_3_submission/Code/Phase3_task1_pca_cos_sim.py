@@ -14,9 +14,9 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 
 
-f = open('./phase_2_task_1_transformed_matrix_pca.json',) 
+f = open('./pca_transformed_tfidf_vectors.json',) 
 data = json.load(f) 
-
+print("Generating pca cosine sim matrix")
 A = np.zeros((len(data),len(data)))
 df = pd.DataFrame(data = A)
 df.columns = list(data.keys())
@@ -37,6 +37,6 @@ for i in range(len(files)):
             cos_sim = np.dot(v1,v2) / (np.sum(v1**2)**0.5 * np.sum(v2**2)**0.5)
             df[files[i]][files[j]] = cos_sim
             df[files[j]][files[i]] = cos_sim
-
-df.to_csv("./pca_cosine_sim.csv")
+print("Saving sim matrix")
+df.to_csv("./pca_cosine_sim_tfidf.csv")
 print(df.head)
